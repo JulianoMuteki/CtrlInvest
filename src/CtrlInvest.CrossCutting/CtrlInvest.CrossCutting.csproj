@@ -4,8 +4,4 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\CtrlInvest.Domain\CtrlInvest.Domain.csproj" />
-  </ItemGroup>
-
 </Project>

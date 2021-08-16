@@ -4,4 +4,20 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Mapping\0 - Aggregation\" />
+    <Folder Include="Mapping\1 - SubEntities\" />
+    <Folder Include="Mapping\2 - ValueObjects\" />
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CtrlInvest.Domain\CtrlInvest.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

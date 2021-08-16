@@ -5,7 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\CtrlInvest.Domain\CtrlInvest.Domain.csproj" />
+    <ProjectReference Include="..\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj" />
   </ItemGroup>
 
 </Project>
