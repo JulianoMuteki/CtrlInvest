@@ -11,25 +11,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2 - Domain", "2 - Domain", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3 - Infra", "3 - Infra", "{41EB9BD5-8CAE-4093-9CF9-682C76D08552}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Domain", "src\CtrlInvest.Domain\CtrlInvest.Domain.csproj", "{E87B9B8D-153D-44F2-B2F2-8BDFBD24CD3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Domain", "src\CtrlInvest.Domain\CtrlInvest.Domain.csproj", "{E87B9B8D-153D-44F2-B2F2-8BDFBD24CD3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Infra.Repository", "src\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj", "{B2D25DB4-F42F-4ACF-90DC-7DB10B9CDC98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Infra.Repository", "src\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj", "{B2D25DB4-F42F-4ACF-90DC-7DB10B9CDC98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Infra.Context", "src\CtrlInvest.Infra.Context\CtrlInvest.Infra.Context.csproj", "{0AE2B17D-3031-4717-8D75-6E4F4364C32E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Infra.Context", "src\CtrlInvest.Infra.Context\CtrlInvest.Infra.Context.csproj", "{0AE2B17D-3031-4717-8D75-6E4F4364C32E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Services", "src\CtrlInvest.Services\CtrlInvest.Services.csproj", "{F80E4F44-7461-44D8-B1A7-7B15B4574179}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Services", "src\CtrlInvest.Services\CtrlInvest.Services.csproj", "{F80E4F44-7461-44D8-B1A7-7B15B4574179}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.UI.Web", "src\CtrlInvest.UI.Web\CtrlInvest.UI.Web.csproj", "{5269B04D-49D0-4D24-9491-9630E7CD5D9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.UI.Web", "src\CtrlInvest.UI.Web\CtrlInvest.UI.Web.csproj", "{5269B04D-49D0-4D24-9491-9630E7CD5D9F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.1 CrossCutting", "3.1 CrossCutting", "{7F9B9B3D-8E18-48AA-8806-463E37AAE7F7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.2 Database", "3.2 Database", "{8E0CC79D-B4B3-49EA-B71F-9EE1145A3ED7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.3 DevOps", "3.3 DevOps", "{084A34AD-406A-4F52-B9EE-563969DC0FA8}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yaml = docker-compose.yaml
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.CrossCutting", "src\CtrlInvest.CrossCutting\CtrlInvest.CrossCutting.csproj", "{B45345BC-205C-464B-ABE7-EFB674E67DE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.CrossCutting", "src\CtrlInvest.CrossCutting\CtrlInvest.CrossCutting.csproj", "{B45345BC-205C-464B-ABE7-EFB674E67DE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.CrossCutting.Ioc", "src\CtrlInvest.CrossCutting.Ioc\CtrlInvest.CrossCutting.Ioc.csproj", "{C039928E-BA19-40CA-97F6-E09448FB7ED2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.CrossCutting.Ioc", "src\CtrlInvest.CrossCutting.Ioc\CtrlInvest.CrossCutting.Ioc.csproj", "{C039928E-BA19-40CA-97F6-E09448FB7ED2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
