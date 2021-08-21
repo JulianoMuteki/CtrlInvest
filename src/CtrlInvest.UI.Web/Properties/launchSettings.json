@@ -2,20 +2,25 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
+    "iis": {
+      "applicationUrl": "http://localhost/CtrlInvest.UI.Web",
+      "sslPort": 0
+    },
     "iisExpress": {
       "applicationUrl": "http://localhost:2677",
-      "sslPort": 44302
+      "sslPort": 0
     }
   },
   "profiles": {
     "CtrlInvest.UI.Web": {
-      "commandName": "Project",
+      "commandName": "IISExpress",
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "hotReloadProfile": "aspnetcore",
       "dotnetRunMessages": "true",
+      "nativeDebugging": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000"
     },
     "IIS Express": {

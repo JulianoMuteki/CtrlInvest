@@ -8,30 +8,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-
     <title>@ViewData["Title"] | CtrlMoney</title>
-
     <!-- Font Awesome Icons -->
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- DataTables -->
-    <link href="~/lib/datatables/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
-    <link href="~/lib/datatables/css/responsive.bootstrap4.min.css" rel="stylesheet" />
-
+    <link href="~/admin-lte/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+    <link href="~/admin-lte/plugins/datatables-responsive/css/responsive.bootstrap4.css" rel="stylesheet" />
     <!-- Select2 -->
-    <link rel="stylesheet" href="~/lib/select2/css/select2.min.css">
+    <link href="~/admin-lte/plugins/select2/css/select2.min.css" rel="stylesheet" />
     <!-- Theme style -->
-    <link href="~/admin-lte/css/adminlte.css" rel="stylesheet" />
+    <link href="~/admin-lte/dist/css/adminlte.css" rel="stylesheet" />
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <link href="~/lib/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" />
+    <!-- daterangepicker-->
+    <link href="~/admin-lte/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
     <!-- BootStrap Tree View-->
     @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-treeview/1.2.0/bootstrap-treeview.min.css" />*@
-
-
     <!-- jQuery -->
-    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/admin-lte/plugins/jquery/jquery.min.js"></script>
 </head>
 <body class="hold-transition sidebar-mini">
     <div class="wrapper">
@@ -75,7 +71,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="~/admin-lte/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
+                                <img src="~/admin-lte/dist/img/user1-128x128.jpg" alt="User Avatar" class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Brad Diesel
@@ -91,7 +87,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="~/admin-lte/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="~/admin-lte/dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         John Pierce
@@ -107,7 +103,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="~/admin-lte/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+                                <img src="~/admin-lte/dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
                                         Nora Silvester
@@ -162,7 +158,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="index3.html" class="brand-link">
-                <img src="~/admin-lte/img/dinheiro.png" alt="CtrlMoney Logo" class="brand-image img-circle elevation-3"
+                <img src="~/admin-lte/dist/img/dinheiro.png" alt="CtrlMoney Logo" class="brand-image img-circle elevation-3"
                      style="opacity: .8">
                 <span class="brand-text font-weight-light">CtrlMoney</span>
             </a>
@@ -172,7 +168,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="~/admin-lte/img/jcp_money.jpg" class="img-circle elevation-2" alt="User Image">
+                        <img src="~/admin-lte/dist/img/jcp_money.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
                         <a href="#" class="d-block">Juliano Pestili</a>
@@ -248,24 +244,22 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- ./wrapper -->
     <!-- REQUIRED SCRIPTS -->
     <!-- Bootstrap 4 -->
-    <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/admin-lte/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 
     <!-- DataTables -->
-    <script type="text/javascript" src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="~/lib/datatables/js/dataTables.bootstrap4.min.js"></script>
-    <script type="text/javascript" src="~/lib/datatables/js/dataTables.responsive.min.js"></script>
-    <script type="text/javascript" src="~/lib/datatables/js/responsive.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="~/admin-lte/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="~/admin-lte/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script type="text/javascript" src="~/admin-lte/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" src="~/admin-lte/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
 
-    <script src="~/lib/bootstrap-treeview/bootstrap-treeview.js"></script>
+    <script src="~/admin-lte/plugins/bootstrap-treeview/bootstrap-treeview.min.js"></script>
     <!-- CtrlMoney App -->
-    <script src="~/admin-lte/js/adminlte.min.js"></script>
+    <script src="~/admin-lte/dist/js/adminlte.min.js"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="~/admin-lte/js/demo.js"></script>
+    <script src="~/admin-lte/dist/js/demo.js"></script>
     <!-- Select2 -->
-    <script src="~/lib/select2/js/select2.full.min.js"></script>
-
-
+    <script src="~/admin-lte/plugins/select2/js/select2.full.js"></script>
     <!-- page script -->
     <script>
         $(function () {

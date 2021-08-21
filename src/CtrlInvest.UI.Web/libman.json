@@ -1,0 +1,10 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "bootstrap-treeview@1.2.0",
+      "destination": "wwwroot/admin-lte/plugins/bootstrap-treeview/"
+    }
+  ]
+}
