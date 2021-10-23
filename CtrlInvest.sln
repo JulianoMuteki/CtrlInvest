@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Application", "0 - Application", "{8A445DFD-CF71-4691-A97C-A2209E55F2BB}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Presentation", "0 - Presentation", "{8A445DFD-CF71-4691-A97C-A2209E55F2BB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - Service", "1 - Service", "{9A7D34A3-9DC8-4878-8210-3DEF81968D82}"
 EndProject
@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.UI.Web", "src\Ct
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.1 CrossCutting", "3.1 CrossCutting", "{7F9B9B3D-8E18-48AA-8806-463E37AAE7F7}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.2 Database", "3.2 Database", "{8E0CC79D-B4B3-49EA-B71F-9EE1145A3ED7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.2 Data", "3.2 Data", "{8E0CC79D-B4B3-49EA-B71F-9EE1145A3ED7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.3 DevOps", "3.3 DevOps", "{084A34AD-406A-4F52-B9EE-563969DC0FA8}"
 	ProjectSection(SolutionItems) = preProject
@@ -33,6 +33,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.CrossCutting", "src\CtrlInvest.CrossCutting\CtrlInvest.CrossCutting.csproj", "{B45345BC-205C-464B-ABE7-EFB674E67DE0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.CrossCutting.Ioc", "src\CtrlInvest.CrossCutting.Ioc\CtrlInvest.CrossCutting.Ioc.csproj", "{C039928E-BA19-40CA-97F6-E09448FB7ED2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Infra.External", "src\CtrlInvest.Infra.External\CtrlInvest.Infra.External.csproj", "{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.ImportHistorical", "src\CtrlInvest.ImportHistorical\CtrlInvest.ImportHistorical.csproj", "{63E19FA9-55B9-492C-9FC3-35D71E66717E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +72,14 @@ Global
 		{C039928E-BA19-40CA-97F6-E09448FB7ED2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C039928E-BA19-40CA-97F6-E09448FB7ED2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C039928E-BA19-40CA-97F6-E09448FB7ED2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63E19FA9-55B9-492C-9FC3-35D71E66717E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63E19FA9-55B9-492C-9FC3-35D71E66717E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63E19FA9-55B9-492C-9FC3-35D71E66717E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63E19FA9-55B9-492C-9FC3-35D71E66717E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -83,6 +95,8 @@ Global
 		{084A34AD-406A-4F52-B9EE-563969DC0FA8} = {41EB9BD5-8CAE-4093-9CF9-682C76D08552}
 		{B45345BC-205C-464B-ABE7-EFB674E67DE0} = {7F9B9B3D-8E18-48AA-8806-463E37AAE7F7}
 		{C039928E-BA19-40CA-97F6-E09448FB7ED2} = {7F9B9B3D-8E18-48AA-8806-463E37AAE7F7}
+		{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD} = {8E0CC79D-B4B3-49EA-B71F-9EE1145A3ED7}
+		{63E19FA9-55B9-492C-9FC3-35D71E66717E} = {8A445DFD-CF71-4691-A97C-A2209E55F2BB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B56B2DCC-9E15-4227-B7A3-9A2EBFC1B40F}
