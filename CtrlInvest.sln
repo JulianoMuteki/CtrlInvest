@@ -28,6 +28,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.3 DevOps", "3.3 DevOps", "{084A34AD-406A-4F52-B9EE-563969DC0FA8}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yaml = docker-compose.yaml
+		InitializeDatabase.sql = InitializeDatabase.sql
+		Insert_Tickets_BRL.sql = Insert_Tickets_BRL.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.CrossCutting", "src\CtrlInvest.CrossCutting\CtrlInvest.CrossCutting.csproj", "{B45345BC-205C-464B-ABE7-EFB674E67DE0}"
@@ -36,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.CrossCutting.Ioc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Infra.External", "src\CtrlInvest.Infra.External\CtrlInvest.Infra.External.csproj", "{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.ImportHistorical", "src\CtrlInvest.ImportHistorical\CtrlInvest.ImportHistorical.csproj", "{63E19FA9-55B9-492C-9FC3-35D71E66717E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.ImportHistorical", "src\CtrlInvest.ImportHistorical\CtrlInvest.ImportHistorical.csproj", "{63E19FA9-55B9-492C-9FC3-35D71E66717E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

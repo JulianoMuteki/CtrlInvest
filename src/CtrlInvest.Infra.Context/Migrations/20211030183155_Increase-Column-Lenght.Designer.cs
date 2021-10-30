@@ -3,15 +3,17 @@ using System;
 using CtrlInvest.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CtrlInvest.Infra.Context.Migrations
 {
     [DbContext(typeof(CtrlInvestContext))]
-    partial class CtrlInvestContextModelSnapshot : ModelSnapshot
+    [Migration("20211030183155_Increase-Column-Lenght")]
+    partial class IncreaseColumnLenght
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

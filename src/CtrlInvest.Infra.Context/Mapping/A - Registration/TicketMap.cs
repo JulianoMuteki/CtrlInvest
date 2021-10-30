@@ -18,7 +18,7 @@ namespace CtrlInvest.Infra.Context.Mapping
 
             builder.Property(e => e.Name)
                 .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(150);
 
             builder.Property(e => e.Exchange)
                      .IsRequired()
@@ -33,4 +33,3 @@ namespace CtrlInvest.Infra.Context.Mapping
         }
     }
 }
-
