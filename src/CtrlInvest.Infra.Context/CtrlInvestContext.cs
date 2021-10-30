@@ -23,6 +23,7 @@ namespace CtrlInvest.Infra.Context
         public DbSet<GrandChildTree> GrandChildrenTrees { get; set; }
         public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
         public DbSet<Bank> Banks { get; set; }
+        public DbSet<Ticket> Tickets { get; set; }
 
         public CtrlInvestContext()
         {
@@ -32,8 +33,8 @@ namespace CtrlInvest.Infra.Context
         public CtrlInvestContext(DbContextOptions<CtrlInvestContext> options)
              : base(options)
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll;
-            ChangeTracker.LazyLoadingEnabled = true;
+            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+            ChangeTracker.LazyLoadingEnabled = false;
         }
 
         public void SetTrackAll()
@@ -58,6 +59,7 @@ namespace CtrlInvest.Infra.Context
             modelBuilder.ApplyConfiguration(new ChildTreeMap());
             modelBuilder.ApplyConfiguration(new GrandChildTreeMap());
             modelBuilder.ApplyConfiguration(new FinancialTransactionMap());
+            modelBuilder.ApplyConfiguration(new TicketMap());
 
             base.OnModelCreating(modelBuilder);
 

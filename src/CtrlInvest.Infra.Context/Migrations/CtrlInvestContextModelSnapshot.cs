@@ -16,7 +16,7 @@ namespace CtrlInvest.Infra.Context.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 63)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.11")
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             modelBuilder.Entity("CtrlInvest.Domain.Entities.Bank", b =>
@@ -323,6 +323,52 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.HasIndex("ParentTreeID");
 
                     b.ToTable("FinancialTransactions");
+                });
+
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.Ticket", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Currency")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Exchange")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDisable")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("Ticker")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id")
+                        .HasName("Ticket");
+
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("CtrlInvest.Domain.Identity.ApplicationRole", b =>

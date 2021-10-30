@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CtrlInvest.Infra.Context.Migrations
 {
-    public partial class CreateDatabase : Migration
+    public partial class DatabaseInit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,6 +66,26 @@ namespace CtrlInvest.Infra.Context.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("BankID", x => x.BankID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tickets",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Ticker = table.Column<string>(type: "text", nullable: true),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Exchange = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Country = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Currency = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("Ticket", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -467,6 +487,9 @@ namespace CtrlInvest.Infra.Context.Migrations
 
             migrationBuilder.DropTable(
                 name: "FinancialTransactions");
+
+            migrationBuilder.DropTable(
+                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
