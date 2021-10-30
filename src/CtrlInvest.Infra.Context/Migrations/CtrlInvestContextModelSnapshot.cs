@@ -325,6 +325,43 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.ToTable("FinancialTransactions");
                 });
 
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalDate", b =>
+                {
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("TickerCode")
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<double>("AdjClose")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Close")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("High")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Low")
+                        .HasColumnType("double precision");
+
+                    b.Property<double>("Open")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid>("TickerID")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Volume")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Date", "TickerCode");
+
+                    b.HasIndex("TickerID");
+
+                    b.ToTable("HistoricalDates");
+                });
+
             modelBuilder.Entity("CtrlInvest.Domain.Entities.Ticket", b =>
                 {
                     b.Property<Guid>("Id")
@@ -363,10 +400,11 @@ namespace CtrlInvest.Infra.Context.Migrations
                         .HasColumnType("character varying(150)");
 
                     b.Property<string>("Ticker")
-                        .HasColumnType("text");
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
 
-                    b.HasKey("Id")
-                        .HasName("Ticket");
+                    b.HasKey("Id");
 
                     b.ToTable("Tickets");
                 });
@@ -652,6 +690,17 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.Navigation("ParentTree");
                 });
 
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalDate", b =>
+                {
+                    b.HasOne("CtrlInvest.Domain.Entities.Ticket", "Ticket")
+                        .WithMany("HistoricalDates")
+                        .HasForeignKey("TickerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ticket");
+                });
+
             modelBuilder.Entity("CtrlInvest.Domain.Identity.ApplicationRoleClaim", b =>
                 {
                     b.HasOne("CtrlInvest.Domain.Identity.ApplicationRole", "Role")
@@ -749,6 +798,11 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("FinancialTransactions");
+                });
+
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.Ticket", b =>
+                {
+                    b.Navigation("HistoricalDates");
                 });
 
             modelBuilder.Entity("CtrlInvest.Domain.Identity.ApplicationRole", b =>

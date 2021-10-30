@@ -25,6 +25,8 @@ namespace CtrlInvest.Infra.Context
         public DbSet<Bank> Banks { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
 
+        public DbSet<HistoricalDate> HistoricalDates { get; set; }
+
         public CtrlInvestContext()
         {
             // ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -60,8 +62,10 @@ namespace CtrlInvest.Infra.Context
             modelBuilder.ApplyConfiguration(new GrandChildTreeMap());
             modelBuilder.ApplyConfiguration(new FinancialTransactionMap());
             modelBuilder.ApplyConfiguration(new TicketMap());
+            modelBuilder.ApplyConfiguration(new HistoricalDateMap());
 
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Ticket>().ToSqlQuery("CREATE EXTENSION IF NOT EXISTS \"uuid - ossp\";"); // <<< Anything you want :)
 
             modelBuilder.Entity<ApplicationUser>(b =>
                 {

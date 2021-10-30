@@ -6,7 +6,12 @@ namespace CtrlInvest.ImportHistorical
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Context context;
+            // Three contexts following different strategies
+            context = new Context(new ConcreteStrategyA());
+            context.ImportHistoricalByDates();
+            // Wait for user
+            Console.ReadKey();
         }
     }
 }

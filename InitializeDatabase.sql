@@ -50,8 +50,8 @@ CREATE TABLE "Banks" (
 
 CREATE TABLE "Tickets" (
     "Id" uuid NOT NULL,
-    "Ticker" text NULL,
-    "Name" character varying(50) NOT NULL,
+    "Ticker" character varying(150) NOT NULL,
+    "Name" character varying(150) NOT NULL,
     "Exchange" character varying(50) NOT NULL,
     "Country" character varying(50) NOT NULL,
     "Currency" character varying(50) NULL,
@@ -59,7 +59,7 @@ CREATE TABLE "Tickets" (
     "DateModified" timestamp without time zone NOT NULL,
     "IsDelete" boolean NOT NULL,
     "IsDisable" boolean NOT NULL,
-    CONSTRAINT "Ticket" PRIMARY KEY ("Id")
+    CONSTRAINT "PK_Tickets" PRIMARY KEY ("Id")
 );
 
 CREATE TABLE "AspNetRoleClaims" (
@@ -104,6 +104,20 @@ CREATE TABLE "AspNetUserTokens" (
     "Value" text NULL,
     CONSTRAINT "PK_AspNetUserTokens" PRIMARY KEY ("UserId", "LoginProvider", "Name"),
     CONSTRAINT "FK_AspNetUserTokens_AspNetUsers_UserId" FOREIGN KEY ("UserId") REFERENCES "AspNetUsers" ("Id") ON DELETE CASCADE
+);
+
+CREATE TABLE "HistoricalDates" (
+    "Date" timestamp without time zone NOT NULL,
+    "TickerCode" character varying(150) NOT NULL,
+    "Open" double precision NOT NULL,
+    "High" double precision NOT NULL,
+    "Low" double precision NOT NULL,
+    "Close" double precision NOT NULL,
+    "AdjClose" double precision NOT NULL,
+    "Volume" integer NOT NULL,
+    "TickerID" uuid NOT NULL,
+    CONSTRAINT "PK_HistoricalDates" PRIMARY KEY ("Date", "TickerCode"),
+    CONSTRAINT "FK_HistoricalDates_Tickets_TickerID" FOREIGN KEY ("TickerID") REFERENCES "Tickets" ("Id") ON DELETE CASCADE
 );
 
 CREATE TABLE "FinancialTransactions" (
@@ -221,6 +235,8 @@ CREATE INDEX "IX_FinancialTransactions_ParentTreeID" ON "FinancialTransactions" 
 
 CREATE INDEX "IX_GrandChildrenTrees_ParentNodeID" ON "GrandChildrenTrees" ("ParentNodeID");
 
+CREATE INDEX "IX_HistoricalDates_TickerID" ON "HistoricalDates" ("TickerID");
+
 CREATE INDEX "IX_Leaves_CompositeID" ON "Leaves" ("CompositeID");
 
 CREATE INDEX "IX_ParentsTrees_ParentNodeID" ON "ParentsTrees" ("ParentNodeID");
@@ -236,16 +252,8 @@ ALTER TABLE "GrandChildrenTrees" ADD CONSTRAINT "FK_GrandChildrenTrees_ChildrenT
 ALTER TABLE "Leaves" ADD CONSTRAINT "FK_Leaves_Composites_CompositeID" FOREIGN KEY ("CompositeID") REFERENCES "Composites" ("CompositeID") ON DELETE CASCADE;
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20211029001530_Database-Init', '5.0.11');
+VALUES ('20211030202418_InitialCreate', '5.0.11');
 
-COMMIT;
-
-START TRANSACTION;
-
-ALTER TABLE "Tickets" ALTER COLUMN "Name" TYPE character varying(150);
-
-INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20211030183155_Increase-Column-Lenght', '5.0.11');
-
+CREATE EXTENSION IF NOT EXISTS "uuid - ossp";
 COMMIT;
 

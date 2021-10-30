@@ -13,5 +13,11 @@ namespace CtrlInvest.Domain.Entities
         public string Country { get; set; }
         public string Currency { get; set; }
 
+        public ICollection<HistoricalDate> HistoricalDates { get; set; }
+
+        private Ticket()
+        {
+            this.HistoricalDates = new HashSet<HistoricalDate>();            
+        }
     }
 }

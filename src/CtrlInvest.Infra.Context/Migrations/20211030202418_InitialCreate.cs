@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace CtrlInvest.Infra.Context.Migrations
 {
-    public partial class DatabaseInit : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -73,8 +73,8 @@ namespace CtrlInvest.Infra.Context.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Ticker = table.Column<string>(type: "text", nullable: true),
-                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Ticker = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Name = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
                     Exchange = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Country = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     Currency = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
@@ -85,7 +85,7 @@ namespace CtrlInvest.Infra.Context.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("Ticket", x => x.Id);
+                    table.PrimaryKey("PK_Tickets", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -190,6 +190,31 @@ namespace CtrlInvest.Infra.Context.Migrations
                         name: "FK_AspNetUserTokens_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HistoricalDates",
+                columns: table => new
+                {
+                    Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    TickerCode = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    Open = table.Column<double>(type: "double precision", nullable: false),
+                    High = table.Column<double>(type: "double precision", nullable: false),
+                    Low = table.Column<double>(type: "double precision", nullable: false),
+                    Close = table.Column<double>(type: "double precision", nullable: false),
+                    AdjClose = table.Column<double>(type: "double precision", nullable: false),
+                    Volume = table.Column<int>(type: "integer", nullable: false),
+                    TickerID = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HistoricalDates", x => new { x.Date, x.TickerCode });
+                    table.ForeignKey(
+                        name: "FK_HistoricalDates_Tickets_TickerID",
+                        column: x => x.TickerID,
+                        principalTable: "Tickets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -410,6 +435,11 @@ namespace CtrlInvest.Infra.Context.Migrations
                 column: "ParentNodeID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_HistoricalDates_TickerID",
+                table: "HistoricalDates",
+                column: "TickerID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Leaves_CompositeID",
                 table: "Leaves",
                 column: "CompositeID");
@@ -489,7 +519,7 @@ namespace CtrlInvest.Infra.Context.Migrations
                 name: "FinancialTransactions");
 
             migrationBuilder.DropTable(
-                name: "Tickets");
+                name: "HistoricalDates");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -499,6 +529,9 @@ namespace CtrlInvest.Infra.Context.Migrations
 
             migrationBuilder.DropTable(
                 name: "Banks");
+
+            migrationBuilder.DropTable(
+                name: "Tickets");
 
             migrationBuilder.DropTable(
                 name: "ParentsTrees");

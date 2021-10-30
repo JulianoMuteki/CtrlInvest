@@ -14,7 +14,11 @@ namespace CtrlInvest.Infra.Context.Mapping
             base.Initialize(builder);
 
             builder.ToTable("Tickets");
-            builder.HasKey(b => b.Id).HasName("Ticket");
+            builder.HasKey(t => t.Id);
+
+            builder.Property(e => e.Ticker)
+                .IsRequired()
+                .HasMaxLength(150);
 
             builder.Property(e => e.Name)
                 .IsRequired()
