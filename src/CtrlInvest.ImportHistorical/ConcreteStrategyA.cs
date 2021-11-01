@@ -38,6 +38,8 @@ namespace CtrlInvest.ImportHistorical
             string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             string fullPath = System.IO.Path.GetFullPath(FileName, basePath);
             string[] lines = System.IO.File.ReadAllLines(basePath + FileName);
+
+
         }
     }
 }

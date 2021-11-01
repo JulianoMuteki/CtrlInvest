@@ -14,10 +14,11 @@ namespace CtrlInvest.Domain.Entities
         public string Currency { get; set; }
 
         public ICollection<HistoricalDate> HistoricalDates { get; set; }
-
+        public ICollection<TicketSync> TicketSyncs { get; set; }
         private Ticket()
         {
-            this.HistoricalDates = new HashSet<HistoricalDate>();            
-        }
+            this.HistoricalDates = new HashSet<HistoricalDate>();
+            this.TicketSyncs = new HashSet<TicketSync>(1);
+    }
     }
 }
