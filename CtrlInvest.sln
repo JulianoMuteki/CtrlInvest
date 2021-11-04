@@ -30,6 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.3 DevOps", "3.3 DevOps", 
 		docker-compose.yaml = docker-compose.yaml
 		InitializeDatabase.sql = InitializeDatabase.sql
 		Insert_Tickets_BRL.sql = Insert_Tickets_BRL.sql
+		Test_data.sql = Test_data.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.CrossCutting", "src\CtrlInvest.CrossCutting\CtrlInvest.CrossCutting.csproj", "{B45345BC-205C-464B-ABE7-EFB674E67DE0}"

@@ -9,7 +9,7 @@ namespace CtrlInvest.ImportHistorical
     /// <summary>
     /// A 'ConcreteStrategy' class
     /// </summary>
-    public class ConcreteStrategyA : Strategy
+    public class ConcreteStrategyA : DataImport
     {
         private const string FileName = "Historical.txt";
         public override void DownloadDataFromYahoo(string ticker, long dtStart, long dtEnd)
@@ -40,6 +40,7 @@ namespace CtrlInvest.ImportHistorical
             string[] lines = System.IO.File.ReadAllLines(basePath + FileName);
 
 
+            // montar lista
         }
     }
 }

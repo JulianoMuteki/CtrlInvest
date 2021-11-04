@@ -9,7 +9,7 @@ namespace CtrlInvest.ImportHistorical
     /// <summary>
     /// The 'Strategy' abstract class
     /// </summary>
-    public abstract class Strategy
+    public abstract class DataImport
     {
         public abstract void DownloadDataFromYahoo(string ticker, long dtStart, long dtEnd);
         public abstract void SaveHistoricalInDatabase();
