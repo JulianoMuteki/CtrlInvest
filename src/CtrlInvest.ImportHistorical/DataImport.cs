@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CtrlInvest.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,8 @@ namespace CtrlInvest.ImportHistorical
     /// </summary>
     public abstract class DataImport
     {
-        public abstract void DownloadDataFromYahoo(string ticker, long dtStart, long dtEnd);
-        public abstract void SaveHistoricalInDatabase();
+        public abstract void DownloadDataFromYahoo(string ticker, DateTime dtStart, DateTime dtEnd);
+        public abstract IList<HistoricalDate> SaveHistoricalInDatabase(Guid tickerID);
 
     }
 }

@@ -67,7 +67,7 @@ namespace CtrlInvest.Infra.Context
             modelBuilder.ApplyConfiguration(new TicketSyncMap());
 
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Ticket>().ToSqlQuery("CREATE EXTENSION IF NOT EXISTS \"uuid - ossp\";"); // <<< Anything you want :)
+           // modelBuilder.Entity<Ticket>().ToSqlQuery("CREATE EXTENSION IF NOT EXISTS \"uuid - ossp\";"); // <<< Anything you want :)
 
             modelBuilder.Entity<ApplicationUser>(b =>
                 {

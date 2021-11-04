@@ -1,6 +1,8 @@
-﻿using CtrlInvest.Domain.Interfaces.Application;
+﻿using CtrlInvest.Domain.Entities;
+using CtrlInvest.Domain.Interfaces.Application;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 
 namespace CtrlInvest.ImportHistorical
 {
@@ -21,18 +23,30 @@ namespace CtrlInvest.ImportHistorical
         {
             // Get Tickets with sync enable
             var ticketSyncs = this.ticketAppService.GetAllTicketsSyncs();
-            // Get tha latest historical
+            foreach (var ticketSync in ticketSyncs)
+            {
+                Ticket ticket = this.ticketAppService.GetById(ticketSync.TickerID);
+                // Get tha latest historical
+                var latestHistorical = this.ticketAppService.GetLatestHistoricalByTicker(ticket.Ticker);
+                // Check if is needed to get more historical
+                if (latestHistorical == null)
+                {
+                    dataImport.DownloadDataFromYahoo(ticket.Ticker, ticketSync.DateStart, DateTime.Now.AddDays(-2).Date);
+                    Save(ticketSync);
+                }
+                else if (latestHistorical.Date < DateTime.Now.Date.AddDays(-1))
+                {
+                    dataImport.DownloadDataFromYahoo(ticket.Ticker, latestHistorical.Date.AddDays(1), DateTime.Now.Date);
+                    Save(ticketSync);
+                }                
+            }
+        }
 
-            // Check if is needed to get more historical
-            // Check if exists historical
-            // else
-            // Check if latest historical is not >= today
-            // strategy.DownloadDataFromYahoo("TAEE11.SA", latest historical + 1, today);
-
-
-            dataImport.DownloadDataFromYahoo("TAEE11.SA", 1194912000, 1634256000);
-
+        private void Save(TicketSync ticketSync)
+        {
             //save in database
+            IList<HistoricalDate> historicalsList = dataImport.SaveHistoricalInDatabase(ticketSync.TickerID);
+            this.ticketAppService.SaveHistoricalDateList(historicalsList);
         }
     }
 }

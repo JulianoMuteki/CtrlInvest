@@ -58,7 +58,7 @@ namespace CtrlInvest.Services
         {
             try
             {
-                return _unitOfWork.Repository<TicketSync>().GetAll();
+                return _unitOfWork.Repository<TicketSync>().FindAll(x => x.IsEnabled).ToList();
             }
             catch (CustomException exc)
             {
@@ -72,12 +72,57 @@ namespace CtrlInvest.Services
 
         public Ticket GetById(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return _unitOfWork.Repository<Ticket>().GetById(id);
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<Ticket>("Unexpected error fetching get", nameof(this.GetById), ex);
+            }
         }
 
         public Task<Ticket> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
+        }
+
+        public HistoricalDate GetLatestHistoricalByTicker(string ticker)
+        {
+            try
+            {
+                //TODO: Refactoring in repository
+                return _unitOfWork.Repository<HistoricalDate>().FindAll(x => x.TickerCode == ticker).OrderByDescending(x => x.Date).FirstOrDefault();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.GetAll), ex);
+            }
+        }
+
+        public void SaveHistoricalDateList(IList<HistoricalDate> historicalsList)
+        {
+            try
+            {
+                _unitOfWork.Repository<HistoricalDate>().AddRange(historicalsList);
+                  _unitOfWork.CommitSync();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<HistoricalDate>("Unexpected error fetching get", nameof(this.SaveHistoricalDateList), ex);
+            }
         }
 
         public Ticket Update(Ticket updated)
