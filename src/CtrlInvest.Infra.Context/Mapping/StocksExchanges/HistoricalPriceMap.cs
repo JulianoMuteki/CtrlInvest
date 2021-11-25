@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 
 namespace CtrlInvest.Infra.Context.Mapping
 {
-   public class HistoricalDateMap : IEntityTypeConfiguration<HistoricalDate>
+    public class HistoricalPriceMap : EntityConfigurationBase<HistoricalPrice>
     {
-        public void Configure(EntityTypeBuilder<HistoricalDate> builder)
-        {           
+        protected override void Initialize(EntityTypeBuilder<HistoricalPrice> builder)
+        {
             builder.ToTable("HistoricalDates");
-// builder.HasKey(b => b.Id).HasName("HistoricalDateID");
             builder.HasKey(t => new { t.Date, t.TickerCode });
 
             builder.Property(e => e.TickerCode)
@@ -43,9 +42,9 @@ namespace CtrlInvest.Infra.Context.Mapping
             builder.Property(e => e.Volume)
                     .IsRequired();
 
-            ////builder.HasOne(tk => tk.Ticket)
-            ////     .WithMany(k => k.HistoricalDates)
-            ////     .HasForeignKey(tk => tk.TickerID);
+            builder.HasOne(tk => tk.Ticket)
+                 .WithMany(k => k.HistoricalPrices)
+                 .HasForeignKey(tk => tk.TickerID);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace CtrlInvest.Infra.Context
         public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
         public DbSet<Bank> Banks { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
-        public DbSet<HistoricalDate> HistoricalDates { get; set; }
+        public DbSet<HistoricalPrice> HistoricalPrices { get; set; }
         public DbSet<TicketSync> TicketSyncs { get; set; }
 
 
@@ -63,7 +63,7 @@ namespace CtrlInvest.Infra.Context
             modelBuilder.ApplyConfiguration(new GrandChildTreeMap());
             modelBuilder.ApplyConfiguration(new FinancialTransactionMap());
             modelBuilder.ApplyConfiguration(new TicketMap());
-            modelBuilder.ApplyConfiguration(new HistoricalDateMap());
+            modelBuilder.ApplyConfiguration(new HistoricalPriceMap());
             modelBuilder.ApplyConfiguration(new TicketSyncMap());
 
             base.OnModelCreating(modelBuilder);

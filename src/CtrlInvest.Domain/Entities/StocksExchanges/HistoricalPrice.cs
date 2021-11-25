@@ -7,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace CtrlInvest.Domain.Entities
 {
-    public class HistoricalDate : ValueObject<HistoricalDate>
+    public class HistoricalPrice : EntityBase
     {
-        
         public DateTime Date { get; set; }
         public double Open { get; set; }
         public double High { get; set; }
@@ -18,14 +17,14 @@ namespace CtrlInvest.Domain.Entities
         public double AdjClose { get; set; }
         public int Volume { get; set; }
 
-        protected override IEnumerable<object> GetEqualityComponents()
-        {
-            return this.GetType().GetProperties().Select(propInfo => propInfo.GetValue(this, null));
-        }
-
         public string TickerCode { get; set; }
 
         public Guid TickerID { get; set; }
         public Ticket Ticket { get; set; }
+
+        public HistoricalPrice()
+        {
+
+        }
     }
 }

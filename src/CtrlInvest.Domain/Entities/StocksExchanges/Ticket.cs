@@ -1,7 +1,5 @@
 ﻿using CtrlInvest.Domain.Common;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace CtrlInvest.Domain.Entities
 {
@@ -13,11 +11,11 @@ namespace CtrlInvest.Domain.Entities
         public string Country { get; set; }
         public string Currency { get; set; }
 
-        public ICollection<HistoricalDate> HistoricalDates { get; set; }
+        public ICollection<HistoricalPrice> HistoricalPrices { get; set; }
         public ICollection<TicketSync> TicketSyncs { get; set; }
         private Ticket()
         {
-            this.HistoricalDates = new HashSet<HistoricalDate>();
+            this.HistoricalPrices = new HashSet<HistoricalPrice>();
             this.TicketSyncs = new HashSet<TicketSync>(1);
     }
     }
