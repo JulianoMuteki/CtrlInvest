@@ -11,10 +11,10 @@ namespace CtrlInvest.ImportHistorical
     /// </summary>
     public class HistoricalPriceContext
     {
-        DataImport dataImport;
+        HistoricalPriceYahoo dataImport;
         ITicketAppService ticketAppService;
         // Constructor
-        public HistoricalPriceContext(DataImport dataImport, ServiceProvider serviceProvider)
+        public HistoricalPriceContext(HistoricalPriceYahoo dataImport, ServiceProvider serviceProvider)
         {
             this.dataImport = dataImport;
             this.ticketAppService = serviceProvider.GetService<ITicketAppService>();          

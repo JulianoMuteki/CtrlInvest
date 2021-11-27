@@ -11,10 +11,10 @@ namespace CtrlInvest.ImportHistorical
     /// <summary>
     /// A 'ConcreteStrategy' class
     /// </summary>
-    public class HistoricalPriceYahoo : DataImport
+    public class HistoricalPriceYahoo : DataImport<HistoricalPrice>
     {
         private const string FileName = "Historical.txt";
-        public override void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd)
+        public void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd)
         {
             using (var client = new HttpClient())
             {
@@ -40,7 +40,7 @@ namespace CtrlInvest.ImportHistorical
             }
         }
 
-        public override IList<HistoricalPrice> ConvertHistoricalToList(Ticket ticket)
+        public IList<HistoricalPrice> ConvertHistoricalToList(Ticket ticket)
         {
             string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             string fullPath = System.IO.Path.GetFullPath(FileName, basePath);

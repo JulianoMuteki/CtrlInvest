@@ -10,10 +10,10 @@ namespace CtrlInvest.ImportHistorical
     /// <summary>
     /// The 'Strategy' abstract class
     /// </summary>
-    public abstract class DataImport
+    public interface DataImport<T> where T : class
     {
-        public abstract void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd);
-        public abstract IList<HistoricalPrice> ConvertHistoricalToList(Ticket ticket);
+        public void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd);
+        public IList<T> ConvertHistoricalToList(Ticket ticket);
 
     }
 }
