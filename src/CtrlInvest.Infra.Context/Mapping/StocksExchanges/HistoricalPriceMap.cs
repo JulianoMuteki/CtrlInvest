@@ -13,7 +13,7 @@ namespace CtrlInvest.Infra.Context.Mapping
     {
         protected override void Initialize(EntityTypeBuilder<HistoricalPrice> builder)
         {
-            builder.ToTable("HistoricalDates");
+            builder.ToTable("HistoricalPrices");
             builder.HasKey(t => new { t.Date, t.TickerCode });
 
             builder.Property(e => e.TickerCode)

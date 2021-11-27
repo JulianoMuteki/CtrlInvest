@@ -91,12 +91,12 @@ namespace CtrlInvest.Services
             throw new NotImplementedException();
         }
 
-        public HistoricalDate GetLatestHistoricalByTicker(string ticker)
+        public HistoricalPrice GetLatestHistoricalByTicker(string ticker)
         {
             try
             {
                 //TODO: Refactoring in repository
-                return _unitOfWork.Repository<HistoricalDate>().FindAll(x => x.TickerCode == ticker).OrderByDescending(x => x.Date).FirstOrDefault();
+                return _unitOfWork.Repository<HistoricalPrice>().FindAll(x => x.TickerCode == ticker).OrderByDescending(x => x.Date).FirstOrDefault();
             }
             catch (CustomException exc)
             {
@@ -108,11 +108,11 @@ namespace CtrlInvest.Services
             }
         }
 
-        public void SaveHistoricalDateList(IList<HistoricalDate> historicalsList)
+        public void SaveHistoricalDateList(IList<HistoricalPrice> historicalsList)
         {
             try
             {
-                _unitOfWork.Repository<HistoricalDate>().AddRange(historicalsList);
+                _unitOfWork.Repository<HistoricalPrice>().AddRange(historicalsList);
                   _unitOfWork.CommitSync();
             }
             catch (CustomException exc)
@@ -121,7 +121,7 @@ namespace CtrlInvest.Services
             }
             catch (Exception ex)
             {
-                throw CustomException.Create<HistoricalDate>("Unexpected error fetching get", nameof(this.SaveHistoricalDateList), ex);
+                throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.SaveHistoricalDateList), ex);
             }
         }
 

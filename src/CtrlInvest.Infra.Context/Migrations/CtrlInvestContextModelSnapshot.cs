@@ -325,7 +325,7 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.ToTable("FinancialTransactions");
                 });
 
-            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalDate", b =>
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalPrice", b =>
                 {
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
@@ -340,8 +340,23 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.Property<double>("Close")
                         .HasColumnType("double precision");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<double>("High")
                         .HasColumnType("double precision");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDisable")
+                        .HasColumnType("boolean");
 
                     b.Property<double>("Low")
                         .HasColumnType("double precision");
@@ -359,7 +374,7 @@ namespace CtrlInvest.Infra.Context.Migrations
 
                     b.HasIndex("TickerID");
 
-                    b.ToTable("HistoricalDates");
+                    b.ToTable("HistoricalPrices");
                 });
 
             modelBuilder.Entity("CtrlInvest.Domain.Entities.Ticket", b =>
@@ -407,9 +422,6 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tickets");
-
-                    b
-                        .HasAnnotation("Relational:SqlQuery", "CREATE EXTENSION IF NOT EXISTS \"uuid - ossp\";");
                 });
 
             modelBuilder.Entity("CtrlInvest.Domain.Entities.TicketSync", b =>
@@ -417,16 +429,29 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.Property<Guid>("TickerID")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("TicketSyncID")
-                        .HasColumnType("uuid");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("TicketSyncID");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("DateStart")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDisable")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("boolean");
 
-                    b.HasKey("TickerID", "TicketSyncID");
+                    b.HasKey("TickerID", "Id");
 
                     b.ToTable("TicketSyncs");
                 });
@@ -712,10 +737,10 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.Navigation("ParentTree");
                 });
 
-            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalDate", b =>
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalPrice", b =>
                 {
                     b.HasOne("CtrlInvest.Domain.Entities.Ticket", "Ticket")
-                        .WithMany("HistoricalDates")
+                        .WithMany("HistoricalPrices")
                         .HasForeignKey("TickerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -835,7 +860,7 @@ namespace CtrlInvest.Infra.Context.Migrations
 
             modelBuilder.Entity("CtrlInvest.Domain.Entities.Ticket", b =>
                 {
-                    b.Navigation("HistoricalDates");
+                    b.Navigation("HistoricalPrices");
 
                     b.Navigation("TicketSyncs");
                 });

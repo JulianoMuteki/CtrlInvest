@@ -195,7 +195,7 @@ namespace CtrlInvest.Infra.Context.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HistoricalDates",
+                name: "HistoricalPrices",
                 columns: table => new
                 {
                     Date = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
@@ -206,13 +206,42 @@ namespace CtrlInvest.Infra.Context.Migrations
                     Close = table.Column<double>(type: "double precision", nullable: false),
                     AdjClose = table.Column<double>(type: "double precision", nullable: false),
                     Volume = table.Column<int>(type: "integer", nullable: false),
-                    TickerID = table.Column<Guid>(type: "uuid", nullable: false)
+                    TickerID = table.Column<Guid>(type: "uuid", nullable: false),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_HistoricalDates", x => new { x.Date, x.TickerCode });
+                    table.PrimaryKey("PK_HistoricalPrices", x => new { x.Date, x.TickerCode });
                     table.ForeignKey(
-                        name: "FK_HistoricalDates_Tickets_TickerID",
+                        name: "FK_HistoricalPrices_Tickets_TickerID",
+                        column: x => x.TickerID,
+                        principalTable: "Tickets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TicketSyncs",
+                columns: table => new
+                {
+                    TicketSyncID = table.Column<Guid>(type: "uuid", nullable: false),
+                    TickerID = table.Column<Guid>(type: "uuid", nullable: false),
+                    IsEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    DateStart = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TicketSyncs", x => new { x.TickerID, x.TicketSyncID });
+                    table.ForeignKey(
+                        name: "FK_TicketSyncs_Tickets_TickerID",
                         column: x => x.TickerID,
                         principalTable: "Tickets",
                         principalColumn: "Id",
@@ -435,8 +464,8 @@ namespace CtrlInvest.Infra.Context.Migrations
                 column: "ParentNodeID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_HistoricalDates_TickerID",
-                table: "HistoricalDates",
+                name: "IX_HistoricalPrices_TickerID",
+                table: "HistoricalPrices",
                 column: "TickerID");
 
             migrationBuilder.CreateIndex(
@@ -519,7 +548,10 @@ namespace CtrlInvest.Infra.Context.Migrations
                 name: "FinancialTransactions");
 
             migrationBuilder.DropTable(
-                name: "HistoricalDates");
+                name: "HistoricalPrices");
+
+            migrationBuilder.DropTable(
+                name: "TicketSyncs");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

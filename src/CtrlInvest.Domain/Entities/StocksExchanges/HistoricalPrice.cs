@@ -16,9 +16,7 @@ namespace CtrlInvest.Domain.Entities
         public double Close { get; set; }
         public double AdjClose { get; set; }
         public int Volume { get; set; }
-
         public string TickerCode { get; set; }
-
         public Guid TickerID { get; set; }
         public Ticket Ticket { get; set; }
 

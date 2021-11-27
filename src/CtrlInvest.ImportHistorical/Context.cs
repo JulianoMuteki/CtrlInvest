@@ -45,7 +45,7 @@ namespace CtrlInvest.ImportHistorical
         private void Save(TicketSync ticketSync)
         {
             //save in database
-            IList<HistoricalDate> historicalsList = dataImport.SaveHistoricalInDatabase(ticketSync.TickerID);
+            IList<HistoricalPrice> historicalsList = dataImport.SaveHistoricalInDatabase(ticketSync.TickerID);
             this.ticketAppService.SaveHistoricalDateList(historicalsList);
         }
     }

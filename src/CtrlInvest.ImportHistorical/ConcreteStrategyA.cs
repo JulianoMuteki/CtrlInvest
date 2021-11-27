@@ -39,13 +39,13 @@ namespace CtrlInvest.ImportHistorical
             }
         }
 
-        public override IList<HistoricalDate> SaveHistoricalInDatabase(Guid tickerID)
+        public override IList<HistoricalPrice> SaveHistoricalInDatabase(Guid tickerID)
         {
             string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             string fullPath = System.IO.Path.GetFullPath(FileName, basePath);
             string[] lines = System.IO.File.ReadAllLines(fullPath);
             int skipFirstLine = 0;
-            IList<HistoricalDate> historicalsList = new List<HistoricalDate>();
+            IList<HistoricalPrice> historicalsList = new List<HistoricalPrice>();
 
             foreach (string line in lines)
             {
@@ -55,7 +55,7 @@ namespace CtrlInvest.ImportHistorical
                     Console.WriteLine("\t" + line);
                     if(subs[6] != "null")
                     {
-                        HistoricalDate history = new HistoricalDate()
+                        HistoricalPrice history = new HistoricalPrice()
                         {
                             TickerCode = "TAEE11.SA",
                             Date = Convert.ToDateTime(subs[0]),

@@ -10,7 +10,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CtrlInvest.Infra.Context.Migrations
 {
     [DbContext(typeof(CtrlInvestContext))]
-    [Migration("20211030202418_InitialCreate")]
+    [Migration("20211127161119_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -327,7 +327,7 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.ToTable("FinancialTransactions");
                 });
 
-            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalDate", b =>
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalPrice", b =>
                 {
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp without time zone");
@@ -342,8 +342,23 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.Property<double>("Close")
                         .HasColumnType("double precision");
 
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("timestamp without time zone");
+
                     b.Property<double>("High")
                         .HasColumnType("double precision");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDisable")
+                        .HasColumnType("boolean");
 
                     b.Property<double>("Low")
                         .HasColumnType("double precision");
@@ -361,7 +376,7 @@ namespace CtrlInvest.Infra.Context.Migrations
 
                     b.HasIndex("TickerID");
 
-                    b.ToTable("HistoricalDates");
+                    b.ToTable("HistoricalPrices");
                 });
 
             modelBuilder.Entity("CtrlInvest.Domain.Entities.Ticket", b =>
@@ -409,6 +424,38 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tickets");
+                });
+
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.TicketSync", b =>
+                {
+                    b.Property<Guid>("TickerID")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid")
+                        .HasColumnName("TicketSyncID");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateModified")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateStart")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsDelete")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDisable")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("TickerID", "Id");
+
+                    b.ToTable("TicketSyncs");
                 });
 
             modelBuilder.Entity("CtrlInvest.Domain.Identity.ApplicationRole", b =>
@@ -692,10 +739,21 @@ namespace CtrlInvest.Infra.Context.Migrations
                     b.Navigation("ParentTree");
                 });
 
-            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalDate", b =>
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.HistoricalPrice", b =>
                 {
                     b.HasOne("CtrlInvest.Domain.Entities.Ticket", "Ticket")
-                        .WithMany("HistoricalDates")
+                        .WithMany("HistoricalPrices")
+                        .HasForeignKey("TickerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Ticket");
+                });
+
+            modelBuilder.Entity("CtrlInvest.Domain.Entities.TicketSync", b =>
+                {
+                    b.HasOne("CtrlInvest.Domain.Entities.Ticket", "Ticket")
+                        .WithMany("TicketSyncs")
                         .HasForeignKey("TickerID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -804,7 +862,9 @@ namespace CtrlInvest.Infra.Context.Migrations
 
             modelBuilder.Entity("CtrlInvest.Domain.Entities.Ticket", b =>
                 {
-                    b.Navigation("HistoricalDates");
+                    b.Navigation("HistoricalPrices");
+
+                    b.Navigation("TicketSyncs");
                 });
 
             modelBuilder.Entity("CtrlInvest.Domain.Identity.ApplicationRole", b =>

@@ -5,9 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Mapping\0 - Aggregation\" />
-    <Folder Include="Mapping\1 - SubEntities\" />
-    <Folder Include="Mapping\2 - ValueObjects\" />
+    <Compile Remove="Mapping\0 - Aggregation\**" />
+    <Compile Remove="Mapping\1 - SubEntities\**" />
+    <Compile Remove="Mapping\2 - ValueObjects\**" />
+    <EmbeddedResource Remove="Mapping\0 - Aggregation\**" />
+    <EmbeddedResource Remove="Mapping\1 - SubEntities\**" />
+    <EmbeddedResource Remove="Mapping\2 - ValueObjects\**" />
+    <None Remove="Mapping\0 - Aggregation\**" />
+    <None Remove="Mapping\1 - SubEntities\**" />
+    <None Remove="Mapping\2 - ValueObjects\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Mapping\A - Registration\" />
   </ItemGroup>
 
