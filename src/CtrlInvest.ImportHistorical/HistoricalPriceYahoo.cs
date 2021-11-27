@@ -11,16 +11,17 @@ namespace CtrlInvest.ImportHistorical
     /// <summary>
     /// A 'ConcreteStrategy' class
     /// </summary>
-    public class ConcreteStrategyA : DataImport
+    public class HistoricalPriceYahoo : DataImport
     {
         private const string FileName = "Historical.txt";
-        public override void DownloadDataFromYahoo(string ticker, DateTime dtStart, DateTime dtEnd)
+        public override void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd)
         {
             using (var client = new HttpClient())
             {
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(
                     new MediaTypeWithQualityHeaderValue("text/csv"));
+                //OLD test
                 //https://query1.finance.yahoo.com/v7/finance/download/TAEE11.SA?period1=1194912000&amp;period2=1635984000&amp;interval=1d&amp;events=history&amp;includeAdjustedClose=true
 
                 long dt1 = ConvertToTimestamp(dtStart);
@@ -35,11 +36,11 @@ namespace CtrlInvest.ImportHistorical
 
                 // dynamic resultado = JsonConvert.DeserializeObject(conteudo);
                 Console.WriteLine(conteudo);
-                File.WriteAllTextAsync(FileName, conteudo);
+                File.WriteAllText(FileName, conteudo);
             }
         }
 
-        public override IList<HistoricalPrice> SaveHistoricalInDatabase(Guid tickerID)
+        public override IList<HistoricalPrice> ConvertHistoricalToList(Ticket ticket)
         {
             string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             string fullPath = System.IO.Path.GetFullPath(FileName, basePath);
@@ -57,7 +58,7 @@ namespace CtrlInvest.ImportHistorical
                     {
                         HistoricalPrice history = new HistoricalPrice()
                         {
-                            TickerCode = "TAEE11.SA",
+                            TickerCode = ticket.Ticker,
                             Date = Convert.ToDateTime(subs[0]),
                             Open = double.Parse(subs[1]),
                             High = double.Parse(subs[2]),
@@ -65,7 +66,7 @@ namespace CtrlInvest.ImportHistorical
                             Close = double.Parse(subs[4]),
                             AdjClose = double.Parse(subs[5]),
                             Volume = Convert.ToInt32(subs[6]),
-                            TickerID = tickerID
+                            TickerID = ticket.Id
                         };
                         historicalsList.Add(history);
                     }

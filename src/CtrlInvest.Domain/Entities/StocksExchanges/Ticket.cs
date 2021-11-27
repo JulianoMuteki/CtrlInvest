@@ -1,4 +1,5 @@
 ﻿using CtrlInvest.Domain.Common;
+using CtrlInvest.Domain.Entities.StocksExchanges;
 using System.Collections.Generic;
 
 namespace CtrlInvest.Domain.Entities
@@ -13,10 +14,12 @@ namespace CtrlInvest.Domain.Entities
 
         public ICollection<HistoricalPrice> HistoricalPrices { get; set; }
         public ICollection<TicketSync> TicketSyncs { get; set; }
+        public ICollection<Earning> Earnings { get; set; }
         private Ticket()
         {
             this.HistoricalPrices = new HashSet<HistoricalPrice>();
             this.TicketSyncs = new HashSet<TicketSync>(1);
+            this.Earnings = new HashSet<Earning>();
     }
     }
 }

@@ -254,6 +254,5 @@ ALTER TABLE "Leaves" ADD CONSTRAINT "FK_Leaves_Composites_CompositeID" FOREIGN K
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
 VALUES ('20211030202418_InitialCreate', '5.0.11');
 
-CREATE EXTENSION IF NOT EXISTS "uuid - ossp";
 COMMIT;
 

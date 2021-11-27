@@ -1,5 +1,6 @@
 ﻿using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Entities.FinancialClassification;
+using CtrlInvest.Domain.Entities.StocksExchanges;
 using CtrlInvest.Domain.Identity;
 using CtrlInvest.Infra.Context.Mapping;
 using CtrlInvest.Infra.Context.Mapping.Financial;
@@ -26,6 +27,7 @@ namespace CtrlInvest.Infra.Context
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<HistoricalPrice> HistoricalPrices { get; set; }
         public DbSet<TicketSync> TicketSyncs { get; set; }
+        public DbSet<Earning> Earnings { get; set; }
 
 
         public CtrlInvestContext()
@@ -65,6 +67,7 @@ namespace CtrlInvest.Infra.Context
             modelBuilder.ApplyConfiguration(new TicketMap());
             modelBuilder.ApplyConfiguration(new HistoricalPriceMap());
             modelBuilder.ApplyConfiguration(new TicketSyncMap());
+            modelBuilder.ApplyConfiguration(new EarningMap());
 
             base.OnModelCreating(modelBuilder);
            // modelBuilder.Entity<Ticket>().ToSqlQuery("CREATE EXTENSION IF NOT EXISTS \"uuid - ossp\";"); // <<< Anything you want :)

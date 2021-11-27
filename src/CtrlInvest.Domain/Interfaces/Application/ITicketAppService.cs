@@ -7,6 +7,6 @@ namespace CtrlInvest.Domain.Interfaces.Application
     {
         public ICollection<TicketSync> GetAllTicketsSyncs();
         public HistoricalPrice GetLatestHistoricalByTicker(string ticker);
-        void SaveHistoricalDateList(IList<HistoricalPrice> historicalsList);
+        void SaveHistoricalPricesList(IList<HistoricalPrice> oricalPricesList);
     }
 }

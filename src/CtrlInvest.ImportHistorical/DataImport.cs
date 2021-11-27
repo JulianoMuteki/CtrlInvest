@@ -12,8 +12,8 @@ namespace CtrlInvest.ImportHistorical
     /// </summary>
     public abstract class DataImport
     {
-        public abstract void DownloadDataFromYahoo(string ticker, DateTime dtStart, DateTime dtEnd);
-        public abstract IList<HistoricalPrice> SaveHistoricalInDatabase(Guid tickerID);
+        public abstract void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd);
+        public abstract IList<HistoricalPrice> ConvertHistoricalToList(Ticket ticket);
 
     }
 }

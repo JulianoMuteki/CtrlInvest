@@ -9,12 +9,12 @@ namespace CtrlInvest.ImportHistorical
     /// <summary>
     /// The 'Context' class
     /// </summary>
-    public class Context
+    public class HistoricalPriceContext
     {
         DataImport dataImport;
         ITicketAppService ticketAppService;
         // Constructor
-        public Context(DataImport dataImport, ServiceProvider serviceProvider)
+        public HistoricalPriceContext(DataImport dataImport, ServiceProvider serviceProvider)
         {
             this.dataImport = dataImport;
             this.ticketAppService = serviceProvider.GetService<ITicketAppService>();          
@@ -31,22 +31,22 @@ namespace CtrlInvest.ImportHistorical
                 // Check if is needed to get more historical
                 if (latestHistorical == null)
                 {
-                    dataImport.DownloadDataFromYahoo(ticket.Ticker, ticketSync.DateStart, DateTime.Now.AddDays(-2).Date);
-                    Save(ticketSync);
+                    dataImport.DownloadHistoricalToText(ticket.Ticker, ticketSync.DateStart, DateTime.Now.AddDays(-1).Date);
+                    Save(ticket);
                 }
                 else if (latestHistorical.Date < DateTime.Now.Date.AddDays(-1))
                 {
-                    dataImport.DownloadDataFromYahoo(ticket.Ticker, latestHistorical.Date.AddDays(1), DateTime.Now.Date);
-                    Save(ticketSync);
+                    dataImport.DownloadHistoricalToText(ticket.Ticker, latestHistorical.Date.AddDays(1), DateTime.Now.Date);
+                    Save(ticket);
                 }                
             }
         }
 
-        private void Save(TicketSync ticketSync)
+        private void Save(Ticket ticket)
         {
             //save in database
-            IList<HistoricalPrice> historicalsList = dataImport.SaveHistoricalInDatabase(ticketSync.TickerID);
-            this.ticketAppService.SaveHistoricalDateList(historicalsList);
+            IList<HistoricalPrice> historicalPricesList = dataImport.ConvertHistoricalToList(ticket);
+            this.ticketAppService.SaveHistoricalPricesList(historicalPricesList);
         }
     }
 }

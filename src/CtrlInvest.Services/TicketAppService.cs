@@ -108,11 +108,11 @@ namespace CtrlInvest.Services
             }
         }
 
-        public void SaveHistoricalDateList(IList<HistoricalPrice> historicalsList)
+        public void SaveHistoricalPricesList(IList<HistoricalPrice> historicalPricesList)
         {
             try
             {
-                _unitOfWork.Repository<HistoricalPrice>().AddRange(historicalsList);
+                _unitOfWork.Repository<HistoricalPrice>().AddRange(historicalPricesList);
                   _unitOfWork.CommitSync();
             }
             catch (CustomException exc)
@@ -121,7 +121,7 @@ namespace CtrlInvest.Services
             }
             catch (Exception ex)
             {
-                throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.SaveHistoricalDateList), ex);
+                throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.SaveHistoricalPricesList), ex);
             }
         }
 

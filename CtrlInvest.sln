@@ -41,6 +41,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Infra.External",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.ImportHistorical", "src\CtrlInvest.ImportHistorical\CtrlInvest.ImportHistorical.csproj", "{63E19FA9-55B9-492C-9FC3-35D71E66717E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL-Scripts", "SQL-Scripts", "{49E8EAA6-75DF-4DD3-9881-A5B1A3A8BB66}"
+	ProjectSection(SolutionItems) = preProject
+		1-Function-uuid-ossp.sql = 1-Function-uuid-ossp.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +105,7 @@ Global
 		{C039928E-BA19-40CA-97F6-E09448FB7ED2} = {7F9B9B3D-8E18-48AA-8806-463E37AAE7F7}
 		{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD} = {8E0CC79D-B4B3-49EA-B71F-9EE1145A3ED7}
 		{63E19FA9-55B9-492C-9FC3-35D71E66717E} = {8A445DFD-CF71-4691-A97C-A2209E55F2BB}
+		{49E8EAA6-75DF-4DD3-9881-A5B1A3A8BB66} = {084A34AD-406A-4F52-B9EE-563969DC0FA8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B56B2DCC-9E15-4227-B7A3-9A2EBFC1B40F}

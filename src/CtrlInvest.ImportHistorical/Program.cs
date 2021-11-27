@@ -20,9 +20,9 @@ namespace CtrlInvest.ImportHistorical
             RegisterServices(serviceCollection);
             var serviceProvider = serviceCollection.BuildServiceProvider();
 
-            Context context;
+            HistoricalPriceContext context;
             // Three contexts following different strategies
-            context = new Context(new ConcreteStrategyA(), serviceProvider);
+            context = new HistoricalPriceContext(new HistoricalPriceYahoo(), serviceProvider);
             context.ImportHistoricalByDates();
             // Wait for user
             Console.ReadKey();
