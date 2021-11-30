@@ -24,7 +24,7 @@ namespace CtrlInvest.ImportHistorical
             //historicalPriceContext.ImportHistoricalByDates();
 
             EarningContext earningContext = new EarningContext(new EarningFundamentus(), serviceProvider);
-            earningContext.ImportHistoricalByDates();
+            earningContext.ImportEarnings();
 
 
             // Wait for user

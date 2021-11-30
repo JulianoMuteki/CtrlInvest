@@ -18,15 +18,16 @@ namespace CtrlInvest.ImportHistorical
     public class EarningFundamentus: DataImport<Earning>
     {
         private const string FileName = "Earnings.txt";
-        public void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd)
+        public void DownloadHistoricalToText(string ticker)
         {
+            string ticketCode = ticker.Replace(".SA", "");
             string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             string customePath = System.IO.Path.Combine(basePath, @"Helpers\geckodriver-v0.30.0-win64");
             string fullPath = System.IO.Path.GetFullPath("geckodriver.exe", customePath);
 
             IWebDriver driver = new FirefoxDriver(customePath);
             driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl("https://fundamentus.com.br/proventos.php?papel=TAEE4&tipo=2");
+            driver.Navigate().GoToUrl(string.Format("https://fundamentus.com.br/proventos.php?papel={0}&tipo=2", ticketCode));
             IWebElement element = driver.FindElement(By.Id("resultado"));
             var outerHTML = element.GetAttribute("outerHTML");
 
@@ -35,7 +36,7 @@ namespace CtrlInvest.ImportHistorical
             driver.Quit();
         }
 
-        public IList<Earning> ConvertHistoricalToList(Ticket ticket)
+        public IList<Earning> ConvertHistoricalToList(Ticket ticket, DateTime dtStart, DateTime dtEnd)
         {
             string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
             string fullPath = System.IO.Path.GetFullPath(FileName, basePath);
@@ -53,7 +54,9 @@ namespace CtrlInvest.ImportHistorical
             //{
             //    table.Columns.Add(header);
             //}
-            
+
+            IList<Earning> earningsList = new List<Earning>();
+
             var nodesRows = doc.DocumentNode.SelectNodes("//table/tbody/tr");
             var rows = nodesRows.Select(tr => tr
                 .Elements("td")
@@ -61,26 +64,48 @@ namespace CtrlInvest.ImportHistorical
                 .ToArray());
             foreach (var row in rows)
             {
-                Earning earning = new Earning();                
-                DateTime dt = DateTime.ParseExact(row[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime dt2 = DateTime.ParseExact(row[3], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                DateTime dateWith = DateTime.ParseExact(row[0], "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                if (dateWith >= dtStart)
+                {
+                    Earning earning = new Earning();
 
-                earning.DateWith = dt;
-                earning.ValueIncome = Double.Parse(row[1]);
-                earning.Type = row[2];
-                earning.PaymentDate = dt2;
-                earning.Quantity = Int32.Parse(row[4]);
-                //table.Rows.Add(row);
+                    DateTime datePayment;
+                    if (!DateTime.TryParseExact(row[3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out datePayment))
+                    {
+                        earning.PaymentDate = null;
+                    }
+                    else
+                    {
+                        earning.PaymentDate = datePayment;
+                    }
+
+                    earning.TickerID = ticket.Id;
+                    earning.DateWith = dateWith;
+                    earning.ValueIncome = Double.Parse(row[1]);
+                    earning.Type = row[2];
+                    earning.Quantity = Int32.Parse(row[4]);
+                    earningsList.Add(earning);
+                    //table.Rows.Add(row);
+                }
             }
 
-            IList<Earning> list = new List<Earning>();
-            return list;
+            return earningsList;
         }
         private long ConvertToTimestamp(DateTime value)
         {
             var UnixTimeStamp = value.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
             long timeStamp = Convert.ToInt64(UnixTimeStamp);
             return timeStamp;
+        }
+
+        public void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<Earning> ConvertHistoricalToList(Ticket ticket)
+        {
+            throw new NotImplementedException();
         }
     }
 }

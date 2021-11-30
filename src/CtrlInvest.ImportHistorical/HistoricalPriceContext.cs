@@ -46,7 +46,8 @@ namespace CtrlInvest.ImportHistorical
         {
             //save in database
             IList<HistoricalPrice> historicalPricesList = dataImport.ConvertHistoricalToList(ticket);
-            this.ticketAppService.SaveHistoricalPricesList(historicalPricesList);
+            if(historicalPricesList.Count > 0)
+                this.ticketAppService.SaveHistoricalPricesList(historicalPricesList);
         }
     }
 }

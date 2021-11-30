@@ -1,5 +1,6 @@
 ﻿using CtrlInvest.CrossCutting;
 using CtrlInvest.Domain.Entities;
+using CtrlInvest.Domain.Entities.StocksExchanges;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Domain.Interfaces.Base;
 using System;
@@ -91,6 +92,23 @@ namespace CtrlInvest.Services
             throw new NotImplementedException();
         }
 
+        public Earning GetLastEarningByTicker(Guid ticketID)
+        {
+            try
+            {
+                //TODO: Refactoring in repository
+                return _unitOfWork.Repository<Earning>().FindAll(x => x.TickerID == ticketID).OrderByDescending(x => x.DateWith).FirstOrDefault();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.GetLastEarningByTicker), ex);
+            }
+        }
+
         public HistoricalPrice GetLatestHistoricalByTicker(string ticker)
         {
             try
@@ -105,6 +123,23 @@ namespace CtrlInvest.Services
             catch (Exception ex)
             {
                 throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.GetAll), ex);
+            }
+        }
+
+        public void SaveEarningsList(IList<Earning> earningList)
+        {
+            try
+            {
+                _unitOfWork.Repository<Earning>().AddRange(earningList);
+                _unitOfWork.CommitSync();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.SaveEarningsList), ex);
             }
         }
 

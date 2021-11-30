@@ -13,7 +13,8 @@ namespace CtrlInvest.ImportHistorical
     public interface DataImport<T> where T : class
     {
         public void DownloadHistoricalToText(string ticker, DateTime dtStart, DateTime dtEnd);
-        public IList<T> ConvertHistoricalToList(Ticket ticket);
-
+        public void DownloadHistoricalToText(string ticker);
+        public IList<T> ConvertHistoricalToList(Ticket ticket);               
+        public IList<T> ConvertHistoricalToList(Ticket ticket, DateTime dtStart, DateTime dtEnd);
     }
 }

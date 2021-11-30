@@ -83,5 +83,15 @@ namespace CtrlInvest.ImportHistorical
             long timeStamp = Convert.ToInt64(UnixTimeStamp);
             return timeStamp;
         }
+
+        public void DownloadHistoricalToText(string ticker)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<HistoricalPrice> ConvertHistoricalToList(Ticket ticket, DateTime dtStart, DateTime dtEnd)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

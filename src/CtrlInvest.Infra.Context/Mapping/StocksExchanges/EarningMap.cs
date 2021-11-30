@@ -17,6 +17,9 @@ namespace CtrlInvest.Infra.Context.Mapping
                   .HasColumnType("double precision")
                   .IsRequired();
 
+            builder.Property(e => e.PaymentDate)
+                     .IsRequired(false);
+
             builder.Property(e => e.Type)
                     .IsRequired()
                     .HasMaxLength(150);
