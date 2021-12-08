@@ -46,6 +46,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL-Scripts", "SQL-Scripts"
 		1-Function-uuid-ossp.sql = 1-Function-uuid-ossp.sql
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.API.StockExchange", "src\CtrlInvest.API.StockExchange\CtrlInvest.API.StockExchange.csproj", "{1D913163-E25D-4EC5-88AB-AA9B1C206F50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +90,10 @@ Global
 		{63E19FA9-55B9-492C-9FC3-35D71E66717E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63E19FA9-55B9-492C-9FC3-35D71E66717E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63E19FA9-55B9-492C-9FC3-35D71E66717E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D913163-E25D-4EC5-88AB-AA9B1C206F50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D913163-E25D-4EC5-88AB-AA9B1C206F50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D913163-E25D-4EC5-88AB-AA9B1C206F50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D913163-E25D-4EC5-88AB-AA9B1C206F50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +112,7 @@ Global
 		{227AA9E0-7E7E-4C30-B44F-E66CCE3FE2DD} = {8E0CC79D-B4B3-49EA-B71F-9EE1145A3ED7}
 		{63E19FA9-55B9-492C-9FC3-35D71E66717E} = {8A445DFD-CF71-4691-A97C-A2209E55F2BB}
 		{49E8EAA6-75DF-4DD3-9881-A5B1A3A8BB66} = {084A34AD-406A-4F52-B9EE-563969DC0FA8}
+		{1D913163-E25D-4EC5-88AB-AA9B1C206F50} = {8A445DFD-CF71-4691-A97C-A2209E55F2BB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B56B2DCC-9E15-4227-B7A3-9A2EBFC1B40F}

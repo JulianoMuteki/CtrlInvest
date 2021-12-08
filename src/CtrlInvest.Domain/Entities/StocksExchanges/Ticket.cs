@@ -20,6 +20,6 @@ namespace CtrlInvest.Domain.Entities
             this.HistoricalPrices = new HashSet<HistoricalPrice>();
             this.TicketSyncs = new HashSet<TicketSync>(1);
             this.Earnings = new HashSet<Earning>();
-    }
+        }
     }
 }

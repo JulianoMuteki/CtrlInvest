@@ -3,6 +3,8 @@ using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Entities.StocksExchanges;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Domain.Interfaces.Base;
+using CtrlInvest.Services.Common;
+using CtrlInvest.Services.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +49,19 @@ namespace CtrlInvest.Services
 
         public ICollection<Ticket> GetAll()
         {
-            throw new NotImplementedException();
+            try
+            {
+                //TODO: Refactoring in repository
+                return _unitOfWork.Repository<Ticket>().FindAll(x => x.IsDisable == false).ToList();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.GetAll), ex);
+            }
         }
 
         public Task<ICollection<Ticket>> GetAllAsync()

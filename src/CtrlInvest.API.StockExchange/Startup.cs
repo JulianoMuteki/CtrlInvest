@@ -1,21 +1,23 @@
-using CtrlInvest.CrossCutting.Ioc;
 using CtrlInvest.Domain.Identity;
 using CtrlInvest.Domain.Security;
 using CtrlInvest.Infra.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CtrlInvest.Services.Common;
 
-namespace CtrlInvest.UI.Web
+namespace CtrlInvest.API.StockExchange
 {
     public class Startup
     {
@@ -29,25 +31,8 @@ namespace CtrlInvest.UI.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
+            services.AddControllers();
 
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.Always;
-
-                // This lambda determines whether user consent for non-essential 
-                // cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                // requires using Microsoft.AspNetCore.Http;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            // services.AddDbContext<CtrlInvestContext>(item => item.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
@@ -81,13 +66,12 @@ namespace CtrlInvest.UI.Web
                 }
             });
 
-            //services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
-            //services.AddRazorPages().AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
-            //// services.AddAutoMapperSetup();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CtrlInvest.API.StockExchange", Version = "v1" });
+            });
 
-            services.AddControllersWithViews().AddJsonOptions(opts => opts.JsonSerializerOptions.PropertyNamingPolicy = null);
-            services.AddRazorPages();
-            RegisterServices(services);
+            BootStrapperModule.RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,38 +80,17 @@ namespace CtrlInvest.UI.Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CtrlInvest.API.StockExchange v1"));
             }
-            else
-            {
-                app.UseExceptionHandler(@"/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseCookiePolicy();
 
             app.UseRouting();
-            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapRazorPages();
-                endpoints.MapControllerRoute(
-                          name: "default",
-                          pattern:
-                  "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapControllers();
             });
         }
-
-        private static void RegisterServices(IServiceCollection services)
-        {
-            // Adding dependencies from another layers (isolated from Presentation)
-            InfraBootStrapperModule.RegisterServices(services);
-            ApplicationBootStrapperModule.RegisterServices(services);
-        }
-
     }
 }

@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CtrlInvest.Domain\CtrlInvest.Domain.csproj" />
+    <ProjectReference Include="..\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj" />
   </ItemGroup>
 
 </Project>
