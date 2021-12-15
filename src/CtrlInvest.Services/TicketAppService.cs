@@ -47,6 +47,23 @@ namespace CtrlInvest.Services
             throw new NotImplementedException();
         }
 
+        public ICollection<Ticket> FindTicketByTicketCode(string textFind)
+        {
+            try
+            {
+                //TODO: Refactoring in repository
+                return _unitOfWork.Repository<Ticket>().FindAll(x => x.Ticker.Contains(textFind.ToUpper())).ToList();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.FindTicketByTicketCode), ex);
+            }
+        }
+
         public ICollection<Ticket> GetAll()
         {
             try
@@ -104,6 +121,40 @@ namespace CtrlInvest.Services
         public Task<Ticket> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
+        }
+
+        public ICollection<Earning> GetEarningsByTicket(string ticketCode)
+        {
+            try
+            {
+                var ticket = _unitOfWork.Repository<Ticket>().FindBy(x => x.Ticker == ticketCode).FirstOrDefault();                
+                return _unitOfWork.Repository<Earning>().FindAll(x => x.TickerID == ticket.Id).ToList();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<Earning>("Unexpected error fetching get", nameof(this.GetHistoricalPricesByTicket), ex);
+            }
+        }
+
+        public ICollection<HistoricalPrice> GetHistoricalPricesByTicket(string ticketCode)
+        {
+            try
+            {
+                //TODO: Refactoring in repository
+                return _unitOfWork.Repository<HistoricalPrice>().FindAll(x => x.TickerCode == ticketCode).ToList();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.GetHistoricalPricesByTicket), ex);
+            }
         }
 
         public Earning GetLastEarningByTicker(Guid ticketID)

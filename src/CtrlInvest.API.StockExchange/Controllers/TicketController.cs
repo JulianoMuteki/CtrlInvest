@@ -4,13 +4,14 @@ using CtrlInvest.Services.Common;
 using CtrlInvest.Services.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace CtrlInvest.API.StockExchange.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class TicketController : ControllerBase
     {
         private readonly ITicketAppService _ticketAppService;
@@ -26,73 +27,27 @@ namespace CtrlInvest.API.StockExchange.Controllers
             return tickets;
         }
 
-        //// GET: TicketController/Details/5
-        //public ActionResult Details(int id)
-        //{
-        //    return View();
-        //}
+        // GET: TicketController
+        [HttpGet("{textFind}", Name = "FindTicketByTicketCode")]
+        public IEnumerable<TicketDto> FindTicketByTicketCode(string textFind)
+        {
+            var tickets = _ticketAppService.FindTicketByTicketCode(textFind).Select(ticket => ticket.AsTicketDto());
+            return tickets;
+        }
 
-        //// GET: TicketController/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
+        [HttpGet("/earning/{ticketCode}", Name = "GetEarningsByTicket")]
+        public IEnumerable<EarningDto> GetEarningsByTicket(string ticketCode)
+        {
+            var tickets = _ticketAppService.GetEarningsByTicket(ticketCode).Select(earning => earning.AsEarningDto());
+            return tickets;
+        }
 
-        //// POST: TicketController/Create
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Create(IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        [HttpGet("/historicalPrice/{ticketCode}", Name = "GetHistoricalPricesByTicket")]
+        public IEnumerable<HistoricalPriceDto> GetHistoricalPricesByTicket(string ticketCode)
+        {
+            var historicalPrices = _ticketAppService.GetHistoricalPricesByTicket(ticketCode).Select(historicalPrice => historicalPrice.AsHistoricalPriceDto()).ToList();
+            return historicalPrices;
+        }
 
-        //// GET: TicketController/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: TicketController/Edit/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: TicketController/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: TicketController/Delete/5
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, IFormCollection collection)
-        //{
-        //    try
-        //    {
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
     }
 }

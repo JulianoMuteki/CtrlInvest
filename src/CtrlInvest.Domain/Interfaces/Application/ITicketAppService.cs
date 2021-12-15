@@ -10,8 +10,10 @@ namespace CtrlInvest.Domain.Interfaces.Application
         public ICollection<TicketSync> GetAllTicketsSyncs();
         public HistoricalPrice GetLatestHistoricalByTicker(string ticker);
         void SaveHistoricalPricesList(IList<HistoricalPrice> oricalPricesList);
-
         public Earning GetLastEarningByTicker(Guid ticketID);
         void SaveEarningsList(IList<Earning> earningList);
+        public ICollection<Ticket> FindTicketByTicketCode(string textFind);
+        public ICollection<HistoricalPrice> GetHistoricalPricesByTicket(string ticketCode);
+        public ICollection<Earning> GetEarningsByTicket(string ticketCode);
     }
 }
