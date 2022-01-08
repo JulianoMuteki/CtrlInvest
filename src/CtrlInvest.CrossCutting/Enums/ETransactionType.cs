@@ -23,4 +23,21 @@ namespace CtrlInvest.CrossCutting.Enums
         [Description("Deferred payment")]
         DEFERRED_PAYMENT = 2
     }
+
+    public enum ETypeDeal
+    {
+        [Description("Buy")]
+        Buy = 0,
+        [Description("Sell")]
+        Sell = 1        
+    }
+
+    public enum ETypeMarket
+
+    {
+        [Description("odd lot market")]
+        ODD_LOT_MARKET = 0,
+        [Description("cash market ")]
+        CASH_MARKET = 1
+    }
 }

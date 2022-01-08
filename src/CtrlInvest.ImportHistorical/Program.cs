@@ -23,9 +23,10 @@ namespace CtrlInvest.ImportHistorical
             //HistoricalPriceContext historicalPriceContext = new HistoricalPriceContext(new HistoricalPriceYahoo(), serviceProvider);
             //historicalPriceContext.ImportHistoricalByDates();
 
-            EarningContext earningContext = new EarningContext(new EarningFundamentus(), serviceProvider);
-            earningContext.ImportEarnings();
-
+            //EarningContext earningContext = new EarningContext(new EarningFundamentus(), serviceProvider);
+            //earningContext.ImportEarnings();
+            BrokerageNoteContext brokerageNoteContext = new BrokerageNoteContext(new BrokerageNoteB3(), serviceProvider);
+            brokerageNoteContext.ImportHistoricalByDates();
 
             // Wait for user
             Console.ReadKey();

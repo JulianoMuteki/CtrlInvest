@@ -9,7 +9,7 @@ namespace CtrlInvest.CrossCutting.Ioc
         public static void RegisterServices(IServiceCollection services)
         {
             services.AddScoped<ITicketAppService, TicketAppService>();
-            //services.AddScoped<IRegisterAppService, RegisterAppService>();
+            services.AddScoped<IInvestPortfolioService, InvestPortfolioService>();
             //services.AddScoped<IParentTreeAppService, ParentTreeAppService>();
             //services.AddScoped<IChildTreeAppService, ChildTreeAppService>();
             //services.AddScoped<IGrandChildTreeAppService, GrandChildTreeAppService>();
