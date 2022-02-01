@@ -12,8 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj" />
-    <ProjectReference Include="..\CtrlInvest.Services\CtrlInvest.Services.csproj" />
+    <ProjectReference Include="..\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj">
+      <Private>true</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\CtrlInvest.Services\CtrlInvest.Services.csproj">
+      <Private>true</Private>
+    </ProjectReference>
   </ItemGroup>
 
 </Project>

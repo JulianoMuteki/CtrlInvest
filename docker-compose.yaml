@@ -1,6 +1,22 @@
 version: '3'
 
 services:
+  dockerapi:
+    image: dockerapi:latest
+    depends_on:
+      - "ctrlinvest-postgres"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+       - ASPNETCORE_ENVIRONMENT=Development
+       - ASPNETCORE_URLS=http://+:80
+       - DefaultConnection="User ID=postgres;Password=Postgres2019!;Server=localhost;Port=15433;Database=ctrlinvestDB;Integrated Security=true;Pooling=true;"
+    networks:
+      - ctrlinvest-postgres-network
+
   ctrlinvest-postgres:
     image: postgres
     container_name: "ctrlinvest-postgres"

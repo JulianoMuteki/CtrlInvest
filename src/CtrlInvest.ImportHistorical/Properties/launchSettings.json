@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "CtrlInvest.ImportHistorical": {
+      "commandName": "Project"
+    },
+    "Docker": {
+      "commandName": "Docker"
+    }
+  }
+}
