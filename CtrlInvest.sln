@@ -49,6 +49,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL-Scripts", "SQL-Scripts"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.API.StockExchange", "src\CtrlInvest.API.StockExchange\CtrlInvest.API.StockExchange.csproj", "{1D913163-E25D-4EC5-88AB-AA9B1C206F50}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4 - Microservice", "4 - Microservice", "{74D9C20B-7D2E-4D20-AD1D-35BE0A444A34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Import.HistoricalPrice", "src\CtrlInvest.Import.HistoricalPrice\CtrlInvest.Import.HistoricalPrice.csproj", "{5D300084-423D-460C-8451-95201827CDEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -95,6 +99,10 @@ Global
 		{1D913163-E25D-4EC5-88AB-AA9B1C206F50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D913163-E25D-4EC5-88AB-AA9B1C206F50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D913163-E25D-4EC5-88AB-AA9B1C206F50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D300084-423D-460C-8451-95201827CDEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D300084-423D-460C-8451-95201827CDEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D300084-423D-460C-8451-95201827CDEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D300084-423D-460C-8451-95201827CDEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,6 +122,7 @@ Global
 		{63E19FA9-55B9-492C-9FC3-35D71E66717E} = {8A445DFD-CF71-4691-A97C-A2209E55F2BB}
 		{49E8EAA6-75DF-4DD3-9881-A5B1A3A8BB66} = {084A34AD-406A-4F52-B9EE-563969DC0FA8}
 		{1D913163-E25D-4EC5-88AB-AA9B1C206F50} = {8A445DFD-CF71-4691-A97C-A2209E55F2BB}
+		{5D300084-423D-460C-8451-95201827CDEC} = {74D9C20B-7D2E-4D20-AD1D-35BE0A444A34}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B56B2DCC-9E15-4227-B7A3-9A2EBFC1B40F}
