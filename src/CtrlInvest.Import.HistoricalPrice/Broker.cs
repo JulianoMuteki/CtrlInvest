@@ -10,7 +10,7 @@ namespace CtrlInvest.Import.HistoricalPrice
 {
     public class Broker
     {
-        public const string QueueName = "HistoricalPrice";
+        public const string QueueName = "historical.price";
         public void SendMessageToRabbitMQ(string historicalPriceList)
         {
             var connectionFactory = new ConnectionFactory()
@@ -39,7 +39,7 @@ namespace CtrlInvest.Import.HistoricalPrice
                     var body = Encoding.UTF8.GetBytes(line);
 
                     channel.BasicPublish(exchange: "",
-                                         routingKey: "QueueName",
+                                         routingKey: QueueName,
                                          basicProperties: null,
                                          body: body);
 
