@@ -8,15 +8,11 @@ namespace CtrlInvest.Import.HistoricalPrice
 {
     public class DownloadHistoricalPriceModel
     {
-        private object ticker;
-        private object dateStart;
-        private DateTime date;
-
-        public DownloadHistoricalPriceModel(object ticker, object dateStart, DateTime date)
+        public DownloadHistoricalPriceModel(string ticketCode, DateTime dateStart, DateTime date)
         {
-            this.ticker = ticker;
-            this.dateStart = dateStart;
-            this.date = date;
+            this.TicketCode = ticketCode;
+            this.DateStart = dateStart;
+            this.DateEnd = date;
         }
 
         public string TicketCode { get; set; }

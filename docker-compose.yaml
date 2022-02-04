@@ -7,7 +7,7 @@ services:
       - "ctrlinvest-postgres"
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-API-StockExchange
     ports:
       - "5000:80"
     environment:

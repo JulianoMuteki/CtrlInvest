@@ -1,4 +1,6 @@
-﻿INSERT INTO "Tickets"("Id", "Ticker", "Name", "Exchange", "Country", "Currency", "CreationDate", "DateModified", "IsDelete", "IsDisable") VALUES (uuid_generate_v1(),'LAME4.SA','Lojas Americanas S.A.','São Paulo','Brazil','BRL',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+﻿CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+INSERT INTO "Tickets"("Id", "Ticker", "Name", "Exchange", "Country", "Currency", "CreationDate", "DateModified", "IsDelete", "IsDisable") VALUES (uuid_generate_v1(),'LAME4.SA','Lojas Americanas S.A.','São Paulo','Brazil','BRL',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 INSERT INTO "Tickets"("Id", "Ticker", "Name", "Exchange", "Country", "Currency", "CreationDate", "DateModified", "IsDelete", "IsDisable") VALUES (uuid_generate_v1(),'ABEV3.SA','Ambev S.A.','São Paulo','Brazil','BRL',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 INSERT INTO "Tickets"("Id", "Ticker", "Name", "Exchange", "Country", "Currency", "CreationDate", "DateModified", "IsDelete", "IsDisable") VALUES (uuid_generate_v1(),'VALE5.SA','Vale S.A.','São Paulo','Brazil','BRL',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 INSERT INTO "Tickets"("Id", "Ticker", "Name", "Exchange", "Country", "Currency", "CreationDate", "DateModified", "IsDelete", "IsDisable") VALUES (uuid_generate_v1(),'SBSP3.SA','Companhia de Saneamento BÃ¡sico do Estado de SÃ£o Paulo - SABESP','São Paulo','Brazil','BRL',CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
