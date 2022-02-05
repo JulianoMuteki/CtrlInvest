@@ -208,6 +208,23 @@ namespace CtrlInvest.Services
             }
         }
 
+        public void SaveHistoricalPrice(HistoricalPrice historicalPrice)
+        {
+            try
+            {
+                _unitOfWork.Repository<HistoricalPrice>().Add(historicalPrice);
+                _unitOfWork.CommitSync();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<HistoricalPrice>("Unexpected error add", nameof(this.SaveHistoricalPrice), ex);
+            }
+        }
+
         public void SaveHistoricalPricesList(IList<HistoricalPrice> historicalPricesList)
         {
             try

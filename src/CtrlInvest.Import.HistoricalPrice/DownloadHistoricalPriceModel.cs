@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CtrlInvest.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,14 @@ namespace CtrlInvest.Import.HistoricalPrice
 {
     public class DownloadHistoricalPriceModel
     {
-        public DownloadHistoricalPriceModel(string ticketCode, DateTime dateStart, DateTime date)
+        public DownloadHistoricalPriceModel(Ticket ticket, DateTime dateStart, DateTime date)
         {
-            this.TicketCode = ticketCode;
+            this.ticket = ticket;
             this.DateStart = dateStart;
             this.DateEnd = date;
         }
 
-        public string TicketCode { get; set; }
+        public Ticket ticket { get; set; }
         public DateTime DateStart { get; set; }
         public DateTime DateEnd { get; set; }
 

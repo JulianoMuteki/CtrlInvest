@@ -1,10 +1,9 @@
-using CtrlInvest.Infra.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using CtrlInvest.CrossCutting.Ioc;
 using System;
+using CtrlInvest.Infra.Context;
 using CtrlInvest.Domain.Interfaces.Base;
 using CtrlInvest.Infra.Repository;
 using CtrlInvest.Domain.Interfaces.Application;
@@ -59,7 +58,9 @@ namespace CtrlInvest.Import.HistoricalPrice
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITicketAppService, TicketAppService>();
             services.AddTransient<IInvestPortfolioService, InvestPortfolioService>();
-            services.AddTransient<IHistoricalPriceImportController, HistoricalPriceImportController>();
+            services.AddTransient<IImportHistoricalPriceService, ImportHistoricalPriceService>();
+            services.AddTransient<IMessageBroker, MessageBroker>();
+            
         }
     }
 }

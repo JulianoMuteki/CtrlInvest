@@ -9,4 +9,11 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="5.0.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.2.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CtrlInvest.Import.HistoricalPrice\CtrlInvest.Import.HistoricalPrice.csproj" />
+    <ProjectReference Include="..\CtrlInvest.Infra.Context\CtrlInvest.Infra.Context.csproj" />
+    <ProjectReference Include="..\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj" />
+    <ProjectReference Include="..\CtrlInvest.Services\CtrlInvest.Services.csproj" />
+  </ItemGroup>
 </Project>

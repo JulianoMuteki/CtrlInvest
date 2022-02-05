@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CtrlInvest.Import.HistoricalPrice
 {
-    public interface IHistoricalPriceImportController
+    public interface IImportHistoricalPriceService
     {
         void DoImportOperation();
     }

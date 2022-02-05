@@ -16,11 +16,11 @@ namespace CtrlInvest.Import.HistoricalPrice
     {
         private readonly ILogger<Worker> _logger;
         private readonly ServiceConfigurations _serviceConfigurations;
-        private IHistoricalPriceImportController _historicalPriceImportController;
+        private IImportHistoricalPriceService _historicalPriceImportController;
 
         protected readonly IServiceProvider _serviceProvider;
 
-        public Worker(ILogger<Worker> logger, IConfiguration configuration, IHistoricalPriceImportController historicalPriceImportController)
+        public Worker(ILogger<Worker> logger, IConfiguration configuration, IImportHistoricalPriceService historicalPriceImportController)
         {
             //    _serviceProvider = serviceProvider;
             _historicalPriceImportController = historicalPriceImportController;
@@ -47,31 +47,19 @@ namespace CtrlInvest.Import.HistoricalPrice
                             _logger.LogInformation($"Checking host {host} - {0}", resposta.Status.ToString());
                         }
 
-                        _historicalPriceImportController.DoImportOperation();
-                        //   bool result = await PingWithHttpClient(host);
+                        _historicalPriceImportController.DoImportOperation();                        
                     }
                     catch (Exception ex)
                     {
                         _logger.LogError(ex.Message);
                     }
-
                 }
 
-                await Task.Delay(
+                _logger.LogInformation("************************************  Waiting time.. ************************************");
+                 await Task.Delay(
                     _serviceConfigurations.Intervalo, stoppingToken);
             }
         }
 
-        private async Task<bool> PingWithHttpClient(string hostUrl)
-        {
-            var httpClient = new HttpClient();
-            HttpRequestMessage request = new HttpRequestMessage
-            {
-                RequestUri = new Uri(hostUrl),
-                Method = HttpMethod.Head
-            };
-            var result = await httpClient.SendAsync(request);          
-            return result.IsSuccessStatusCode;
-        }
     }
 }
