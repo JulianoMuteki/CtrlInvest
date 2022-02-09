@@ -1,19 +1,19 @@
+using CtrlInvest.Domain.Interfaces.Application;
+using CtrlInvest.Domain.Interfaces.Base;
+using CtrlInvest.Import.Dividends.Services;
+using CtrlInvest.Infra.Context;
+using CtrlInvest.Infra.Repository;
+using CtrlInvest.MessageBroker;
+using CtrlInvest.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
-using System;
-using CtrlInvest.Infra.Context;
-using CtrlInvest.Domain.Interfaces.Base;
-using CtrlInvest.Infra.Repository;
-using CtrlInvest.Domain.Interfaces.Application;
-using CtrlInvest.Services;
-using CtrlInvest.Receive.HistoricalData.Services;
-using CtrlInvest.MessageBroker;
 using Microsoft.Extensions.ObjectPool;
 using RabbitMQ.Client;
+using System;
 
-namespace CtrlInvest.Receive.HistoricalData
+namespace CtrlInvest.Import.Dividends
 {
     public class Program
     {
@@ -36,7 +36,6 @@ namespace CtrlInvest.Receive.HistoricalData
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }
@@ -51,6 +50,8 @@ namespace CtrlInvest.Receive.HistoricalData
                             .AddEnvironmentVariables()
                             .AddCommandLine(args)
                             .Build();
+                    
+
                     services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
                     RegisterServices(services);
                     services.AddHostedService<Worker>();
@@ -58,14 +59,6 @@ namespace CtrlInvest.Receive.HistoricalData
 
         private static void RegisterServices(IServiceCollection services)
         {
-            // Adding dependencies from another layers (isolated from Presentation)
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
-            services.AddTransient<ITicketAppService, TicketAppService>();
-            services.AddTransient<IHistoricalPriceService, HistoricalPriceService>();
-
-            // Thread services
-            services.AddScoped<IReceiveHistoryPriceService, ReceiveHistoryPriceService>();
-
             //Message Broker
             var configuration = new ConfigurationBuilder()
                             .AddJsonFile("appsettings.json")
@@ -73,8 +66,23 @@ namespace CtrlInvest.Receive.HistoricalData
             var rabbitConfig = configuration.GetSection("RabbitConfig");
             services.Configure<RabbitOptions>(rabbitConfig);
 
-            services.AddScoped<ObjectPoolProvider, DefaultObjectPoolProvider>();
-            services.AddScoped<IPooledObjectPolicy<IModel>, RabbitFactory>();
+            services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+            services.AddSingleton<IPooledObjectPolicy<IModel>, RabbitFactory>();
+
+            // Thread services
+            services.AddScoped<IMessageBrokerService, MessageBrokerService>();
+
+
+
+
+
+            // Adding dependencies from another layers (isolated from Presentation)
+            //services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            //services.AddTransient<ITicketAppService, TicketAppService>();
+
+            //services.AddTransient<ObjectPoolProvider, DefaultObjectPoolProvider>();
+            //services.AddTransient<IPooledObjectPolicy<IModel>, RabbitFactory>();
+            //services.AddTransient<IMessageBrokerService, MessageBrokerService>();
         }
     }
 }
