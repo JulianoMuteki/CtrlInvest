@@ -2,6 +2,7 @@
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
+using System;
 
 namespace CtrlInvest.MessageBroker
 {
@@ -15,6 +16,7 @@ namespace CtrlInvest.MessageBroker
         {
             _options = optionsAccs.Value;
             _connection = GetConnection();
+            _connection.ConnectionShutdown += Connection_ConnectionShutdown;
         }
 
         private IConnection GetConnection()
@@ -26,9 +28,18 @@ namespace CtrlInvest.MessageBroker
                 Password = _options.Password,
                 Port = _options.Port,
                 VirtualHost = _options.VHost,
+              //  AutomaticRecoveryEnabled = true,
+              //  RequestedChannelMax = 4,
+             //   NetworkRecoveryInterval = System.TimeSpan.FromSeconds(10),
+                DispatchConsumersAsync = true
             };
 
             return factory.CreateConnection();
+        }
+
+        private static void Connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
+        {
+ 
         }
 
         public IModel Create()

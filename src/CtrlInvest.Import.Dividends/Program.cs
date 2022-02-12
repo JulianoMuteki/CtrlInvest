@@ -70,7 +70,7 @@ namespace CtrlInvest.Import.Dividends
             services.AddSingleton<IPooledObjectPolicy<IModel>, RabbitFactory>();
 
             // Thread services
-            services.AddScoped<IMessageBrokerService, MessageBrokerService>();
+            services.AddTransient<IMessageBrokerService, MessageBrokerService>();
 
 
 

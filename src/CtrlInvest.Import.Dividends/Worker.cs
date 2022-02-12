@@ -1,10 +1,12 @@
 using CtrlInvest.Import.Dividends.Services;
 using CtrlInvest.MessageBroker;
+using CtrlInvest.MessageBroker.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,59 +37,45 @@ namespace CtrlInvest.Import.Dividends
                 "Consume Scoped Service Hosted Service running.");
             stoppingToken.ThrowIfCancellationRequested();
 
-            _works.Add(StartProcessReceiveMessage(stoppingToken));
-            // works.Add(DoWork2(stoppingToken));
+            _works.Add(StartProcessReceiveMessage(stoppingToken, "teste2"));
+            _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
 
             try
             {
-                await Task.WhenAll(_works);
+                Task.WaitAll(_works.ToArray());
             }
             catch (AggregateException ae)
             {
-                throw ae.Flatten();
+                _logger.LogError("One or more exceptions occurred: ");
+                foreach (var ex in ae.Flatten().InnerExceptions)
+                    _logger.LogError("Exception {0}", ex.Message);
             }
-
         }
 
-        private async Task StartProcessReceiveMessage(CancellationToken stoppingToken)
+
+        private async Task StartProcessReceiveMessage(CancellationToken stoppingToken, string queueName)
         {
-            await Task.Factory.StartNew(() =>
+            stoppingToken.ThrowIfCancellationRequested();
+
+            using (var scope = _serviceProvider.CreateScope())
             {
-                _logger.LogInformation(
-                "Consume Scoped Service Hosted Service is working.");
+                var messageBrokerService =
+                    scope.ServiceProvider
+                        .GetService<IMessageBrokerService>();
 
-                using (var scope = _serviceProvider.CreateScope())
-                {
-                    var messageBrokerService =
-                        scope.ServiceProvider
-                            .GetRequiredService<IMessageBrokerService>();
-
-                    messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
-                    messageBrokerService.DoReceiveOperation();
-                }
-            });          
+                // messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
+                messageBrokerService.DoReceiveOperation(queueName);
+                await messageBrokerService.CreateReceiveOperation(stoppingToken);
+               
+            }
+            await Task.CompletedTask;
         }
 
         // event handler
-        private void EventHandler_MessageReceived(object sender, EventArgs e)
+        private void EventHandler_MessageReceived(object sender, string queueName)
         {
-            _logger.LogInformation("Process Completed!");
+            _logger.LogInformation($"Process Completed! ####### {queueName}");
         }
-
-        //private async Task DoWork2(CancellationToken stoppingToken)
-        //{
-        //    _logger.LogInformation(
-        //        "Consume Scoped Service Hosted Service is working.");
-
-        //    using (var scope = Services.CreateScope())
-        //    {
-        //        var scopedProcessingService =
-        //            scope.ServiceProvider
-        //                .GetRequiredService<IScopedProcessingService>();
-
-        //        await scopedProcessingService.DoService(stoppingToken, "worker 2");
-        //    }
-        //}
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {

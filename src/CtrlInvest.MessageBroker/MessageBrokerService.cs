@@ -6,6 +6,8 @@ using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace CtrlInvest.MessageBroker
 {
@@ -14,9 +16,10 @@ namespace CtrlInvest.MessageBroker
         private readonly DefaultObjectPool<IModel> _objectPool;
         private readonly ILogger _logger;        
         private readonly IModel _channel;
-        private const string QueueName = "historical.price";
-        private EventingBasicConsumer _consumer;
-        public event EventHandler ProcessCompleted;
+        private AsyncEventingBasicConsumer _consumer;
+        public event EventHandler<string> ProcessCompleted;
+
+        private string _queueName;
 
         public MessageBrokerService(IPooledObjectPolicy<IModel> objectPolicy, ILogger<MessageBrokerService> logger)
         {
@@ -24,25 +27,40 @@ namespace CtrlInvest.MessageBroker
 
             _logger = logger;
             _channel = _objectPool.Get();
-            _channel.QueueDeclare(
-                    queue: QueueName,
-                    durable: false,
-                    exclusive: false,
-                    autoDelete: false,
-                    arguments: null);
         }
 
-
-        public void DoReceiveOperation()
+        private void SetQueueName(string queueName)
         {
-            _consumer = new EventingBasicConsumer(_channel);
-            _consumer.Received += (bc, ea) =>
+            _queueName = queueName;
+            _channel.QueueDeclare(
+                queue: _queueName,
+                durable: false,
+                exclusive: false,
+                autoDelete: false,
+                arguments: null);
+        }
+        public void DoReceiveOperation(string queueName)
+        {
+            SetQueueName(queueName);
+            
+        }
+
+        public async Task CreateReceiveOperation(CancellationToken stoppingToken)
+        {
+            stoppingToken.ThrowIfCancellationRequested();
+
+            _consumer = new AsyncEventingBasicConsumer(_channel);
+            _consumer.Received += async (bc, ea) =>
             {
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
+                _logger.LogInformation($"Processing msg: '{message}'.");
                 try
                 {
-                    _logger.LogInformation($"message received : {message}");                    
-                    ProcessCompleted?.Invoke(message, EventArgs.Empty);
+                    
+                    _logger.LogInformation($"message received : {message} ********** {_queueName}");
+                    // ProcessCompleted?.Invoke(message, _queueName);              
+                    _channel.BasicAck(ea.DeliveryTag, false);
+                    await Task.CompletedTask;
                 }
                 catch (JsonException)
                 {
@@ -59,10 +77,18 @@ namespace CtrlInvest.MessageBroker
                 }
             };
 
-            _channel.BasicConsume(queue: QueueName,
-               autoAck: true,
-               consumer: _consumer);
+            _channel.BasicConsume(queue: _queueName, autoAck: false, consumer: _consumer);
+
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                _logger.LogInformation("{Queue} Worker running at: {time}", _queueName, DateTimeOffset.Now);
+
+                await Task.Delay(1000 * 100, stoppingToken);
+            }
+
+            await Task.CompletedTask;
         }
+
 
         public void DoSendMessageOperation(string message)
         {
@@ -76,7 +102,7 @@ namespace CtrlInvest.MessageBroker
                 var body = Encoding.UTF8.GetBytes(message);
 
                 _channel.BasicPublish(exchange: "",
-                                        routingKey: QueueName,
+                                        routingKey: _queueName,
                                         basicProperties: null,
                                         body: body);
             }
