@@ -8,9 +8,9 @@ namespace CtrlInvest.MessageBroker
 {
     public interface IMessageBrokerService : IDisposable
     {
-        void DoReceiveOperation(string queueName);
+        void SetQueueChannel(string queueName);
         void DoSendMessageOperation(string message);
         event EventHandler<string> ProcessCompleted;
-        Task CreateReceiveOperation(CancellationToken stoppingToken);
+        Task DoReceiveMessageOperation(CancellationToken stoppingToken);
     }
 }

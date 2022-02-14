@@ -64,8 +64,8 @@ namespace CtrlInvest.Import.Dividends
                         .GetService<IMessageBrokerService>();
 
                 // messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
-                messageBrokerService.DoReceiveOperation(queueName);
-                await messageBrokerService.CreateReceiveOperation(stoppingToken);
+                messageBrokerService.SetQueueChannel(queueName);
+                await messageBrokerService.DoReceiveMessageOperation(stoppingToken);
                
             }
             await Task.CompletedTask;

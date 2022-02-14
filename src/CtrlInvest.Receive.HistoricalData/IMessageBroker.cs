@@ -8,6 +8,6 @@ namespace CtrlInvest.Receive.HistoricalData
 {
     public interface IMessageBroker
     {
-        void DoReceiveOperation();
+        void DoReceiveMessageOperation();
     }
 }

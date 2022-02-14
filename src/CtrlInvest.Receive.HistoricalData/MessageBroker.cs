@@ -46,7 +46,7 @@ namespace CtrlInvest.Receive.HistoricalData
             _consumer = new EventingBasicConsumer(_channel);
         }
 
-        public void DoReceiveOperation()
+        public void DoReceiveMessageOperation()
         {
             _consumer.Received += (bc, ea) =>
             {

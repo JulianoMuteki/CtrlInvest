@@ -17,4 +17,8 @@
     <ProjectReference Include="..\CtrlInvest.MessageBroker\CtrlInvest.MessageBroker.csproj" />
     <ProjectReference Include="..\CtrlInvest.Services\CtrlInvest.Services.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
 </Project>

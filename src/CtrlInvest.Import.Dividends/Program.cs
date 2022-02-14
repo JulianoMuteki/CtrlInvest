@@ -72,17 +72,6 @@ namespace CtrlInvest.Import.Dividends
             // Thread services
             services.AddTransient<IMessageBrokerService, MessageBrokerService>();
 
-
-
-
-
-            // Adding dependencies from another layers (isolated from Presentation)
-            //services.AddSingleton<IUnitOfWork, UnitOfWork>();
-            //services.AddTransient<ITicketAppService, TicketAppService>();
-
-            //services.AddTransient<ObjectPoolProvider, DefaultObjectPoolProvider>();
-            //services.AddTransient<IPooledObjectPolicy<IModel>, RabbitFactory>();
-            //services.AddTransient<IMessageBrokerService, MessageBrokerService>();
         }
     }
 }

@@ -39,13 +39,13 @@ namespace CtrlInvest.MessageBroker
                 autoDelete: false,
                 arguments: null);
         }
-        public void DoReceiveOperation(string queueName)
+        public void SetQueueChannel(string queueName)
         {
             SetQueueName(queueName);
             
         }
 
-        public async Task CreateReceiveOperation(CancellationToken stoppingToken)
+        public async Task DoReceiveMessageOperation(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
 
@@ -70,10 +70,12 @@ namespace CtrlInvest.MessageBroker
                 catch (AlreadyClosedException)
                 {
                     _logger.LogInformation("RabbitMQ is closed!");
+                    _channel.BasicNack(ea.DeliveryTag, false, false);
                 }
                 catch (Exception e)
                 {
                     _logger.LogError(default, e, e.Message);
+                    _channel.BasicNack(ea.DeliveryTag, false, false);
                 }
             };
 
@@ -81,8 +83,7 @@ namespace CtrlInvest.MessageBroker
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("{Queue} Worker running at: {time}", _queueName, DateTimeOffset.Now);
-
+                _logger.LogInformation("Receiving running {Queue} at: {time}", _queueName, DateTimeOffset.Now);
                 await Task.Delay(1000 * 100, stoppingToken);
             }
 
