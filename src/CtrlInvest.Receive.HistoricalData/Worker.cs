@@ -67,7 +67,6 @@ namespace CtrlInvest.Receive.HistoricalData
                     messageBrokerService.SetQueueChannel(queueName);
 
                     await messageBrokerService.DoReceiveMessageOperation(stoppingToken);
-
                 }
             }
             catch (AggregateException ae)

@@ -58,7 +58,7 @@ namespace CtrlInvest.MessageBroker
                 {
                     
                     _logger.LogInformation($"message received : {message} ********** {_queueName}");
-                    // ProcessCompleted?.Invoke(message, _queueName);              
+                     ProcessCompleted?.Invoke(message, _queueName);              
                     _channel.BasicAck(ea.DeliveryTag, false);
                     await Task.CompletedTask;
                 }
@@ -92,11 +92,6 @@ namespace CtrlInvest.MessageBroker
 
 
         public void DoSendMessageOperation(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendMessageToRabbitMQ(string message)
         {
             try
             {

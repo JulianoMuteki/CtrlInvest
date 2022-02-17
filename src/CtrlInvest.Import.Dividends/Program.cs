@@ -1,17 +1,17 @@
-using CtrlInvest.Domain.Interfaces.Application;
-using CtrlInvest.Domain.Interfaces.Base;
-using CtrlInvest.Import.Dividends.Services;
-using CtrlInvest.Infra.Context;
-using CtrlInvest.Infra.Repository;
-using CtrlInvest.MessageBroker;
-using CtrlInvest.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.ObjectPool;
-using RabbitMQ.Client;
+using Microsoft.Extensions.Configuration;
 using System;
+using CtrlInvest.Infra.Context;
+using CtrlInvest.MessageBroker;
+using CtrlInvest.Infra.Repository;
+using CtrlInvest.Domain.Interfaces.Base;
+using CtrlInvest.Domain.Interfaces.Application;
+using CtrlInvest.Services;
+using CtrlInvest.Import.Dividends.Services;
+using RabbitMQ.Client;
+using Microsoft.Extensions.ObjectPool;
 
 namespace CtrlInvest.Import.Dividends
 {
@@ -65,12 +65,16 @@ namespace CtrlInvest.Import.Dividends
                             .Build();
             var rabbitConfig = configuration.GetSection("RabbitConfig");
             services.Configure<RabbitOptions>(rabbitConfig);
-
+            
             services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             services.AddSingleton<IPooledObjectPolicy<IModel>, RabbitFactory>();
+            services.AddSingleton<IMessageBrokerService, MessageBrokerService>();
 
-            // Thread services
-            services.AddTransient<IMessageBrokerService, MessageBrokerService>();
+            services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            services.AddTransient<ITicketAppService, TicketAppService>();    
+         
+            services.AddTransient<IEarningService, EarningService>();
+
 
         }
     }

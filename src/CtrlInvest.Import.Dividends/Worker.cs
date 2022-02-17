@@ -1,12 +1,13 @@
+
 using CtrlInvest.Import.Dividends.Services;
 using CtrlInvest.MessageBroker;
+using CtrlInvest.MessageBroker.Common;
 using CtrlInvest.MessageBroker.Helpers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -16,10 +17,22 @@ namespace CtrlInvest.Import.Dividends
     {
         private readonly ILogger<Worker> _logger;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IMessageBrokerService _messageBrokerService;
+        private readonly IEarningService _importHistoricalEarningService;
+
         IList<Task> _works;
-        public Worker(IServiceProvider services, ILogger<Worker> logger)
+        public Worker(IServiceProvider services, ILogger<Worker> logger, IEarningService importHistoricalEarningService, IMessageBrokerService messageBrokerService)
         {
             _serviceProvider = services;
+            _importHistoricalEarningService = importHistoricalEarningService;
+            _importHistoricalEarningService.ThresholdReached += c_ThresholdReached;
+            _messageBrokerService = messageBrokerService;
+            // messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
+            _messageBrokerService.SetQueueChannel(QueueName.HISTORICAL_DIVIDENDS);
+            //await messageBrokerService.DoReceiveMessageOperation(stoppingToken);
+
+
+
             _logger = logger;
             _works = new List<Task>();
         }
@@ -28,6 +41,7 @@ namespace CtrlInvest.Import.Dividends
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Worker started at: {DateTime.Now}");
+
             await base.StartAsync(cancellationToken);
         }
 
@@ -35,14 +49,24 @@ namespace CtrlInvest.Import.Dividends
         {
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service running.");
-            stoppingToken.ThrowIfCancellationRequested();
-
-            _works.Add(StartProcessReceiveMessage(stoppingToken, "teste2"));
-            _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
 
             try
             {
-                Task.WaitAll(_works.ToArray());
+                stoppingToken.ThrowIfCancellationRequested();
+
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    if (_works.Count > 0)
+                    {
+                        await Task.WhenAll(_works);
+                        _works.Clear();
+                    }
+
+                    await StartProcessDownloadEarnings(stoppingToken);
+
+                    _logger.LogInformation("Receiving running at: {time}", DateTimeOffset.Now);
+                    await Task.Delay(864 * 100000, stoppingToken);
+                }
             }
             catch (AggregateException ae)
             {
@@ -50,31 +74,35 @@ namespace CtrlInvest.Import.Dividends
                 foreach (var ex in ae.Flatten().InnerExceptions)
                     _logger.LogError("Exception {0}", ex.Message);
             }
+
+            await Task.CompletedTask;
         }
 
 
-        private async Task StartProcessReceiveMessage(CancellationToken stoppingToken, string queueName)
+        private async Task StartProcessDownloadEarnings(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
+            _importHistoricalEarningService.DoImportOperation();
 
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var messageBrokerService =
-                    scope.ServiceProvider
-                        .GetService<IMessageBrokerService>();
-
-                // messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
-                messageBrokerService.SetQueueChannel(queueName);
-                await messageBrokerService.DoReceiveMessageOperation(stoppingToken);
-               
-            }
             await Task.CompletedTask;
         }
 
         // event handler
-        private void EventHandler_MessageReceived(object sender, string queueName)
+        private void c_ThresholdReached(object sender, ThresholdReachedEventArgs e)
         {
-            _logger.LogInformation($"Process Completed! ####### {queueName}");
+            _logger.LogInformation($"Process Completed! ####### {sender}");
+
+            _works.Add(Task.Run(() => SendoToMessageBroker(e.HistoricalEarningList, e.Ticket.Ticker, e.Ticket.Id)));
+        }
+
+        void SendoToMessageBroker(string historicalEarningList, string ticketCode, Guid ticketID)
+        {
+            var messages = MessageBrokerParse.ConvertStringToList(historicalEarningList, ticketCode, ticketID);
+
+            foreach (var item in messages)
+            {
+                _messageBrokerService.DoSendMessageOperation(item.ToJson());
+            }
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)
