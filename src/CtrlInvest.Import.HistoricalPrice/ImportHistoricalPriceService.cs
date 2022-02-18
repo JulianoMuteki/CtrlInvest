@@ -1,6 +1,7 @@
 ﻿using CtrlInvest.CrossCutting;
 using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Interfaces.Application;
+using CtrlInvest.MessageBroker.Common;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

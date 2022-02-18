@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CtrlInvest.CrossCutting
+namespace CtrlInvest.Deprecated
 {
-    public class PackageMessage
+    class PackageMessage
     {
         public PackageMessage()
         {

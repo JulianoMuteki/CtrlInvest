@@ -15,5 +15,6 @@
     <ProjectReference Include="..\CtrlInvest.CrossCutting.Ioc\CtrlInvest.CrossCutting.Ioc.csproj" />
     <ProjectReference Include="..\CtrlInvest.Domain\CtrlInvest.Domain.csproj" />
     <ProjectReference Include="..\CtrlInvest.Infra.Context\CtrlInvest.Infra.Context.csproj" />
+    <ProjectReference Include="..\CtrlInvest.MessageBroker\CtrlInvest.MessageBroker.csproj" />
   </ItemGroup>
 </Project>

@@ -11,6 +11,7 @@ using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Services;
 using CtrlInvest.Domain.Interfaces.Base;
 using CtrlInvest.Infra.Repository;
+using CtrlInvest.Receive.HistoricalData.Services;
 
 namespace CtrlInvest.Receive.HistoricalData
 {
@@ -69,16 +70,13 @@ namespace CtrlInvest.Receive.HistoricalData
             services.AddSingleton<IPooledObjectPolicy<IModel>, RabbitFactory>();
 
             // Thread services           
-
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
-
             services.AddScoped<IMessageBrokerService, MessageBrokerService>();
 
             services.AddTransient<ITicketAppService, TicketAppService>();
             services.AddTransient<IHistoricalPriceService, HistoricalPriceService>();
             services.AddTransient<IInvestPortfolioService, InvestPortfolioService>();
-
-
+            services.AddTransient<IHistoricalEarningService, HistoricalEarningService>();
         }
     }
 }

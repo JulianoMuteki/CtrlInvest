@@ -1,6 +1,7 @@
 ﻿using CtrlInvest.CrossCutting;
 using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Interfaces.Application;
+using CtrlInvest.MessageBroker.Common;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,7 @@ namespace CtrlInvest.Receive.HistoricalData
     public class HistoricalPriceService : IHistoricalPriceService
     {
         private readonly ITicketAppService _ticketAppService;
-        private readonly ILogger<HistoricalPriceService> _logger;
-        public List<Task> TaskList = new List<Task>();
+        private readonly ILogger<HistoricalPriceService> _logger;      
 
         // Constructor
         public HistoricalPriceService(ILogger<HistoricalPriceService> logger, ITicketAppService ticketAppService)

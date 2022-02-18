@@ -21,7 +21,9 @@ namespace CtrlInvest.MessageBroker.Common
                 return false;
             else if (this.Message == "Date,Open,High,Low,Close,Adj Close,Volume")
                 return false;
-            else if (this.Message.Split(',')[6] == "null")
+            else if (this.Message == "Date,Dividends")
+                return false;            
+            else if (this.Message.Split(',').Length >= 6 && this.Message.Split(',')[6] == "null")
                 return false;
             else
                 return true;

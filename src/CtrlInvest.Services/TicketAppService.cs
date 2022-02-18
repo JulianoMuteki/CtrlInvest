@@ -191,6 +191,23 @@ namespace CtrlInvest.Services
             }
         }
 
+        public void SaveEarning(Earning Earning)
+        {
+            try
+            {
+                _unitOfWork.Repository<Earning>().Add(Earning);
+                _unitOfWork.CommitSync();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<Earning>("Unexpected error add", nameof(this.SaveEarning), ex);
+            }
+        }
+
         public void SaveEarningsList(IList<Earning> earningList)
         {
             try

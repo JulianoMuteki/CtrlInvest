@@ -1,5 +1,6 @@
 using CtrlInvest.MessageBroker;
 using CtrlInvest.MessageBroker.Helpers;
+using CtrlInvest.Receive.HistoricalData.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -16,10 +17,12 @@ namespace CtrlInvest.Receive.HistoricalData
         private readonly ILogger<Worker> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly IHistoricalPriceService _historicalPriceService;
+        private readonly IHistoricalEarningService _historicalEarningService;
         private IList<Task> _works;
-        public Worker(IServiceProvider services, ILogger<Worker> logger, IHistoricalPriceService historicalPriceService)
+        public Worker(IServiceProvider services, ILogger<Worker> logger, IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
         {
             _historicalPriceService = historicalPriceService;
+            _historicalEarningService = historicalEarningService;
             _serviceProvider = services;
             _logger = logger;
             _works = new List<Task>();
@@ -36,8 +39,8 @@ namespace CtrlInvest.Receive.HistoricalData
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service running.");
 
-            _works.Add(StartProcessReceiveMessage(stoppingToken, "teste2"));
-            _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
+            _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_DIVIDENDS));
+            //_works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
 
             try
             {
@@ -85,11 +88,11 @@ namespace CtrlInvest.Receive.HistoricalData
 
             if (QueueName.HISTORICAL_PRICE == queueName)
             {
-              //  _historicalPriceService.SaveInDatabaseOperation(sender.ToString());
+              _historicalPriceService.SaveInDatabaseOperation(sender.ToString());
             }
             else if (QueueName.HISTORICAL_DIVIDENDS == queueName)
             {
-
+                _historicalEarningService.SaveInDatabaseOperation(sender.ToString());
             }
             else
             {

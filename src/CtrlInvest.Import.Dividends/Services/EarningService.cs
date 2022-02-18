@@ -3,8 +3,13 @@
 using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.MessageBroker.Common;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using HtmlAgilityPack;
+using System.Linq;
 
 namespace CtrlInvest.Import.Dividends.Services
 {
@@ -24,7 +29,7 @@ namespace CtrlInvest.Import.Dividends.Services
             IList<DownloadHistoricalValueModel<Ticket>> downloadHistoricalValueModels = GetListHistoricalEarningsToImport();
             foreach (var downloadHistoricalValueModel in downloadHistoricalValueModels)
             {
-                var historicalEarningList = DownloadHistoricalEarningFromYahoo(downloadHistoricalValueModel.ticket.Ticker, downloadHistoricalValueModel.DateStart,
+                var historicalEarningList = DownloadHistoricalEarningFromFundamentus(downloadHistoricalValueModel.ticket.Ticker, downloadHistoricalValueModel.DateStart,
                                                              downloadHistoricalValueModel.DateEnd);
 
                 //raise event >= historicalEarningList
@@ -75,25 +80,43 @@ namespace CtrlInvest.Import.Dividends.Services
             return downloadHistoricalEarningsModels;
         }
 
-        //private string DownloadHistoricalEarningFromFundamentus(string ticker)
-        //{
-        //    string ticketCode = ticker.Replace(".SA", "");
-        //    string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-        //    string customePath = System.IO.Path.Combine(basePath, @"Helpers\geckodriver-v0.30.0-win64");
-        //    //string fullPath = System.IO.Path.GetFullPath("geckodriver.exe", customePath);
+        private string DownloadHistoricalEarningFromFundamentus(string ticker, DateTime dtStart, DateTime dtEnd)
+        {
+            string ticketCode = ticker.Replace(".SA", "");
+            string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            string customePath = System.IO.Path.Combine(basePath, @"Drivers\geckodriver-v0.30.0-win64");
+            //string fullPath = System.IO.Path.GetFullPath("geckodriver.exe", customePath);
 
-        //    IWebDriver driver = new FirefoxDriver(customePath);
-        //    driver.Manage().Window.Maximize();
-        //    driver.Navigate().GoToUrl(string.Format("https://fundamentus.com.br/proventos.php?papel={0}&tipo=2", ticketCode));
-        //    IWebElement element = driver.FindElement(By.Id("resultado"));
-        //    var outerHTML = element.GetAttribute("outerHTML");
+            IWebDriver driver = new FirefoxDriver(customePath);
+            driver.Manage().Window.Maximize();
+            driver.Navigate().GoToUrl(string.Format("https://fundamentus.com.br/proventos.php?papel={0}&tipo=2", ticketCode));
+            IWebElement element = driver.FindElement(By.Id("resultado"));
+            var outerHTML = element.GetAttribute("outerHTML");
 
-        //   // Console.WriteLine(outerHTML);
-        //   // File.WriteAllText(FileName, outerHTML);
-        //    driver.Quit();
+            // Console.WriteLine(outerHTML);
+            // File.WriteAllText(FileName, outerHTML);
+            driver.Quit();
 
-        //    return outerHTML;
-        //}
+            return ConvertToList(outerHTML);
+        }
+
+        private string ConvertToList(string tableHTML)
+        {
+            HtmlDocument doc = new();
+            doc.LoadHtml(tableHTML);
+
+            var nodesRows = doc.DocumentNode.SelectNodes("//table/tbody/tr");
+            var rows = nodesRows.Select(tr => tr
+                .Elements("td")
+                .Select(td => td.InnerText.Trim())
+                .Select(x => x).ToList());
+
+            var result = rows.Select(x => string.Join<string>('|', x)).ToList();
+
+            string teste = string.Join<string>(Environment.NewLine, result);
+
+            return teste;
+        }
 
         private string DownloadHistoricalEarningFromYahoo(string ticker, DateTime dtStart, DateTime dtEnd)
         {
