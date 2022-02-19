@@ -16,7 +16,7 @@ namespace CtrlInvest.Import.Dividends.Services
     public class EarningService : IEarningService
     {
         private readonly ITicketAppService _ticketAppService;
-        public event EventHandler<ThresholdReachedEventArgs> ThresholdReached;
+        public event EventHandler<ImportDataFromServerEventArgs> ThresholdReached;
         public EarningService(ITicketAppService ticketAppService)
         {
             _ticketAppService = ticketAppService;
@@ -24,7 +24,6 @@ namespace CtrlInvest.Import.Dividends.Services
         public void DoImportOperation()
         {
            // _logger.LogInformation($"Start Import Operation");
-            // _messageBroker.Init();
 
             IList<DownloadHistoricalValueModel<Ticket>> downloadHistoricalValueModels = GetListHistoricalEarningsToImport();
             foreach (var downloadHistoricalValueModel in downloadHistoricalValueModels)
@@ -32,27 +31,19 @@ namespace CtrlInvest.Import.Dividends.Services
                 var historicalEarningList = DownloadHistoricalEarningFromFundamentus(downloadHistoricalValueModel.ticket.Ticker, downloadHistoricalValueModel.DateStart,
                                                              downloadHistoricalValueModel.DateEnd);
 
-                //raise event >= historicalEarningList
-                // ProcessCompleted?.Invoke(historicalEarningList, downloadHistoricalValueModel.ticket.Ticker);
                 OnThresholdReached(historicalEarningList, downloadHistoricalValueModel.ticket);
             }
         }
 
         protected virtual void OnThresholdReached(string historicalEarningList, Ticket ticket)
         {
-            ThresholdReachedEventArgs args = new()
+            ImportDataFromServerEventArgs args = new()
             {
-                HistoricalEarningList = historicalEarningList,
+                HistoricalDataList = historicalEarningList,
                 Ticket = ticket
             };
 
             ThresholdReached?.Invoke(this, args);
-
-            //EventHandler<ThresholdReachedEventArgs> handler = ThresholdReached;
-            //if (handler != null)
-            //{
-            //    handler(this, args);
-            //}
         }
 
         private IList<DownloadHistoricalValueModel<Ticket>> GetListHistoricalEarningsToImport()

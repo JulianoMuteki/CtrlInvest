@@ -28,9 +28,9 @@ namespace CtrlInvest.Receive.HistoricalData.Services
         {
             try
             {
-                Earning historicalPrice = ReadBrokerMessage(brokerMessage);
-                if (Guid.Empty != historicalPrice.TickerID)
-                    _ticketAppService.SaveEarning(historicalPrice);
+                Earning earning = ConvertBrokerMessageToEarning(brokerMessage);
+                if (Guid.Empty != earning.TickerID)
+                    _ticketAppService.SaveEarning(earning);
             }
             catch (Exception e)
             {
@@ -38,7 +38,7 @@ namespace CtrlInvest.Receive.HistoricalData.Services
             }
         }
 
-        private Earning ReadBrokerMessage(string brokerMessage)
+        private Earning ConvertBrokerMessageToEarning(string brokerMessage)
         {
             Earning earning = new Earning();
             try

@@ -6,7 +6,7 @@ namespace CtrlInvest.Import.Dividends.Services
 {
     public interface IEarningService
     {
-        event EventHandler<ThresholdReachedEventArgs> ThresholdReached;
+        event EventHandler<ImportDataFromServerEventArgs> ThresholdReached;
         void DoImportOperation();
     }
 }

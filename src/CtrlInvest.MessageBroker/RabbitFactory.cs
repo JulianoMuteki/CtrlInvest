@@ -1,20 +1,20 @@
 ﻿
-using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using System;
 
 namespace CtrlInvest.MessageBroker
 {
-    public class RabbitFactory : IPooledObjectPolicy<IModel>
+    public class RabbitFactory : IRabbitFactoryConnection
     {
         private readonly RabbitOptions _options;
 
         private readonly IConnection _connection;
 
-        public RabbitFactory(IOptions<RabbitOptions> optionsAccs)
+        public RabbitFactory(IOptions<RabbitOptions> optionsAccs)            
         {
             _options = optionsAccs.Value;
+           
             _connection = GetConnection();
             _connection.ConnectionShutdown += Connection_ConnectionShutdown;
         }
@@ -28,9 +28,9 @@ namespace CtrlInvest.MessageBroker
                 Password = _options.Password,
                 Port = _options.Port,
                 VirtualHost = _options.VHost,
-              //  AutomaticRecoveryEnabled = true,
-              //  RequestedChannelMax = 4,
-             //   NetworkRecoveryInterval = System.TimeSpan.FromSeconds(10),
+                //  AutomaticRecoveryEnabled = true,
+                //  RequestedChannelMax = 4,
+                //   NetworkRecoveryInterval = System.TimeSpan.FromSeconds(10),
                 DispatchConsumersAsync = true
             };
 
@@ -39,7 +39,7 @@ namespace CtrlInvest.MessageBroker
 
         private static void Connection_ConnectionShutdown(object sender, ShutdownEventArgs e)
         {
- 
+
         }
 
         public IModel Create()
@@ -56,7 +56,25 @@ namespace CtrlInvest.MessageBroker
             else
             {
                 obj?.Dispose();
+                this.Dispose(true);
                 return false;
+            }
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_connection.IsOpen)
+                    _connection.Close();
+
+                _connection.Dispose();
+
             }
         }
     }

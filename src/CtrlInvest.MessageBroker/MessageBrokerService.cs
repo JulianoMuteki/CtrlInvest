@@ -18,12 +18,13 @@ namespace CtrlInvest.MessageBroker
         private readonly IModel _channel;
         private AsyncEventingBasicConsumer _consumer;
         public event EventHandler<string> ProcessCompleted;
-
+        private readonly IRabbitFactoryConnection _rabbitFactoryConnection;
         private string _queueName;
 
-        public MessageBrokerService(IPooledObjectPolicy<IModel> objectPolicy, ILogger<MessageBrokerService> logger)
+        public MessageBrokerService(IRabbitFactoryConnection objectPolicy, ILogger<MessageBrokerService> logger)
         {
-            _objectPool = new DefaultObjectPool<IModel>(objectPolicy, Environment.ProcessorCount * 2);
+            _rabbitFactoryConnection = objectPolicy;
+            _objectPool = new DefaultObjectPool<IModel>(_rabbitFactoryConnection, Environment.ProcessorCount * 2);
 
             _logger = logger;
             _channel = _objectPool.Get();
@@ -53,11 +54,11 @@ namespace CtrlInvest.MessageBroker
             _consumer.Received += async (bc, ea) =>
             {
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-                _logger.LogInformation($"Processing msg: '{message}'.");
+               // _logger.LogInformation($"Processing msg: '{message}'.");
                 try
                 {
                     
-                    _logger.LogInformation($"message received : {message} ********** {_queueName}");
+                 //   _logger.LogInformation($"message received : {message} ********** {_queueName}");
                      ProcessCompleted?.Invoke(message, _queueName);              
                     _channel.BasicAck(ea.DeliveryTag, false);
                     await Task.CompletedTask;
@@ -117,9 +118,8 @@ namespace CtrlInvest.MessageBroker
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-            {
-                _channel.Dispose();
-                //_objectPool.Dispose();
+            {                
+                _rabbitFactoryConnection.Dispose();
             }
             // free native resources if there are any.
         }

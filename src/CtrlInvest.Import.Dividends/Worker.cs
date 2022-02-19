@@ -25,13 +25,9 @@ namespace CtrlInvest.Import.Dividends
         {
             _serviceProvider = services;
             _importHistoricalEarningService = importHistoricalEarningService;
-            _importHistoricalEarningService.ThresholdReached += c_ThresholdReached;
+            _importHistoricalEarningService.ThresholdReached += event_ImportDataFromServerCompleted;
             _messageBrokerService = messageBrokerService;
-            // messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
             _messageBrokerService.SetQueueChannel(QueueName.HISTORICAL_DIVIDENDS);
-            //await messageBrokerService.DoReceiveMessageOperation(stoppingToken);
-
-
 
             _logger = logger;
             _works = new List<Task>();
@@ -47,8 +43,7 @@ namespace CtrlInvest.Import.Dividends
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation(
-                "Consume Scoped Service Hosted Service running.");
+            _logger.LogInformation("Worker running.");
 
             try
             {
@@ -65,7 +60,8 @@ namespace CtrlInvest.Import.Dividends
                     await StartProcessDownloadEarnings(stoppingToken);
 
                     _logger.LogInformation("Receiving running at: {time}", DateTimeOffset.Now);
-                    await Task.Delay(864 * 100000, stoppingToken);
+                    //await Task.Delay(864 * 100000, stoppingToken);
+                    await Task.Delay(300000, stoppingToken);
                 }
             }
             catch (AggregateException ae)
@@ -73,6 +69,14 @@ namespace CtrlInvest.Import.Dividends
                 _logger.LogError("One or more exceptions occurred: ");
                 foreach (var ex in ae.Flatten().InnerExceptions)
                     _logger.LogError("Exception {0}", ex.Message);
+            }
+            catch (OperationCanceledException e)
+            {
+                _logger.LogError($"{nameof(OperationCanceledException)} thrown with message: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{nameof(e)} thrown with message: {e.Message}");
             }
 
             await Task.CompletedTask;
@@ -88,21 +92,33 @@ namespace CtrlInvest.Import.Dividends
         }
 
         // event handler
-        private void c_ThresholdReached(object sender, ThresholdReachedEventArgs e)
+        private void event_ImportDataFromServerCompleted(object sender, ImportDataFromServerEventArgs e)
         {
-            _logger.LogInformation($"Process Completed! ####### {sender}");
+            _logger.LogInformation($"####### Event Import Data From Server Completed! {sender}");
 
-            _works.Add(Task.Run(() => SendoToMessageBroker(e.HistoricalEarningList, e.Ticket.Ticker, e.Ticket.Id)));
+            _works.Add(SendToMessageBroker(e.HistoricalDataList, e.Ticket.Ticker, e.Ticket.Id));
         }
 
-        void SendoToMessageBroker(string historicalEarningList, string ticketCode, Guid ticketID)
+        Task SendToMessageBroker(string historicalEarningList, string ticketCode, Guid ticketID)
         {
-            var messages = MessageBrokerParse.ConvertStringToList(historicalEarningList, ticketCode, ticketID);
-
-            foreach (var item in messages)
+            var task = Task.Run(() =>
             {
-                _messageBrokerService.DoSendMessageOperation(item.ToJson());
-            }
+                var messages = MessageBrokerParse.ConvertStringToList(historicalEarningList, ticketCode, ticketID);
+                _logger.LogInformation($"Sending Messages to broker, total messages: {messages.Count}");
+
+                foreach (var item in messages)
+                {
+                    _messageBrokerService.DoSendMessageOperation(item.ToJson());
+                }
+            }).ContinueWith(t =>
+            {
+                _logger.LogError("Error in messageBrokerService.DoSendMessageOperation");
+                _logger.LogError("{0}: {1}",
+                                    t.Exception.InnerException.GetType().Name,
+                                    t.Exception.InnerException.Message);
+            }, TaskContinuationOptions.OnlyOnFaulted);
+
+            return task;
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)
@@ -110,12 +126,16 @@ namespace CtrlInvest.Import.Dividends
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service is stopping.");
 
+            //TODO: add timeout
+            await Task.WhenAll(_works);
+
             await base.StopAsync(stoppingToken);
         }
 
         public override void Dispose()
         {
             _logger.LogInformation($"Worker disposed at: {DateTime.Now}");
+            _messageBrokerService.Dispose();
 
             base.Dispose();
         }

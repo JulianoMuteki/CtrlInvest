@@ -5,8 +5,6 @@ using Microsoft.Extensions.Configuration;
 using System;
 using CtrlInvest.Infra.Context;
 using CtrlInvest.MessageBroker;
-using Microsoft.Extensions.ObjectPool;
-using RabbitMQ.Client;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Services;
 using CtrlInvest.Domain.Interfaces.Base;
@@ -49,8 +47,7 @@ namespace CtrlInvest.Receive.HistoricalData
                             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                             .AddEnvironmentVariables()
                             .AddCommandLine(args)
-                            .Build();
-
+                            .Build();                   
 
                     services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
                     RegisterServices(services);
@@ -66,8 +63,8 @@ namespace CtrlInvest.Receive.HistoricalData
             var rabbitConfig = configuration.GetSection("RabbitConfig");
             services.Configure<RabbitOptions>(rabbitConfig);
 
-            services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
-            services.AddSingleton<IPooledObjectPolicy<IModel>, RabbitFactory>();
+            //services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+            services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
 
             // Thread services           
             services.AddSingleton<IUnitOfWork, UnitOfWork>();

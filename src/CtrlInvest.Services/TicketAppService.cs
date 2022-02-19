@@ -195,8 +195,13 @@ namespace CtrlInvest.Services
         {
             try
             {
-                _unitOfWork.Repository<Earning>().Add(Earning);
-                _unitOfWork.CommitSync();
+                Earning earningExist = _unitOfWork.Repository<Earning>().Find(x => x.TickerID == Earning.TickerID && x.DateWith == Earning.DateWith);
+
+                if (earningExist == null)
+                {
+                    _unitOfWork.Repository<Earning>().Add(Earning);
+                    _unitOfWork.CommitSync();
+                }
             }
             catch (CustomException exc)
             {
