@@ -65,6 +65,7 @@ namespace CtrlInvest.Receive.HistoricalData
 
             //services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
+            services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
 
             // Thread services           
             services.AddSingleton<IUnitOfWork, UnitOfWork>();

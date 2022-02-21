@@ -84,7 +84,8 @@ namespace CtrlInvest.Receive.HistoricalData
         // event handler
         private void EventHandler_MessageReceived(object sender, string queueName)
         {
-            _logger.LogInformation($"Process Completed! ####### {queueName}");
+            _logger.LogInformation($"Process Completed! {queueName}");
+            _logger.LogInformation($"Message {sender.ToString()}");
 
             if (QueueName.HISTORICAL_PRICE == queueName)
             {

@@ -65,7 +65,8 @@ namespace CtrlInvest.Import.Dividends
                             .Build();
             var rabbitConfig = configuration.GetSection("RabbitConfig");
             services.Configure<RabbitOptions>(rabbitConfig);
-            
+            services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
+
             //services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
             services.AddSingleton<IMessageBrokerService, MessageBrokerService>();

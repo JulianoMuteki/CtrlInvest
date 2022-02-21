@@ -49,16 +49,21 @@ namespace CtrlInvest.Import.Dividends
             {
                 stoppingToken.ThrowIfCancellationRequested();
 
+                DateTime dateTime = DateTime.Now.AddHours(-3);
+
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    if (_works.Count > 0)
+                    if (DateTime.Now > dateTime.AddHours(1))
                     {
-                        await Task.WhenAll(_works);
-                        _works.Clear();
+                        if (_works.Count > 0)
+                        {
+                            await Task.WhenAll(_works);
+                            _works.Clear();
+                        }
+
+                        await StartProcessDownloadEarnings(stoppingToken);
+                        dateTime = DateTime.Now;
                     }
-
-                    await StartProcessDownloadEarnings(stoppingToken);
-
                     _logger.LogInformation("Receiving running at: {time}", DateTimeOffset.Now);
                     //await Task.Delay(864 * 100000, stoppingToken);
                     await Task.Delay(300000, stoppingToken);
@@ -108,6 +113,7 @@ namespace CtrlInvest.Import.Dividends
 
                 foreach (var item in messages)
                 {
+                    _logger.LogInformation($"Sending: {item.ToJson()}");
                     _messageBrokerService.DoSendMessageOperation(item.ToJson());
                 }
             }).ContinueWith(t =>

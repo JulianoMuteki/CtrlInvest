@@ -57,9 +57,10 @@ namespace CtrlInvest.MessageBroker
                // _logger.LogInformation($"Processing msg: '{message}'.");
                 try
                 {
-                    
-                 //   _logger.LogInformation($"message received : {message} ********** {_queueName}");
-                     ProcessCompleted?.Invoke(message, _queueName);              
+
+                    _logger.LogTrace($"Processing msg: '{message}' at {DateTime.Now}");
+
+                    ProcessCompleted?.Invoke(message, _queueName);              
                     _channel.BasicAck(ea.DeliveryTag, false);
                     await Task.CompletedTask;
                 }
@@ -84,7 +85,7 @@ namespace CtrlInvest.MessageBroker
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Receiving running {Queue} at: {time}", _queueName, DateTimeOffset.Now);
+                _logger.LogInformation("Waiting receive running {Queue} at: {time}", _queueName, DateTimeOffset.Now);
                 await Task.Delay(1000 * 100, stoppingToken);
             }
 
