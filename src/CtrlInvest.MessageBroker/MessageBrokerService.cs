@@ -46,9 +46,9 @@ namespace CtrlInvest.MessageBroker
             
         }
 
-        public async Task DoReceiveMessageOperation(CancellationToken stoppingToken)
+        public void DoReceiveMessageOperation()
         {
-            stoppingToken.ThrowIfCancellationRequested();
+          //  stoppingToken.ThrowIfCancellationRequested();
 
             _consumer = new AsyncEventingBasicConsumer(_channel);
             _consumer.Received += async (bc, ea) =>
@@ -58,11 +58,10 @@ namespace CtrlInvest.MessageBroker
                 try
                 {
 
-                    _logger.LogTrace($"Processing msg: '{message}' at {DateTime.Now}");
-
-                    ProcessCompleted?.Invoke(message, _queueName);              
+                    _logger.LogTrace($"Processing msg: '{message}' at {DateTime.Now}");                      
                     _channel.BasicAck(ea.DeliveryTag, false);
-                    await Task.CompletedTask;
+                    ProcessCompleted?.Invoke(message, _queueName);
+                    //await Task.CompletedTask;
                 }
                 catch (JsonException)
                 {
@@ -83,13 +82,13 @@ namespace CtrlInvest.MessageBroker
 
             _channel.BasicConsume(queue: _queueName, autoAck: false, consumer: _consumer);
 
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                _logger.LogInformation("Waiting receive running {Queue} at: {time}", _queueName, DateTimeOffset.Now);
-                await Task.Delay(1000 * 100, stoppingToken);
-            }
+            //while (!stoppingToken.IsCancellationRequested)
+            //{
+            //    _logger.LogInformation("Waiting receive running {Queue} at: {time}", _queueName, DateTimeOffset.Now);
+            //    await Task.Delay(1000 * 100, stoppingToken);
+            //}
 
-            await Task.CompletedTask;
+          //  await Task.CompletedTask;
         }
 
 

@@ -53,11 +53,15 @@ namespace CtrlInvest.Import.Dividends
 
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    if (DateTime.Now > dateTime.AddHours(1))
+                    if (DateTime.Now > dateTime.AddMinutes(5))
                     {
                         if (_works.Count > 0)
                         {
-                            await Task.WhenAll(_works);
+                            try
+                            {
+                                await Task.WhenAll(_works);
+                            }
+                            catch { }
                             _works.Clear();
                         }
 
@@ -66,7 +70,7 @@ namespace CtrlInvest.Import.Dividends
                     }
                     _logger.LogInformation("Receiving running at: {time}", DateTimeOffset.Now);
                     //await Task.Delay(864 * 100000, stoppingToken);
-                    await Task.Delay(300000, stoppingToken);
+                    await Task.Delay(60000, stoppingToken);
                 }
             }
             catch (AggregateException ae)
@@ -99,7 +103,7 @@ namespace CtrlInvest.Import.Dividends
         // event handler
         private void event_ImportDataFromServerCompleted(object sender, ImportDataFromServerEventArgs e)
         {
-            _logger.LogInformation($"####### Event Import Data From Server Completed! {sender}");
+            _logger.LogInformation($"Event Import Data From Server Completed! {sender}");
 
             _works.Add(SendToMessageBroker(e.HistoricalDataList, e.Ticket.Ticker, e.Ticket.Id));
         }

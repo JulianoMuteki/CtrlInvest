@@ -39,12 +39,13 @@ namespace CtrlInvest.Receive.HistoricalData
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service running.");
 
-            _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_DIVIDENDS));
-            //_works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
-
             try
             {
-                Task.WaitAll(_works.ToArray(), stoppingToken);
+                _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_DIVIDENDS));
+                //_works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
+
+
+                await Task.WhenAll(_works);
             }
             catch (AggregateException ae)
             {
@@ -52,6 +53,11 @@ namespace CtrlInvest.Receive.HistoricalData
                 foreach (var ex in ae.Flatten().InnerExceptions)
                     _logger.LogError("Exception {0}", ex.Message);
             }
+            catch (Exception e)
+            {
+                _logger.LogError(default, e, e.Message);
+            }
+
 
             await Task.CompletedTask;
         }
@@ -60,16 +66,23 @@ namespace CtrlInvest.Receive.HistoricalData
         {
             try
             {
-                using (var scope = _serviceProvider.CreateScope())
+                stoppingToken.ThrowIfCancellationRequested();
+
+                using var scope = _serviceProvider.CreateScope();
+
+                var messageBrokerService = scope.ServiceProvider
+                                                .GetService<IMessageBrokerService>();
+
+                messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
+                messageBrokerService.SetQueueChannel(queueName);
+                messageBrokerService.DoReceiveMessageOperation();
+
+                while (!stoppingToken.IsCancellationRequested)
                 {
-                    var messageBrokerService =
-                        scope.ServiceProvider
-                            .GetService<IMessageBrokerService>();
+                    stoppingToken.ThrowIfCancellationRequested();
 
-                    messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
-                    messageBrokerService.SetQueueChannel(queueName);
-
-                    await messageBrokerService.DoReceiveMessageOperation(stoppingToken);
+                    _logger.LogInformation("while Waiting receive running at: {time}", DateTimeOffset.Now);
+                    await Task.Delay(6000, stoppingToken);
                 }
             }
             catch (AggregateException ae)
@@ -78,6 +91,11 @@ namespace CtrlInvest.Receive.HistoricalData
                 foreach (var ex in ae.Flatten().InnerExceptions)
                     _logger.LogError("Exception {0}", ex.Message);
             }
+            catch (Exception e)
+            {
+                _logger.LogError(default, e, e.Message);
+            }
+
             await Task.CompletedTask;
         }
 
@@ -89,7 +107,7 @@ namespace CtrlInvest.Receive.HistoricalData
 
             if (QueueName.HISTORICAL_PRICE == queueName)
             {
-              _historicalPriceService.SaveInDatabaseOperation(sender.ToString());
+                _historicalPriceService.SaveInDatabaseOperation(sender.ToString());
             }
             else if (QueueName.HISTORICAL_DIVIDENDS == queueName)
             {
