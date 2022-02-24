@@ -3,7 +3,6 @@ using CtrlInvest.Import.Dividends.Services;
 using CtrlInvest.MessageBroker;
 using CtrlInvest.MessageBroker.Common;
 using CtrlInvest.MessageBroker.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;

@@ -6,8 +6,6 @@ using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace CtrlInvest.MessageBroker
 {

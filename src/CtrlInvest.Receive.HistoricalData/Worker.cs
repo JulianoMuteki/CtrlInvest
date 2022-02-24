@@ -1,6 +1,6 @@
 using CtrlInvest.MessageBroker;
 using CtrlInvest.MessageBroker.Helpers;
-using CtrlInvest.Receive.HistoricalData.Services;
+using CtrlInvest.Services.StocksExchanges;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -42,7 +42,7 @@ namespace CtrlInvest.Receive.HistoricalData
             try
             {
                 _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_DIVIDENDS));
-                //_works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
+                _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
 
 
                 await Task.WhenAll(_works);

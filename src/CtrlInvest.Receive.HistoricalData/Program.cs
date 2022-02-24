@@ -5,11 +5,9 @@ using Microsoft.Extensions.Configuration;
 using System;
 using CtrlInvest.Infra.Context;
 using CtrlInvest.MessageBroker;
-using CtrlInvest.Domain.Interfaces.Application;
-using CtrlInvest.Services;
 using CtrlInvest.Domain.Interfaces.Base;
 using CtrlInvest.Infra.Repository;
-using CtrlInvest.Receive.HistoricalData.Services;
+using CtrlInvest.Services.StocksExchanges;
 
 namespace CtrlInvest.Receive.HistoricalData
 {
@@ -47,9 +45,12 @@ namespace CtrlInvest.Receive.HistoricalData
                             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                             .AddEnvironmentVariables()
                             .AddCommandLine(args)
-                            .Build();                   
+                            .Build();
 
-                    services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
+                    services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient, ServiceLifetime.Transient);
+                    // Thread services           
+                    services.AddTransient<IUnitOfWork, UnitOfWork>();
+
                     RegisterServices(services);
                     services.AddHostedService<Worker>();
                 });
@@ -62,18 +63,12 @@ namespace CtrlInvest.Receive.HistoricalData
                             .Build();
             var rabbitConfig = configuration.GetSection("RabbitConfig");
             services.Configure<RabbitOptions>(rabbitConfig);
-
-            //services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
             services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
+
             services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
 
-            // Thread services           
-            services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IMessageBrokerService, MessageBrokerService>();
-
-            services.AddTransient<ITicketAppService, TicketAppService>();
             services.AddTransient<IHistoricalPriceService, HistoricalPriceService>();
-            services.AddTransient<IInvestPortfolioService, InvestPortfolioService>();
             services.AddTransient<IHistoricalEarningService, HistoricalEarningService>();
         }
     }

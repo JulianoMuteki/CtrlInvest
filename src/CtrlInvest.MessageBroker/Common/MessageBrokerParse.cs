@@ -1,5 +1,4 @@
-﻿using CtrlInvest.CrossCutting;
-using CtrlInvest.Domain.Entities;
+﻿using CtrlInvest.Services.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;

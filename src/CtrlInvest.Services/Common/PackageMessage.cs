@@ -1,7 +1,7 @@
 ﻿using CtrlInvest.CrossCutting;
 using System;
 
-namespace CtrlInvest.MessageBroker.Common
+namespace CtrlInvest.Services.Common
 {
     public class PackageMessage
     {
