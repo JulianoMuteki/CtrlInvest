@@ -44,7 +44,6 @@ namespace CtrlInvest.Receive.HistoricalData
                 _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_DIVIDENDS));
                 _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
 
-
                 await Task.WhenAll(_works);
             }
             catch (AggregateException ae)

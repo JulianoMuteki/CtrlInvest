@@ -38,7 +38,7 @@ namespace CtrlInvest.Import.HistoricalPrice
             foreach (var downloadHistoricalPriceModel in _downloadHistoricalPriceModels)
             {
                 var historicalPriceList = DownloadHistorical(downloadHistoricalPriceModel.ticket.Ticker, downloadHistoricalPriceModel.DateStart,
-                                                             downloadHistoricalPriceModel.DateEnd); ;
+                                                             downloadHistoricalPriceModel.DateEnd);
 
                 SendtoBroker(historicalPriceList, downloadHistoricalPriceModel.ticket);
             }

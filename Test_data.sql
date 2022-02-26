@@ -13,6 +13,7 @@ INSERT INTO public."TicketSyncs"(
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
 WHERE "Ticker" = 'WEGE3.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
+
 INSERT INTO public."Banks"(
 	"BankID", "Name", "BankBalance", "BankCode", "InitialBalance", "CreationDate", "DateModified", "IsDelete", "IsDisable")
 	VALUES ('e069604c-70af-11ec-914b-0242ac130002', 'INTER DTVM LTDA', '77', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);

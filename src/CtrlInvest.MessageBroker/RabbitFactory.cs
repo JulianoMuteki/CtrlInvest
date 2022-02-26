@@ -11,10 +11,10 @@ namespace CtrlInvest.MessageBroker
 
         private readonly IConnection _connection;
 
-        public RabbitFactory(IOptions<RabbitOptions> optionsAccs)            
+        public RabbitFactory(IOptions<RabbitOptions> optionsAccs)
         {
             _options = optionsAccs.Value;
-           
+
             _connection = GetConnection();
             _connection.ConnectionShutdown += Connection_ConnectionShutdown;
         }
@@ -28,9 +28,11 @@ namespace CtrlInvest.MessageBroker
                 Password = _options.Password,
                 Port = _options.Port,
                 VirtualHost = _options.VHost,
-                //  AutomaticRecoveryEnabled = true,
+                AutomaticRecoveryEnabled = true,
+                TopologyRecoveryEnabled = false,
                 //  RequestedChannelMax = 4,
-                //   NetworkRecoveryInterval = System.TimeSpan.FromSeconds(10),
+                NetworkRecoveryInterval = System.TimeSpan.FromMinutes(30),
+                ContinuationTimeout = TimeSpan.FromHours(5),
                 DispatchConsumersAsync = true
             };
 

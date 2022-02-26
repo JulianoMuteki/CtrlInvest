@@ -60,13 +60,15 @@ namespace CtrlInvest.MessageBroker
                     _channel.BasicAck(ea.DeliveryTag, false);
                     ProcessCompleted?.Invoke(message, _queueName);
                     //await Task.CompletedTask;
+                    //_channel.ContinuationTimeout
+                    
                 }
                 catch (JsonException)
                 {
                     _logger.LogError($"JSON Parse Error: '{message}'.");
-                    _channel.BasicNack(ea.DeliveryTag, false, false);
+                  //  _channel.BasicNack(ea.DeliveryTag, false, false);
                 }
-                catch (AlreadyClosedException)
+                catch (AlreadyClosedException z)
                 {
                     _logger.LogInformation("RabbitMQ is closed!");
                     _channel.BasicNack(ea.DeliveryTag, false, false);
@@ -74,7 +76,7 @@ namespace CtrlInvest.MessageBroker
                 catch (Exception e)
                 {
                     _logger.LogError(default, e, e.Message);
-                    _channel.BasicNack(ea.DeliveryTag, false, false);
+                  //  _channel.BasicNack(ea.DeliveryTag, false, false);
                 }
             };
 

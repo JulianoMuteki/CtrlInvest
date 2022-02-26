@@ -26,10 +26,19 @@ namespace CtrlInvest.Services.StocksExchanges
         {
             try
             {
-              var entityReturn = _unitOfWork.Repository<HistoricalPrice>().Add(entity);
-                _unitOfWork.CommitSync();
+                HistoricalPrice earningExist = _unitOfWork.Repository<HistoricalPrice>().Find(x => x.TickerID == entity.TickerID && x.Date == entity.Date);
 
-                return entityReturn;
+                if (earningExist == null)
+                {
+                    var entityReturn = _unitOfWork.Repository<HistoricalPrice>().Add(entity);
+                    _unitOfWork.CommitSync();
+
+                    return entityReturn;
+                }
+                else
+                {
+
+                }
             }
             catch (CustomException exc)
             {

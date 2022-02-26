@@ -60,6 +60,5 @@ namespace CtrlInvest.Import.HistoricalPrice
                     _serviceConfigurations.Intervalo, stoppingToken);
             }
         }
-
     }
 }
