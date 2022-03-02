@@ -28,12 +28,13 @@ namespace CtrlInvest.MessageBroker
                 Password = _options.Password,
                 Port = _options.Port,
                 VirtualHost = _options.VHost,
-                AutomaticRecoveryEnabled = true,
-                TopologyRecoveryEnabled = false,
+                //AutomaticRecoveryEnabled = true,
+                //TopologyRecoveryEnabled = false,     
+                //NetworkRecoveryInterval = System.TimeSpan.FromMinutes(30),
+                //ContinuationTimeout = TimeSpan.FromHours(5)
+
                 //  RequestedChannelMax = 4,
-                NetworkRecoveryInterval = System.TimeSpan.FromMinutes(30),
-                ContinuationTimeout = TimeSpan.FromHours(5),
-                DispatchConsumersAsync = true
+                //DispatchConsumersAsync = true
             };
 
             return factory.CreateConnection();

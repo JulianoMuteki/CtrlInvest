@@ -12,19 +12,18 @@ namespace CtrlInvest.MessageBroker
     public class MessageBrokerService : IMessageBrokerService
     {
         private readonly DefaultObjectPool<IModel> _objectPool;
-        private readonly ILogger _logger;        
+        private readonly ILogger _logger;
         private readonly IModel _channel;
-        private AsyncEventingBasicConsumer _consumer;
-        public event EventHandler<string> ProcessCompleted;
-        private readonly IRabbitFactoryConnection _rabbitFactoryConnection;
+        private EventingBasicConsumer _consumer;
         private string _queueName;
+        private DateTime _expireTime = DateTime.Now;
 
+        public event EventHandler<string> ProcessCompleted;
         public MessageBrokerService(IRabbitFactoryConnection objectPolicy, ILogger<MessageBrokerService> logger)
         {
-            _rabbitFactoryConnection = objectPolicy;
-            _objectPool = new DefaultObjectPool<IModel>(_rabbitFactoryConnection, Environment.ProcessorCount * 2);
-
             _logger = logger;
+            _logger.LogInformation("************ Start Message Broker ************");
+            _objectPool = new DefaultObjectPool<IModel>(objectPolicy, Environment.ProcessorCount * 2);          
             _channel = _objectPool.Get();
         }
 
@@ -41,32 +40,27 @@ namespace CtrlInvest.MessageBroker
         public void SetQueueChannel(string queueName)
         {
             SetQueueName(queueName);
-            
+
         }
 
         public void DoReceiveMessageOperation()
         {
-          //  stoppingToken.ThrowIfCancellationRequested();
-
-            _consumer = new AsyncEventingBasicConsumer(_channel);
-            _consumer.Received += async (bc, ea) =>
+            _consumer = new EventingBasicConsumer(_channel);
+            _consumer.Received += (bc, ea) =>
             {
                 var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-               // _logger.LogInformation($"Processing msg: '{message}'.");
+
                 try
                 {
-
-                    _logger.LogTrace($"Processing msg: '{message}' at {DateTime.Now}");                      
+                    _logger.LogTrace($"Processing msg: '{message}' at {DateTime.Now}");
+                    _expireTime = DateTime.Now;
                     _channel.BasicAck(ea.DeliveryTag, false);
                     ProcessCompleted?.Invoke(message, _queueName);
-                    //await Task.CompletedTask;
-                    //_channel.ContinuationTimeout
-                    
                 }
-                catch (JsonException)
+                catch (JsonException je)
                 {
                     _logger.LogError($"JSON Parse Error: '{message}'.");
-                  //  _channel.BasicNack(ea.DeliveryTag, false, false);
+                    _channel.BasicNack(ea.DeliveryTag, false, false);
                 }
                 catch (AlreadyClosedException z)
                 {
@@ -76,22 +70,20 @@ namespace CtrlInvest.MessageBroker
                 catch (Exception e)
                 {
                     _logger.LogError(default, e, e.Message);
-                  //  _channel.BasicNack(ea.DeliveryTag, false, false);
+                    _channel.BasicNack(ea.DeliveryTag, false, false);
                 }
             };
 
             _channel.BasicConsume(queue: _queueName, autoAck: false, consumer: _consumer);
-
-            //while (!stoppingToken.IsCancellationRequested)
-            //{
-            //    _logger.LogInformation("Waiting receive running {Queue} at: {time}", _queueName, DateTimeOffset.Now);
-            //    await Task.Delay(1000 * 100, stoppingToken);
-            //}
-
-          //  await Task.CompletedTask;
         }
 
-
+        public bool isExpireTimeToReceiveMessage()
+        {
+            if (DateTime.Now > _expireTime.AddMinutes(1))
+                return true;
+            else
+                return false;
+        }
         public void DoSendMessageOperation(string message)
         {
             try
@@ -118,10 +110,18 @@ namespace CtrlInvest.MessageBroker
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
-            {                
-                _rabbitFactoryConnection.Dispose();
+            {
+                if (_channel.IsOpen)
+                    _channel.Close();
+
+                _channel.Dispose();
             }
             // free native resources if there are any.
+        }
+
+        public bool channelIsOpen()
+        {
+            return _channel.IsOpen;
         }
     }
 }

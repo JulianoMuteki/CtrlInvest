@@ -11,7 +11,9 @@ namespace CtrlInvest.MessageBroker
         void SetQueueChannel(string queueName);
         void DoSendMessageOperation(string message);
         event EventHandler<string> ProcessCompleted;
-        // Task DoReceiveMessageOperation(CancellationToken stoppingToken);
         void DoReceiveMessageOperation();
+        bool isExpireTimeToReceiveMessage();
+        bool channelIsOpen();
+
     }
 }

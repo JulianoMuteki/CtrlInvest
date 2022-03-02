@@ -18,6 +18,8 @@ namespace CtrlInvest.Receive.HistoricalData
         private readonly IServiceProvider _serviceProvider;
         private readonly IHistoricalPriceService _historicalPriceService;
         private readonly IHistoricalEarningService _historicalEarningService;
+        IMessageBrokerService messageBrokerService = null;
+
         private IList<Task> _works;
         public Worker(IServiceProvider services, ILogger<Worker> logger, IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
         {
@@ -39,50 +41,69 @@ namespace CtrlInvest.Receive.HistoricalData
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service running.");
 
-            try
+            while (!stoppingToken.IsCancellationRequested)
             {
-                _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_DIVIDENDS));
-                _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
+                stoppingToken.ThrowIfCancellationRequested();
 
-                await Task.WhenAll(_works);
+                await Task.Run(async () =>
+                {
+                    await StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE);
+                }, stoppingToken);
+
+                //Tempo para rodar Broker novamente
+                //5 horas
+                await Task.Delay(60000 * 5, stoppingToken);
             }
-            catch (AggregateException ae)
-            {
-                _logger.LogError("One or more exceptions occurred: ");
-                foreach (var ex in ae.Flatten().InnerExceptions)
-                    _logger.LogError("Exception {0}", ex.Message);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(default, e, e.Message);
-            }
+
+            //try
+            //{
+            //    _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_DIVIDENDS));
+            //    _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
+
+            //    await Task.WhenAll(_works);
+            //}
+            //catch (AggregateException ae)
+            //{
+            //    _logger.LogError("One or more exceptions occurred: ");
+            //    foreach (var ex in ae.Flatten().InnerExceptions)
+            //        _logger.LogError("Exception {0}", ex.Message);
+            //}
+            //catch (Exception e)
+            //{
+            //    _logger.LogError(default, e, e.Message);
+            //}
 
 
             await Task.CompletedTask;
         }
 
-        private async Task StartProcessReceiveMessage(CancellationToken stoppingToken, string queueName)
+        private Task DoWork(CancellationToken stoppingToken)
         {
+            var t = Task.Delay(6000, stoppingToken);
+
+            return t;
+        }
+
+        private Task StartProcessReceiveMessage(CancellationToken stoppingToken, string queueName)
+        {           
             try
             {
-                stoppingToken.ThrowIfCancellationRequested();
-
                 using var scope = _serviceProvider.CreateScope();
 
-                var messageBrokerService = scope.ServiceProvider
+                messageBrokerService = scope.ServiceProvider
                                                 .GetService<IMessageBrokerService>();
 
                 messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
                 messageBrokerService.SetQueueChannel(queueName);
                 messageBrokerService.DoReceiveMessageOperation();
 
-                while (!stoppingToken.IsCancellationRequested)
+                while (messageBrokerService.channelIsOpen())
                 {
-                    stoppingToken.ThrowIfCancellationRequested();
-
-                    _logger.LogInformation("while Waiting receive running at: {time}", DateTimeOffset.Now);
-                    await Task.Delay(6000, stoppingToken);
+                    _logger.LogInformation("Waiting DoReceiveMessageOperation at: {time}", DateTimeOffset.Now);
+                    Task.Delay(60000, stoppingToken).Wait();
                 }
+
+                _logger.LogInformation("************* Expire Time ************");
             }
             catch (AggregateException ae)
             {
@@ -94,8 +115,14 @@ namespace CtrlInvest.Receive.HistoricalData
             {
                 _logger.LogError(default, e, e.Message);
             }
+            finally
+            {
+                // messageBrokerService.CloseChannel();
+                //messageBrokerService.Dispose();
 
-            await Task.CompletedTask;
+            }
+
+            return Task.CompletedTask;
         }
 
         // event handler
@@ -122,6 +149,9 @@ namespace CtrlInvest.Receive.HistoricalData
         {
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service is stopping.");
+            
+            if (messageBrokerService != null)
+                messageBrokerService.Dispose();
 
             await base.StopAsync(stoppingToken);
         }

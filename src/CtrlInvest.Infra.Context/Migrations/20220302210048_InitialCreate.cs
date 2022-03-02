@@ -50,25 +50,6 @@ namespace CtrlInvest.Infra.Context.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Banks",
-                columns: table => new
-                {
-                    BankID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    BankBalance = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
-                    BankCode = table.Column<int>(type: "integer", nullable: false),
-                    InitialBalance = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("BankID", x => x.BankID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Tickets",
                 columns: table => new
                 {
@@ -195,6 +176,33 @@ namespace CtrlInvest.Infra.Context.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Earnings",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    DateWith = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    ValueIncome = table.Column<double>(type: "double precision", nullable: false),
+                    Type = table.Column<string>(type: "character varying(150)", maxLength: 150, nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    Quantity = table.Column<int>(type: "integer", nullable: false),
+                    TickerID = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Earnings", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Earnings_Tickets_TickerID",
+                        column: x => x.TickerID,
+                        principalTable: "Tickets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "HistoricalPrices",
                 columns: table => new
                 {
@@ -248,149 +256,6 @@ namespace CtrlInvest.Infra.Context.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "FinancialTransactions",
-                columns: table => new
-                {
-                    FinancialTransactionID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Description = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    Value = table.Column<decimal>(type: "numeric(10,2)", nullable: false),
-                    PaymentDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
-                    IsOperationDone = table.Column<bool>(type: "boolean", nullable: false),
-                    ETransactionType = table.Column<int>(type: "integer", nullable: false),
-                    EPaymentMethod = table.Column<int>(type: "integer", nullable: false),
-                    BankID = table.Column<Guid>(type: "uuid", nullable: false),
-                    ChildTreeID = table.Column<Guid>(type: "uuid", nullable: false),
-                    ParentTreeID = table.Column<Guid>(type: "uuid", nullable: false),
-                    GrandChildTreeID = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("FinancialTransactionID", x => x.FinancialTransactionID);
-                    table.ForeignKey(
-                        name: "FK_FinancialTransactions_Banks_BankID",
-                        column: x => x.BankID,
-                        principalTable: "Banks",
-                        principalColumn: "BankID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "GrandChildrenTrees",
-                columns: table => new
-                {
-                    GrandChildTreeID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Tag = table.Column<string>(type: "text", nullable: true),
-                    LevelTree = table.Column<int>(type: "integer", nullable: false),
-                    ParentNodeID = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("GrandChildTreeID", x => x.GrandChildTreeID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ParentsTrees",
-                columns: table => new
-                {
-                    ParentTreeID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Tag = table.Column<string>(type: "text", nullable: true),
-                    LevelTree = table.Column<int>(type: "integer", nullable: false),
-                    ParentNodeID = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("ParentTreeID", x => x.ParentTreeID);
-                    table.ForeignKey(
-                        name: "FK_ParentsTrees_GrandChildrenTrees_ParentNodeID",
-                        column: x => x.ParentNodeID,
-                        principalTable: "GrandChildrenTrees",
-                        principalColumn: "GrandChildTreeID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ChildrenTrees",
-                columns: table => new
-                {
-                    ChildTreeID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: true),
-                    Tag = table.Column<string>(type: "text", nullable: true),
-                    LevelTree = table.Column<int>(type: "integer", nullable: false),
-                    ParentNodeID = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("ChildTreeID", x => x.ChildTreeID);
-                    table.ForeignKey(
-                        name: "FK_ChildrenTrees_ParentsTrees_ParentNodeID",
-                        column: x => x.ParentNodeID,
-                        principalTable: "ParentsTrees",
-                        principalColumn: "ParentTreeID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Leaves",
-                columns: table => new
-                {
-                    LeafID = table.Column<Guid>(type: "uuid", nullable: false),
-                    CompositeID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("LeafID", x => x.LeafID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Composites",
-                columns: table => new
-                {
-                    CompositeID = table.Column<Guid>(type: "uuid", nullable: false),
-                    Title = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
-                    LeafParentID = table.Column<Guid>(type: "uuid", nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    DateModified = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    IsDelete = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDisable = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("CompositeID", x => x.CompositeID);
-                    table.ForeignKey(
-                        name: "FK_Composites_Leaves_LeafParentID",
-                        column: x => x.LeafParentID,
-                        principalTable: "Leaves",
-                        principalColumn: "LeafID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -429,106 +294,18 @@ namespace CtrlInvest.Infra.Context.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_ChildrenTrees_ParentNodeID",
-                table: "ChildrenTrees",
-                column: "ParentNodeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Composites_LeafParentID",
-                table: "Composites",
-                column: "LeafParentID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialTransactions_BankID",
-                table: "FinancialTransactions",
-                column: "BankID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialTransactions_ChildTreeID",
-                table: "FinancialTransactions",
-                column: "ChildTreeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialTransactions_GrandChildTreeID",
-                table: "FinancialTransactions",
-                column: "GrandChildTreeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FinancialTransactions_ParentTreeID",
-                table: "FinancialTransactions",
-                column: "ParentTreeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GrandChildrenTrees_ParentNodeID",
-                table: "GrandChildrenTrees",
-                column: "ParentNodeID");
+                name: "IX_Earnings_TickerID",
+                table: "Earnings",
+                column: "TickerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_HistoricalPrices_TickerID",
                 table: "HistoricalPrices",
                 column: "TickerID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Leaves_CompositeID",
-                table: "Leaves",
-                column: "CompositeID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ParentsTrees_ParentNodeID",
-                table: "ParentsTrees",
-                column: "ParentNodeID");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_FinancialTransactions_ChildrenTrees_ChildTreeID",
-                table: "FinancialTransactions",
-                column: "ChildTreeID",
-                principalTable: "ChildrenTrees",
-                principalColumn: "ChildTreeID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_FinancialTransactions_GrandChildrenTrees_GrandChildTreeID",
-                table: "FinancialTransactions",
-                column: "GrandChildTreeID",
-                principalTable: "GrandChildrenTrees",
-                principalColumn: "GrandChildTreeID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_FinancialTransactions_ParentsTrees_ParentTreeID",
-                table: "FinancialTransactions",
-                column: "ParentTreeID",
-                principalTable: "ParentsTrees",
-                principalColumn: "ParentTreeID",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_GrandChildrenTrees_ChildrenTrees_ParentNodeID",
-                table: "GrandChildrenTrees",
-                column: "ParentNodeID",
-                principalTable: "ChildrenTrees",
-                principalColumn: "ChildTreeID",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Leaves_Composites_CompositeID",
-                table: "Leaves",
-                column: "CompositeID",
-                principalTable: "Composites",
-                principalColumn: "CompositeID",
-                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_ChildrenTrees_ParentsTrees_ParentNodeID",
-                table: "ChildrenTrees");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Composites_Leaves_LeafParentID",
-                table: "Composites");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -545,7 +322,7 @@ namespace CtrlInvest.Infra.Context.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "FinancialTransactions");
+                name: "Earnings");
 
             migrationBuilder.DropTable(
                 name: "HistoricalPrices");
@@ -560,25 +337,7 @@ namespace CtrlInvest.Infra.Context.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Banks");
-
-            migrationBuilder.DropTable(
                 name: "Tickets");
-
-            migrationBuilder.DropTable(
-                name: "ParentsTrees");
-
-            migrationBuilder.DropTable(
-                name: "GrandChildrenTrees");
-
-            migrationBuilder.DropTable(
-                name: "ChildrenTrees");
-
-            migrationBuilder.DropTable(
-                name: "Leaves");
-
-            migrationBuilder.DropTable(
-                name: "Composites");
         }
     }
 }
