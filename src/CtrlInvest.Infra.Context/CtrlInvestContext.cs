@@ -1,11 +1,7 @@
 ﻿using CtrlInvest.Domain.Entities;
-using CtrlInvest.Domain.Entities.FinancialClassification;
-using CtrlInvest.Domain.Entities.InvestimentsPortifolios;
 using CtrlInvest.Domain.Entities.StocksExchanges;
 using CtrlInvest.Domain.Identity;
 using CtrlInvest.Infra.Context.Mapping;
-using CtrlInvest.Infra.Context.Mapping.Financial;
-using CtrlInvest.Infra.Context.Mapping.FinancialClassification;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -17,19 +13,10 @@ namespace CtrlInvest.Infra.Context
                                                           ApplicationUserRole, ApplicationUserLogin,
                                                           ApplicationRoleClaim, ApplicationUserToken>
     {
-
-        public DbSet<Composite> Composites { get; set; }
-        public DbSet<Leaf> Leaves { get; set; }
-        public DbSet<ParentTree> ParentsTrees { get; set; }
-        public DbSet<ChildTree> ChildrenTrees { get; set; }
-        public DbSet<GrandChildTree> GrandChildrenTrees { get; set; }
-        public DbSet<FinancialTransaction> FinancialTransactions { get; set; }
-        public DbSet<Bank> Banks { get; set; }
         public DbSet<Ticket> Tickets { get; set; }
         public DbSet<HistoricalPrice> HistoricalPrices { get; set; }
         public DbSet<TicketSync> TicketSyncs { get; set; }
         public DbSet<Earning> Earnings { get; set; }
-        public DbSet<BrokerageNote> BrokerageNotes { get; set; }
 
         public CtrlInvestContext()
         {
@@ -57,22 +44,12 @@ namespace CtrlInvest.Infra.Context
             modelBuilder.Ignore<ValidationFailure>();
             modelBuilder.Ignore<ValidationResult>();
 
-            modelBuilder.ApplyConfiguration(new CompositeMap());
-            modelBuilder.ApplyConfiguration(new LeafMap());
-            modelBuilder.ApplyConfiguration(new BankMap());
-
-            modelBuilder.ApplyConfiguration(new ParentTreeMap());
-            modelBuilder.ApplyConfiguration(new ChildTreeMap());
-            modelBuilder.ApplyConfiguration(new GrandChildTreeMap());
-            modelBuilder.ApplyConfiguration(new FinancialTransactionMap());
             modelBuilder.ApplyConfiguration(new TicketMap());
             modelBuilder.ApplyConfiguration(new HistoricalPriceMap());
             modelBuilder.ApplyConfiguration(new TicketSyncMap());
             modelBuilder.ApplyConfiguration(new EarningMap());
-            modelBuilder.ApplyConfiguration(new BrokerageNoteMap());
 
             base.OnModelCreating(modelBuilder);
-           // modelBuilder.Entity<Ticket>().ToSqlQuery("CREATE EXTENSION IF NOT EXISTS \"uuid - ossp\";"); // <<< Anything you want :)
 
             modelBuilder.Entity<ApplicationUser>(b =>
                 {
