@@ -5,8 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,14 +18,12 @@ namespace CtrlInvest.Receive.HistoricalData
         private readonly IHistoricalEarningService _historicalEarningService;
         IMessageBrokerService messageBrokerService = null;
 
-        private IList<Task> _works;
         public Worker(IServiceProvider services, ILogger<Worker> logger, IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
         {
             _historicalPriceService = historicalPriceService;
             _historicalEarningService = historicalEarningService;
             _serviceProvider = services;
-            _logger = logger;
-            _works = new List<Task>();
+            _logger = logger;      
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
@@ -55,33 +51,7 @@ namespace CtrlInvest.Receive.HistoricalData
                 await Task.Delay(60000 * 5, stoppingToken);
             }
 
-            //try
-            //{
-            //    _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_DIVIDENDS));
-            //    _works.Add(StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE));
-
-            //    await Task.WhenAll(_works);
-            //}
-            //catch (AggregateException ae)
-            //{
-            //    _logger.LogError("One or more exceptions occurred: ");
-            //    foreach (var ex in ae.Flatten().InnerExceptions)
-            //        _logger.LogError("Exception {0}", ex.Message);
-            //}
-            //catch (Exception e)
-            //{
-            //    _logger.LogError(default, e, e.Message);
-            //}
-
-
             await Task.CompletedTask;
-        }
-
-        private Task DoWork(CancellationToken stoppingToken)
-        {
-            var t = Task.Delay(6000, stoppingToken);
-
-            return t;
         }
 
         private Task StartProcessReceiveMessage(CancellationToken stoppingToken, string queueName)
@@ -114,12 +84,6 @@ namespace CtrlInvest.Receive.HistoricalData
             catch (Exception e)
             {
                 _logger.LogError(default, e, e.Message);
-            }
-            finally
-            {
-                // messageBrokerService.CloseChannel();
-                //messageBrokerService.Dispose();
-
             }
 
             return Task.CompletedTask;

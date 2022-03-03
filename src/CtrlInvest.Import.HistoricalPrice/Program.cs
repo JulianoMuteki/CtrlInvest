@@ -32,7 +32,6 @@ namespace CtrlInvest.Import.HistoricalPrice
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }

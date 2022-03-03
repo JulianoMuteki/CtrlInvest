@@ -61,16 +61,19 @@ namespace CtrlInvest.MessageBroker
                 {
                     _logger.LogError($"JSON Parse Error: '{message}'.");
                     _channel.BasicNack(ea.DeliveryTag, false, false);
+                    throw je;
                 }
                 catch (AlreadyClosedException z)
                 {
                     _logger.LogInformation("RabbitMQ is closed!");
                     _channel.BasicNack(ea.DeliveryTag, false, false);
+                    throw z;
                 }
                 catch (Exception e)
                 {
                     _logger.LogError(default, e, e.Message);
                     _channel.BasicNack(ea.DeliveryTag, false, false);
+                    throw e;
                 }
             };
 
@@ -116,7 +119,6 @@ namespace CtrlInvest.MessageBroker
 
                 _channel.Dispose();
             }
-            // free native resources if there are any.
         }
 
         public bool channelIsOpen()
