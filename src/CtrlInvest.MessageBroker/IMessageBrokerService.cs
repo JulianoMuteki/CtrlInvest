@@ -13,7 +13,7 @@ namespace CtrlInvest.MessageBroker
         event EventHandler<string> ProcessCompleted;
         void DoReceiveMessageOperation();
         bool isExpireTimeToReceiveMessage();
-        bool channelIsOpen();
+        bool ChannelConnectionIsOpen();
 
     }
 }

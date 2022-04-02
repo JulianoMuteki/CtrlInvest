@@ -8,6 +8,7 @@ using CtrlInvest.MessageBroker;
 using CtrlInvest.Domain.Interfaces.Base;
 using CtrlInvest.Infra.Repository;
 using CtrlInvest.Services.StocksExchanges;
+using Microsoft.Extensions.Logging;
 
 namespace CtrlInvest.Receive.HistoricalData
 {
@@ -46,8 +47,13 @@ namespace CtrlInvest.Receive.HistoricalData
                             .AddEnvironmentVariables()
                             .AddCommandLine(args)
                             .Build();
-
-                    services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient, ServiceLifetime.Transient);
+                    //services.AddLogging(loggingBuilder => {
+                    //    loggingBuilder.AddConsole()
+                    //        .AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information);
+                    //    loggingBuilder.AddDebug();
+                    //});
+                    services.AddDbContext<CtrlInvestContext>(options => 
+                        options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient, ServiceLifetime.Transient);
                     // Thread services           
                     services.AddTransient<IUnitOfWork, UnitOfWork>();
 

@@ -82,7 +82,7 @@ namespace CtrlInvest.MessageBroker
 
         public bool isExpireTimeToReceiveMessage()
         {
-            if (DateTime.Now > _expireTime.AddMinutes(1))
+            if (DateTime.Now > _expireTime.AddMinutes(15))
                 return true;
             else
                 return false;
@@ -114,6 +114,7 @@ namespace CtrlInvest.MessageBroker
         {
             if (disposing)
             {
+                //TODO: Check close consumer
                 if (_channel.IsOpen)
                     _channel.Close();
 
@@ -121,7 +122,7 @@ namespace CtrlInvest.MessageBroker
             }
         }
 
-        public bool channelIsOpen()
+        public bool ChannelConnectionIsOpen()
         {
             return _channel.IsOpen;
         }

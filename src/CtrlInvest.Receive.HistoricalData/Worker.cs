@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,13 +18,16 @@ namespace CtrlInvest.Receive.HistoricalData
         private readonly IHistoricalPriceService _historicalPriceService;
         private readonly IHistoricalEarningService _historicalEarningService;
         IMessageBrokerService messageBrokerService = null;
-
+        private CancellationTokenSource cancelTokenSourceWorker = new CancellationTokenSource();
+        private CancellationToken ctOperation;
         public Worker(IServiceProvider services, ILogger<Worker> logger, IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
         {
             _historicalPriceService = historicalPriceService;
             _historicalEarningService = historicalEarningService;
             _serviceProvider = services;
-            _logger = logger;      
+            _logger = logger;
+            
+            ctOperation = cancelTokenSourceWorker.Token;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
@@ -36,16 +40,15 @@ namespace CtrlInvest.Receive.HistoricalData
         {
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service running.");
+            var tasks = new List<Task>();
 
             while (!stoppingToken.IsCancellationRequested)
             {
                 stoppingToken.ThrowIfCancellationRequested();
 
-                await Task.Run(async () =>
-                {
-                    await StartProcessReceiveMessage(stoppingToken, QueueName.HISTORICAL_PRICE);
-                }, stoppingToken);
-
+                tasks.Add(StartProcessImportHistoricalPrice(ctOperation));
+                tasks.Add(StartProcessImportDividend(ctOperation));
+                Task.WaitAll(tasks.ToArray(), stoppingToken);
                 //Tempo para rodar Broker novamente
                 //5 horas
                 await Task.Delay(60000 * 5, stoppingToken);
@@ -54,8 +57,24 @@ namespace CtrlInvest.Receive.HistoricalData
             await Task.CompletedTask;
         }
 
-        private Task StartProcessReceiveMessage(CancellationToken stoppingToken, string queueName)
-        {           
+        private async Task StartProcessImportHistoricalPrice(CancellationToken ctOperation)
+        {
+            await Task.Run(async () =>
+            {
+                await StartProcessReceiveMessage(ctOperation, QueueName.HISTORICAL_PRICE);
+            }, ctOperation);
+        }
+
+        private async Task StartProcessImportDividend(CancellationToken ctOperation)
+        {
+            await Task.Run(async () =>
+            {
+                await StartProcessReceiveMessage(ctOperation, QueueName.HISTORICAL_DIVIDENDS);
+            }, ctOperation);
+        }
+
+        private Task StartProcessReceiveMessage(CancellationToken ctOperation, string queueName)
+        {
             try
             {
                 using var scope = _serviceProvider.CreateScope();
@@ -67,10 +86,12 @@ namespace CtrlInvest.Receive.HistoricalData
                 messageBrokerService.SetQueueChannel(queueName);
                 messageBrokerService.DoReceiveMessageOperation();
 
-                while (messageBrokerService.channelIsOpen())
+                while (!messageBrokerService.isExpireTimeToReceiveMessage())
                 {
+                    ctOperation.ThrowIfCancellationRequested();
+
                     _logger.LogInformation("Waiting DoReceiveMessageOperation at: {time}", DateTimeOffset.Now);
-                    Task.Delay(60000, stoppingToken).Wait();
+                    Task.Delay(60000, ctOperation).Wait();
                 }
 
                 _logger.LogInformation("************* Expire Time ************");
@@ -81,9 +102,17 @@ namespace CtrlInvest.Receive.HistoricalData
                 foreach (var ex in ae.Flatten().InnerExceptions)
                     _logger.LogError("Exception {0}", ex.Message);
             }
+            catch (OperationCanceledException opX)
+            {
+                _logger.LogError(default, opX, opX.Message);
+            }
             catch (Exception e)
             {
                 _logger.LogError(default, e, e.Message);
+            }
+            finally
+            {
+                messageBrokerService.Dispose();
             }
 
             return Task.CompletedTask;
@@ -113,9 +142,11 @@ namespace CtrlInvest.Receive.HistoricalData
         {
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service is stopping.");
-            
+
             if (messageBrokerService != null)
-                messageBrokerService.Dispose();
+            {
+                cancelTokenSourceWorker.Cancel();
+            }
 
             await base.StopAsync(stoppingToken);
         }
