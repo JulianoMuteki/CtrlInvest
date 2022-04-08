@@ -34,7 +34,7 @@ namespace CtrlInvest.Import.Dividends
                     var context = services.GetRequiredService<CtrlInvestContext>();
                     context.Database.EnsureCreated();
                 }
-                catch (Exception)
+                catch (Exception wx)
                 {
                     throw;
                 }

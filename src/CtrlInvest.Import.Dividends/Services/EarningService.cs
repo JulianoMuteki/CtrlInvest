@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using HtmlAgilityPack;
 using System.Linq;
+using OpenQA.Selenium.Remote;
 
 namespace CtrlInvest.Import.Dividends.Services
 {
@@ -17,14 +18,37 @@ namespace CtrlInvest.Import.Dividends.Services
     {
         private readonly ITicketAppService _ticketAppService;
         public event EventHandler<ImportDataFromServerEventArgs> ThresholdReached;
+        private IWebDriver _driver;
         public EarningService(ITicketAppService ticketAppService)
         {
             _ticketAppService = ticketAppService;
+           
         }
+
+        public void LoadPage(string UrlPaginaCotacoes)
+        {        
+            _driver.Manage().Timeouts().PageLoad =
+                TimeSpan.FromSeconds(60);
+            _driver.Navigate().GoToUrl(UrlPaginaCotacoes);
+        }
+
+        private void CreateInstanceWebDriver()
+        {
+            _driver = new RemoteWebDriver(
+                new Uri("http://localhost:4444/wd/hub"),
+                new FirefoxOptions());
+        }
+
+        private void DestroyInstanceWebDriver()
+        {
+            _driver.Quit();
+            _driver = null;
+        }
+
         public void DoImportOperation()
         {
-           // _logger.LogInformation($"Start Import Operation");
-
+            // _logger.LogInformation($"Start Import Operation");
+            CreateInstanceWebDriver();
             IList<DownloadHistoricalValueModel<Ticket>> downloadHistoricalValueModels = GetListHistoricalEarningsToImport();
             foreach (var downloadHistoricalValueModel in downloadHistoricalValueModels)
             {
@@ -33,6 +57,7 @@ namespace CtrlInvest.Import.Dividends.Services
 
                 OnThresholdReached(historicalEarningList, downloadHistoricalValueModel.ticket);
             }
+
         }
 
         protected virtual void OnThresholdReached(string historicalEarningList, Ticket ticket)
@@ -74,19 +99,10 @@ namespace CtrlInvest.Import.Dividends.Services
         private string DownloadHistoricalEarningFromFundamentus(string ticker, DateTime dtStart, DateTime dtEnd)
         {
             string ticketCode = ticker.Replace(".SA", "");
-            string basePath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-            string customePath = System.IO.Path.Combine(basePath, @"Drivers\geckodriver-v0.30.0-win64");
-            //string fullPath = System.IO.Path.GetFullPath("geckodriver.exe", customePath);
+            LoadPage(string.Format("https://fundamentus.com.br/proventos.php?papel={0}&tipo=2", ticketCode));
 
-            IWebDriver driver = new FirefoxDriver(customePath);
-            driver.Manage().Window.Maximize();
-            driver.Navigate().GoToUrl(string.Format("https://fundamentus.com.br/proventos.php?papel={0}&tipo=2", ticketCode));
-            IWebElement element = driver.FindElement(By.Id("resultado"));
+            IWebElement element = _driver.FindElement(By.Id("resultado"));
             var outerHTML = element.GetAttribute("outerHTML");
-
-            // Console.WriteLine(outerHTML);
-            // File.WriteAllText(FileName, outerHTML);
-            driver.Quit();
 
             return ConvertToList(outerHTML);
         }

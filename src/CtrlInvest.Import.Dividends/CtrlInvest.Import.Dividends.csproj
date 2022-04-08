@@ -21,7 +21,7 @@
 
   <ItemGroup>
     <None Update="Drivers\geckodriver-v0.30.0-win64\geckodriver.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 </Project>
