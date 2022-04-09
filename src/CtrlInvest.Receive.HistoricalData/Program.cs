@@ -8,7 +8,6 @@ using CtrlInvest.MessageBroker;
 using CtrlInvest.Domain.Interfaces.Base;
 using CtrlInvest.Infra.Repository;
 using CtrlInvest.Services.StocksExchanges;
-using Microsoft.Extensions.Logging;
 
 namespace CtrlInvest.Receive.HistoricalData
 {
@@ -43,36 +42,30 @@ namespace CtrlInvest.Receive.HistoricalData
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    IConfiguration Configuration = new ConfigurationBuilder()
+                    IConfiguration configuration = new ConfigurationBuilder()
+                            .SetBasePath(hostContext.HostingEnvironment.ContentRootPath)
                             .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                            .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true)
                             .AddEnvironmentVariables()
                             .AddCommandLine(args)
                             .Build();
-                    //services.AddLogging(loggingBuilder => {
-                    //    loggingBuilder.AddConsole()
-                    //        .AddFilter(DbLoggerCategory.Database.Command.Name, LogLevel.Information);
-                    //    loggingBuilder.AddDebug();
-                    //});
+
                     services.AddDbContext<CtrlInvestContext>(options => 
-                        options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient, ServiceLifetime.Transient);
+                        options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient, ServiceLifetime.Transient);
                     // Thread services           
                     services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-                    RegisterServices(services);
+                    RegisterServices(services, configuration);
                     services.AddHostedService<Worker>();
                 });
 
-        private static void RegisterServices(IServiceCollection services)
+        private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
-            //Message Broker
-            var configuration = new ConfigurationBuilder()
-                            .AddJsonFile("appsettings.json")
-                            .Build();
-            var rabbitConfig = configuration.GetSection("RabbitConfig");
+            var rabbitConfig = configuration.GetSection("rabbitConfig");
             services.Configure<RabbitOptions>(rabbitConfig);
-            services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
+            // services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
 
-            services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
+            services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();                      
 
             services.AddScoped<IMessageBrokerService, MessageBrokerService>();
             services.AddTransient<IHistoricalPriceService, HistoricalPriceService>();

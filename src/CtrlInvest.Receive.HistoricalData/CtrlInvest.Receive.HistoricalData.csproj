@@ -22,4 +22,8 @@
     <ProjectReference Include="..\CtrlInvest.MessageBroker\CtrlInvest.MessageBroker.csproj" />
     <ProjectReference Include="..\CtrlInvest.Services\CtrlInvest.Services.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+  </ItemGroup>
 </Project>

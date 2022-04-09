@@ -17,5 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CtrlInvest.Domain\CtrlInvest.Domain.csproj" />
     <ProjectReference Include="..\CtrlInvest.Infra.Context\CtrlInvest.Infra.Context.csproj" />
+    <ProjectReference Include="..\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj" />
+    <ProjectReference Include="..\CtrlInvest.Services\CtrlInvest.Services.csproj" />
   </ItemGroup>
 </Project>
