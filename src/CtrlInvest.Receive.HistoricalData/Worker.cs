@@ -98,7 +98,7 @@ namespace CtrlInvest.Receive.HistoricalData
                     ctOperation.ThrowIfCancellationRequested();
 
                     _logger.LogInformation("Waiting DoReceiveMessageOperation at: {time}", DateTimeOffset.Now);
-                    Task.Delay(60000, ctOperation).Wait();
+                    Task.Delay(6000, ctOperation).Wait();
                 }
 
                 _logger.LogInformation("************* Expire Time ************");
@@ -120,6 +120,7 @@ namespace CtrlInvest.Receive.HistoricalData
             finally
             {
                 messageBrokerService.Dispose();
+                _requestQueue.StopLaunch();
             }
 
             return Task.CompletedTask;

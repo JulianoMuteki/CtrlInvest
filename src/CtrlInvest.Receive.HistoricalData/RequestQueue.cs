@@ -12,6 +12,7 @@ namespace CtrlInvest.Receive.HistoricalData
         private ConcurrentQueue<String> _storageQueue = new ConcurrentQueue<String>();
         private IHistoricalPriceService _historicalPriceService;
         private IHistoricalEarningService _historicalEarningService;
+        private bool isRunPersistingTask = true;
         private RequestQueue() { }
 
         public void Launch(IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
@@ -38,13 +39,14 @@ namespace CtrlInvest.Receive.HistoricalData
 
         private async Task StartPersistingTask()
         {
-            while (true)
+            while (isRunPersistingTask)
             {
-                if (_storageQueue.Count > 1000)
+                int checkCount = GetCountCalculate();
+                if (_storageQueue.Count >= checkCount && _storageQueue.Count > 0)
                 {
                     var requestChunck = new List<String>();
                     String req;
-                    for (var i = 0; i < 1000; i++)
+                    for (var i = 0; i <= checkCount; i++)
                     {
                         if (_storageQueue.TryDequeue(out req))
                             requestChunck.Add(req);
@@ -54,19 +56,45 @@ namespace CtrlInvest.Receive.HistoricalData
                     {
                         _historicalPriceService.SaveRangeInDatabaseOperation(requestChunck);
                     }
-                    catch
+                    catch (Exception ex)
                     {
                         AddRange(requestChunck);
                     }
                 }
                 else
                 {
-                    await Task.Delay(100);
+                    await Task.Delay(5000);
                 }
             }
         }
 
+        private int GetCountCalculate()
+        {
+            int count = 1000;
+            if (_storageQueue.Count > 10000)
+            {
+                count = 2000;
+            }
+            else if (_storageQueue.Count > 1000 && _storageQueue.Count < 10000)
+            {
+                count = 1000;
+            }
+            else if (_storageQueue.Count < 1000 && _storageQueue.Count > 500)
+            {
+                count = 500;
+            }
+            else
+                count = _storageQueue.Count;
+
+            return count;
+        }
+
+        public void StopLaunch()
+        {
+            isRunPersistingTask = false;
+        }
+
         private static RequestQueue _instance = new RequestQueue();
-        public static RequestQueue Instance => _instance;
+          public static RequestQueue Instance => _instance;
     }
 }

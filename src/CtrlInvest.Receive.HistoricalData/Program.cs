@@ -30,6 +30,7 @@ namespace CtrlInvest.Receive.HistoricalData
                 {
                     var context = services.GetRequiredService<CtrlInvestContext>();
                     context.Database.EnsureCreated();
+                    context.Database.Migrate();
                 }
                 catch (Exception)
                 {
