@@ -13,6 +13,21 @@ INSERT INTO public."TicketSyncs"(
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
 WHERE "Ticker" = 'WEGE3.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
+INSERT INTO public."TicketSyncs"(
+"TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
+	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
+WHERE "Ticker" = 'ABEV3.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+
+INSERT INTO public."TicketSyncs"(
+"TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
+	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
+WHERE "Ticker" = 'ITSA4.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+
+INSERT INTO public."TicketSyncs"(
+"TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
+	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
+WHERE "Ticker" = 'ITUB3.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+
 
 INSERT INTO public."Banks"(
 	"BankID", "Name", "BankBalance", "BankCode", "InitialBalance", "CreationDate", "DateModified", "IsDelete", "IsDisable")
