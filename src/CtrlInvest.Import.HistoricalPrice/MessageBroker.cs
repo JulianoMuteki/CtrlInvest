@@ -22,6 +22,7 @@ namespace CtrlInvest.Import.HistoricalPrice
         {
             _connectionFactory = new ConnectionFactory()
             {
+                //HostName = "172.18.0.0", // Heroku
                 HostName = "localhost",
                 Port = 5672,
                 UserName = "guest",

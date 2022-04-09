@@ -28,6 +28,7 @@ namespace CtrlInvest.Infra.Context
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             ChangeTracker.LazyLoadingEnabled = false;
+
         }
 
         public void SetTrackAll()
@@ -41,6 +42,7 @@ namespace CtrlInvest.Infra.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+           
             modelBuilder.Ignore<ValidationFailure>();
             modelBuilder.Ignore<ValidationResult>();
 

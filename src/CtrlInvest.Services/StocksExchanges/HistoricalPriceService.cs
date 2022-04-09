@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CtrlInvest.Services.StocksExchanges
-{ 
+{
     public class HistoricalPriceService : IHistoricalPriceService
     {
         //private readonly ILogger<HistoricalEarningService> _logger;
@@ -58,7 +58,31 @@ namespace CtrlInvest.Services.StocksExchanges
 
         public int AddRange(ICollection<HistoricalPrice> entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                //HistoricalPrice earningExist = _unitOfWork.Repository<HistoricalPrice>().Find(x => x.TickerID == entity.TickerID && x.Date == entity.Date);
+
+                //if (earningExist == null)
+                //{
+                    var entityReturn = _unitOfWork.Repository<HistoricalPrice>().AddRange(entity);
+                    _unitOfWork.CommitSync();
+
+                    return entityReturn;
+                //}
+                //else
+                //{
+
+                //}
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<HistoricalPrice>("Unexpected error add", nameof(this.Add), ex);
+            }
+            return 1;
         }
 
         public void Delete(Guid id)
@@ -97,12 +121,34 @@ namespace CtrlInvest.Services.StocksExchanges
             {
                 HistoricalPrice historicalPrice = ReadBrokerMessage(brokerMessage);
                 if (!string.IsNullOrEmpty(historicalPrice.TickerCode))
-                   Add(historicalPrice);
+                    Add(historicalPrice);
             }
             catch (Exception e)
             {
                 throw e;
-              //  _logger.LogError(e.Message);
+                //  _logger.LogError(e.Message);
+            }
+        }
+
+        public void SaveRangeInDatabaseOperation(IList<string> brokerMessages)
+        {
+            try
+            {
+                IList<HistoricalPrice> historicalPrices = new List<HistoricalPrice>();
+
+                foreach (var brokerMessage in brokerMessages)
+                {
+                    HistoricalPrice historicalPrice = ReadBrokerMessage(brokerMessage);
+                    if (!string.IsNullOrEmpty(historicalPrice.TickerCode))
+                        historicalPrices.Add(historicalPrice);
+                }
+
+                AddRange(historicalPrices);
+            }
+            catch (Exception e)
+            {
+                throw e;
+                //  _logger.LogError(e.Message);
             }
         }
 
@@ -143,8 +189,8 @@ namespace CtrlInvest.Services.StocksExchanges
             }
             catch (Exception e)
             {
-                throw e;
-               // _logger.LogError(e.Message);
+                throw new Exception("Error in ReadBrokerMessage", e);
+                // _logger.LogError(e.Message);
             }
 
             return history;

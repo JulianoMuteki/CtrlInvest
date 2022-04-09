@@ -30,7 +30,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.3 DevOps", "3.3 DevOps", 
 		docker-compose.yaml = docker-compose.yaml
 		Dockerfile-API-StockExchange = Dockerfile-API-StockExchange
 		InitializeDatabase.sql = InitializeDatabase.sql
-		Insert_Tickets_BRL.sql = Insert_Tickets_BRL.sql
 		Test_data.sql = Test_data.sql
 	EndProjectSection
 EndProject
@@ -55,9 +54,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Import.Historica
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Receive.HistoricalData", "src\CtrlInvest.Receive.HistoricalData\CtrlInvest.Receive.HistoricalData.csproj", "{1514BA34-3396-4769-9F44-D8B98C054619}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.MessageBroker", "src\CtrlInvest.MessageBroker\CtrlInvest.MessageBroker.csproj", "{5A480575-4965-4311-855B-C0BA40158C7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.MessageBroker", "src\CtrlInvest.MessageBroker\CtrlInvest.MessageBroker.csproj", "{5A480575-4965-4311-855B-C0BA40158C7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Import.Dividends", "src\CtrlInvest.Import.Dividends\CtrlInvest.Import.Dividends.csproj", "{2AE1DC5C-17E3-4EFF-8783-AB1D175B40F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Import.Dividends", "src\CtrlInvest.Import.Dividends\CtrlInvest.Import.Dividends.csproj", "{2AE1DC5C-17E3-4EFF-8783-AB1D175B40F7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
