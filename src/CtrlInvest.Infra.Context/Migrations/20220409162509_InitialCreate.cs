@@ -302,6 +302,9 @@ namespace CtrlInvest.Infra.Context.Migrations
                 name: "IX_HistoricalPrices_TickerID",
                 table: "HistoricalPrices",
                 column: "TickerID");
+
+            //TODO: insert sql
+            //https://stackoverflow.com/questions/60116577/how-to-seed-in-entity-framework-core-3-0
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

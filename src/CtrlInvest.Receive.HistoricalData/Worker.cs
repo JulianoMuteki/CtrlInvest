@@ -38,6 +38,8 @@ namespace CtrlInvest.Receive.HistoricalData
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Worker started at: {DateTime.Now}");
+            _logger.LogInformation("Database configured");
+            await Task.Delay(5000, cancellationToken);
             await base.StartAsync(cancellationToken);
         }
 
