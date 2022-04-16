@@ -67,13 +67,12 @@ namespace CtrlInvest.Import.Dividends
             services.Configure<RabbitOptions>(rabbitConfig);
             services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
 
-            //services.AddSingleton<ObjectPoolProvider, DefaultObjectPoolProvider>();
+
             services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
             services.AddSingleton<IMessageBrokerService, MessageBrokerService>();
 
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
-            services.AddTransient<ITicketAppService, TicketAppService>();    
-         
+            services.AddTransient<ITicketAppService, TicketAppService>();             
             services.AddTransient<IEarningService, EarningService>();
 
 

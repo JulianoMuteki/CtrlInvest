@@ -64,7 +64,7 @@ namespace CtrlInvest.Import.Dividends.Services
         {
             ImportDataFromServerEventArgs args = new()
             {
-                HistoricalDataList = historicalEarningList,
+                HistoricalDataMessage = historicalEarningList,
                 Ticket = ticket
             };
 

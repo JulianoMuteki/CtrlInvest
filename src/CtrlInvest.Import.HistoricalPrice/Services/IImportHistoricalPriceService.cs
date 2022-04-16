@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CtrlInvest.MessageBroker.Common;
+using System;
 
 namespace CtrlInvest.Import.HistoricalPrice
 {
     public interface IImportHistoricalPriceService
     {
+        event EventHandler<ImportDataFromServerEventArgs> ThresholdReached;
         void DoImportOperation();
     }
 }

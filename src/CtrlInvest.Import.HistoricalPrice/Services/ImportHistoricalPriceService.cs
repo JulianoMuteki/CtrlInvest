@@ -1,11 +1,9 @@
-﻿using CtrlInvest.CrossCutting;
-using CtrlInvest.Domain.Entities;
+﻿using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Interfaces.Application;
-using CtrlInvest.Services.Common;
+using CtrlInvest.MessageBroker.Common;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -18,21 +16,20 @@ namespace CtrlInvest.Import.HistoricalPrice
         private readonly ILogger<Worker> _logger;
         private IList<DownloadHistoricalPriceModel> _downloadHistoricalPriceModels;
         public List<Task> TaskList = new List<Task>();
-        private IMessageBroker _messageBroker;
+
+        public event EventHandler<ImportDataFromServerEventArgs> ThresholdReached;
 
         // Constructor
-        public ImportHistoricalPriceService(ILogger<Worker> logger, ITicketAppService ticketAppService, IMessageBroker messageBroker)
+        public ImportHistoricalPriceService(ILogger<Worker> logger, ITicketAppService ticketAppService)
         {
             _logger = logger;
             _ticketAppService = ticketAppService;
-            _messageBroker = messageBroker;
             _downloadHistoricalPriceModels = new List<DownloadHistoricalPriceModel>();
         }
 
         public void DoImportOperation()
         {
             _logger.LogInformation($"Start Import Operation");
-            _messageBroker.Init();
 
             CreateHistoricalPricesToImport();
             foreach (var downloadHistoricalPriceModel in _downloadHistoricalPriceModels)
@@ -40,38 +37,20 @@ namespace CtrlInvest.Import.HistoricalPrice
                 var historicalPriceList = DownloadHistorical(downloadHistoricalPriceModel.ticket.Ticker, downloadHistoricalPriceModel.DateStart,
                                                              downloadHistoricalPriceModel.DateEnd);
 
-                SendtoBroker(historicalPriceList, downloadHistoricalPriceModel.ticket);
+                OnThresholdReached(historicalPriceList, downloadHistoricalPriceModel.ticket);
             }
             _downloadHistoricalPriceModels = new List<DownloadHistoricalPriceModel>();
-            _messageBroker.Dispose();
         }
 
-        private void SendtoBroker(string historicalPriceList, Ticket ticket)
+        protected virtual void OnThresholdReached(string historicalDataMessage, Ticket ticket)
         {
-            try
+            ImportDataFromServerEventArgs args = new()
             {
-                _logger.LogInformation("Start send messega to Broker");
-                using var sr = new StringReader(historicalPriceList);
+                HistoricalDataMessage = historicalDataMessage,
+                Ticket = ticket
+            };
 
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    PackageMessage packageMessage = new PackageMessage()
-                    {
-                        Message = line,
-                        TicketCode = ticket.Ticker,
-                        TicketID = ticket.Id
-                    };
-
-                    string message = JsonSerialize.JsonSerializer<PackageMessage>(packageMessage);
-                    // _logger.LogInformation($"Send to Broker message: {message}");
-                    _messageBroker.SendMessageToRabbitMQ(message);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-            }
+            ThresholdReached?.Invoke(this, args);
         }
 
         private string DownloadHistorical(string ticker, DateTime dtStart, DateTime dtEnd)

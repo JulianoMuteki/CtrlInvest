@@ -32,7 +32,6 @@ namespace CtrlInvest.Import.Dividends
             _works = new List<Task>();
         }
 
-
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation($"Worker started at: {DateTime.Now}");
@@ -90,7 +89,6 @@ namespace CtrlInvest.Import.Dividends
             await Task.CompletedTask;
         }
 
-
         private async Task StartProcessDownloadEarnings(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
@@ -104,7 +102,7 @@ namespace CtrlInvest.Import.Dividends
         {
             _logger.LogInformation($"Event Import Data From Server Completed! {sender}");
 
-            _works.Add(SendToMessageBroker(e.HistoricalDataList, e.Ticket.Ticker, e.Ticket.Id));
+            _works.Add(SendToMessageBroker(e.HistoricalDataMessage, e.Ticket.Ticker, e.Ticket.Id));
         }
 
         Task SendToMessageBroker(string historicalEarningList, string ticketCode, Guid ticketID)

@@ -334,8 +334,8 @@ namespace CtrlInvest.Infra.Repository.Common
         {
             try
             {
-                var exist = _context.Set<T>().Where(predicate);
-                return exist.Any();
+                var exist = _context.Set<T>().Any(predicate);
+                return exist;
             }
             catch (Exception ex)
             {

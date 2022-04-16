@@ -6,6 +6,8 @@ using System;
 using CtrlInvest.Infra.Context;
 using CtrlInvest.Domain.Interfaces.Base;
 using CtrlInvest.Infra.Repository;
+using CtrlInvest.MessageBroker;
+using CtrlInvest.Services.StocksExchanges;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Services;
 
@@ -41,25 +43,35 @@ namespace CtrlInvest.Import.HistoricalPrice
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    IConfiguration Configuration = new ConfigurationBuilder()
-                            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                            .AddEnvironmentVariables()
-                            .AddCommandLine(args)
-                            .Build();
-                    services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
-                    RegisterServices(services);
+                    IConfiguration configuration = new ConfigurationBuilder()
+                                     .SetBasePath(hostContext.HostingEnvironment.ContentRootPath)
+                                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                                     .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true)
+                                     .AddEnvironmentVariables()
+                                     .AddCommandLine(args)
+                                     .Build();
+
+                    services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
+                    RegisterServices(services, configuration);
                     services.AddHostedService<Worker>();                    
                 });
 
-        private static void RegisterServices(IServiceCollection services)
+        private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
             // Adding dependencies from another layers (isolated from Presentation)
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITicketAppService, TicketAppService>();
-            services.AddTransient<IInvestPortfolioService, InvestPortfolioService>();
+
+            services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
+            var rabbitConfig = configuration.GetSection("rabbitConfig");
+            services.Configure<RabbitOptions>(rabbitConfig);
+            // services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
+
+            services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
+
+            services.AddSingleton<IMessageBrokerService, MessageBrokerService>();
+            services.AddTransient<IHistoricalPriceService, HistoricalPriceService>();
             services.AddTransient<IImportHistoricalPriceService, ImportHistoricalPriceService>();
-            services.AddTransient<IMessageBroker, MessageBroker>();
-            
         }
     }
 }

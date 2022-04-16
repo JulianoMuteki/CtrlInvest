@@ -66,7 +66,6 @@ namespace CtrlInvest.MessageBroker
                 catch (AlreadyClosedException z)
                 {
                     _logger.LogInformation("RabbitMQ is closed!");
-                    _channel.BasicNack(ea.DeliveryTag, false, false);
                     throw z;
                 }
                 catch (Exception e)

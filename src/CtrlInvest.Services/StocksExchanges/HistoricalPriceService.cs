@@ -64,10 +64,10 @@ namespace CtrlInvest.Services.StocksExchanges
 
                 //if (earningExist == null)
                 //{
-                    var entityReturn = _unitOfWork.Repository<HistoricalPrice>().AddRange(entity);
-                    _unitOfWork.CommitSync();
+                var entityReturn = _unitOfWork.Repository<HistoricalPrice>().AddRange(entity);
+                _unitOfWork.CommitSync();
 
-                    return entityReturn;
+                return entityReturn;
                 //}
                 //else
                 //{
@@ -108,6 +108,24 @@ namespace CtrlInvest.Services.StocksExchanges
         public HistoricalPrice GetById(Guid id)
         {
             throw new NotImplementedException();
+        }
+
+        public bool ExistByTickedCodeAndDate(string tickedCode, DateTime dateTime)
+        {
+            try
+            {
+                var entityExist = _unitOfWork.Repository<HistoricalPrice>().Exist(x => x.TickerCode == tickedCode && x.Date == dateTime);
+                return entityExist;
+
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<HistoricalPrice>("Unexpected error exists", nameof(this.ExistByTickedCodeAndDate), ex);
+            }
         }
 
         public Task<HistoricalPrice> GetByIdAsync(Guid id)
@@ -172,19 +190,27 @@ namespace CtrlInvest.Services.StocksExchanges
                 if (packageMessage.isValidMessage())
                 {
                     string[] subs = packageMessage.Message.Split(',');
+                    DateTime date = Convert.ToDateTime(subs[0]);
 
-                    history = new HistoricalPrice()
+                    if (!ExistByTickedCodeAndDate(packageMessage.TicketCode, date))
                     {
-                        TickerCode = packageMessage.TicketCode,
-                        Date = Convert.ToDateTime(subs[0]),
-                        Open = double.Parse(subs[1]),
-                        High = double.Parse(subs[2]),
-                        Low = double.Parse(subs[3]),
-                        Close = double.Parse(subs[4]),
-                        AdjClose = double.Parse(subs[5]),
-                        Volume = Convert.ToInt32(subs[6]),
-                        TickerID = packageMessage.TicketID
-                    };
+                        history = new HistoricalPrice()
+                        {
+                            TickerCode = packageMessage.TicketCode,
+                            Date = Convert.ToDateTime(subs[0]),
+                            Open = double.Parse(subs[1]),
+                            High = double.Parse(subs[2]),
+                            Low = double.Parse(subs[3]),
+                            Close = double.Parse(subs[4]),
+                            AdjClose = double.Parse(subs[5]),
+                            Volume = Convert.ToInt32(subs[6]),
+                            TickerID = packageMessage.TicketID
+                        };
+                    }
+                }
+                else
+                {
+                    Console.WriteLine(packageMessage);
                 }
             }
             catch (Exception e)
