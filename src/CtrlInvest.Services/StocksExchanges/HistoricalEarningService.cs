@@ -103,6 +103,28 @@ namespace CtrlInvest.Services.StocksExchanges
             }
         }
 
+        public void SaveRangeInDatabaseOperation(List<string> brokerMessages)
+        {
+            try
+            {
+                IList<Earning> earnings = new List<Earning>();
+
+                foreach (var brokerMessage in brokerMessages)
+                {
+                    Earning earning = ConvertBrokerMessageToEarning(brokerMessage);
+                    if (Guid.Empty != earning.TickerID)
+                        earnings.Add(earning);
+                }
+
+                AddRange(earnings);
+            }
+            catch (Exception e)
+            {
+                throw e;
+                //  _logger.LogError(e.Message);
+            }
+        }
+
         public Earning Update(Earning updated)
         {
             throw new NotImplementedException();

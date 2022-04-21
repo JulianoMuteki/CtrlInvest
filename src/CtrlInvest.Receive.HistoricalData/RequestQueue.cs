@@ -12,12 +12,20 @@ namespace CtrlInvest.Receive.HistoricalData
         private ConcurrentQueue<String> _storageQueue = new ConcurrentQueue<String>();
         private IHistoricalPriceService _historicalPriceService;
         private IHistoricalEarningService _historicalEarningService;
+
         private bool isRunPersistingTask = true;
         private RequestQueue() { }
 
-        public void Launch(IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
+        public void Launch(IHistoricalPriceService historicalPriceService)
         {
             _historicalPriceService = historicalPriceService;
+
+            Task.Factory.StartNew(StartConsumingTask);
+            Task.Factory.StartNew(StartPersistingTask);
+        }
+
+        public void Launch(IHistoricalEarningService historicalEarningService)
+        {
             _historicalEarningService = historicalEarningService;
 
             Task.Factory.StartNew(StartConsumingTask);
@@ -54,7 +62,10 @@ namespace CtrlInvest.Receive.HistoricalData
 
                     try
                     {
-                        _historicalPriceService.SaveRangeInDatabaseOperation(requestChunck);
+                        if (_historicalPriceService != null)
+                            _historicalPriceService.SaveRangeInDatabaseOperation(requestChunck);
+                        else
+                            _historicalEarningService.SaveRangeInDatabaseOperation(requestChunck);
                     }
                     catch (Exception ex)
                     {
@@ -95,6 +106,6 @@ namespace CtrlInvest.Receive.HistoricalData
         }
 
         private static RequestQueue _instance = new RequestQueue();
-          public static RequestQueue Instance => _instance;
+        public static RequestQueue Instance => _instance;
     }
 }

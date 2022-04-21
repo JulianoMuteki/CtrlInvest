@@ -1,4 +1,3 @@
-
 using CtrlInvest.Import.Dividends.Services;
 using CtrlInvest.MessageBroker;
 using CtrlInvest.MessageBroker.Common;
@@ -15,14 +14,13 @@ namespace CtrlInvest.Import.Dividends
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IServiceProvider _serviceProvider;
         private readonly IMessageBrokerService _messageBrokerService;
         private readonly IEarningService _importHistoricalEarningService;
 
         IList<Task> _works;
-        public Worker(IServiceProvider services, ILogger<Worker> logger, IEarningService importHistoricalEarningService, IMessageBrokerService messageBrokerService)
+
+        public Worker(ILogger<Worker> logger, IEarningService importHistoricalEarningService, IMessageBrokerService messageBrokerService)
         {
-            _serviceProvider = services;
             _importHistoricalEarningService = importHistoricalEarningService;
             _importHistoricalEarningService.ThresholdReached += event_ImportDataFromServerCompleted;
             _messageBrokerService = messageBrokerService;
@@ -89,20 +87,38 @@ namespace CtrlInvest.Import.Dividends
             await Task.CompletedTask;
         }
 
+        public override async Task StopAsync(CancellationToken stoppingToken)
+        {
+            _logger.LogInformation(
+                "Consume Scoped Service Hosted Service is stopping.");
+
+            //TODO: add timeout
+            await Task.WhenAll(_works);
+
+            await base.StopAsync(stoppingToken);
+        }
+
+        public override void Dispose()
+        {
+            _logger.LogInformation($"Worker disposed at: {DateTime.Now}");
+            _messageBrokerService.Dispose();
+
+            base.Dispose();
+        }
+
+        private void event_ImportDataFromServerCompleted(object sender, ImportDataFromServerEventArgs e)
+        {
+            _logger.LogInformation($"Event Import Data From Server Completed! {sender}");
+
+            _works.Add(SendToMessageBroker(e.HistoricalDataMessage, e.Ticket.Ticker, e.Ticket.Id));
+        }
+
         private async Task StartProcessDownloadEarnings(CancellationToken stoppingToken)
         {
             stoppingToken.ThrowIfCancellationRequested();
             _importHistoricalEarningService.DoImportOperation();
 
             await Task.CompletedTask;
-        }
-
-        // event handler
-        private void event_ImportDataFromServerCompleted(object sender, ImportDataFromServerEventArgs e)
-        {
-            _logger.LogInformation($"Event Import Data From Server Completed! {sender}");
-
-            _works.Add(SendToMessageBroker(e.HistoricalDataMessage, e.Ticket.Ticker, e.Ticket.Id));
         }
 
         Task SendToMessageBroker(string historicalEarningList, string ticketCode, Guid ticketID)
@@ -128,23 +144,5 @@ namespace CtrlInvest.Import.Dividends
             return task;
         }
 
-        public override async Task StopAsync(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation(
-                "Consume Scoped Service Hosted Service is stopping.");
-
-            //TODO: add timeout
-            await Task.WhenAll(_works);
-
-            await base.StopAsync(stoppingToken);
-        }
-
-        public override void Dispose()
-        {
-            _logger.LogInformation($"Worker disposed at: {DateTime.Now}");
-            _messageBrokerService.Dispose();
-
-            base.Dispose();
-        }
     }
 }

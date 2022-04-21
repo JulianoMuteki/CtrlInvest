@@ -18,7 +18,6 @@ namespace CtrlInvest.Receive.HistoricalData
         private readonly IServiceProvider _serviceProvider;
         private readonly IHistoricalPriceService _historicalPriceService;
         private readonly IHistoricalEarningService _historicalEarningService;
-        private readonly ConcurrentQueue<string> _queue;
         private readonly RequestQueue _requestQueue;
 
         IMessageBrokerService messageBrokerService = null;
@@ -26,7 +25,6 @@ namespace CtrlInvest.Receive.HistoricalData
         private CancellationToken ctOperation;
         public Worker(IServiceProvider services, ILogger<Worker> logger, IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
         {
-            _queue = new ConcurrentQueue<string>();
             _historicalPriceService = historicalPriceService;
             _historicalEarningService = historicalEarningService;
             _serviceProvider = services;
@@ -54,7 +52,7 @@ namespace CtrlInvest.Receive.HistoricalData
                 stoppingToken.ThrowIfCancellationRequested();
 
                 tasks.Add(StartProcessImportHistoricalPrice(ctOperation));
-              //  tasks.Add(StartProcessImportDividend(ctOperation));
+                tasks.Add(StartProcessImportDividend(ctOperation));
                 Task.WaitAll(tasks.ToArray(), stoppingToken);
                 //Tempo para rodar Broker novamente
                 //5 horas
@@ -93,7 +91,14 @@ namespace CtrlInvest.Receive.HistoricalData
                 messageBrokerService.SetQueueChannel(queueName);
                 messageBrokerService.DoReceiveMessageOperation();
 
-                _requestQueue.Launch(_historicalPriceService, _historicalEarningService);
+                if (QueueName.HISTORICAL_PRICE == queueName)
+                {
+                    _requestQueue.Launch(_historicalPriceService);
+                }
+                else if (QueueName.HISTORICAL_DIVIDENDS == queueName)
+                {
+                    _requestQueue.Launch(_historicalEarningService);
+                }
 
                 while (!messageBrokerService.isExpireTimeToReceiveMessage())
                 {
@@ -130,7 +135,7 @@ namespace CtrlInvest.Receive.HistoricalData
 
         // event handler
         private void EventHandler_MessageReceived(object sender, string queueName)
-        {            
+        {
             _requestQueue.Add(sender.ToString());
             _logger.LogInformation($"QueueName {queueName}, Message: {sender.ToString()}");
 
