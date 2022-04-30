@@ -39,7 +39,7 @@ namespace CtrlInvest.Import.Dividends
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Worker running.");
+            _logger.LogInformation("Execute tasks...");
 
             try
             {
@@ -64,7 +64,7 @@ namespace CtrlInvest.Import.Dividends
                         await StartProcessDownloadEarnings(stoppingToken);
                         dateTime = DateTime.Now;
                     }
-                    _logger.LogInformation("Receiving running at: {time}", DateTimeOffset.Now);
+                    _logger.LogInformation("Import running at: {time}", DateTimeOffset.Now);
                     //await Task.Delay(864 * 100000, stoppingToken);
                     await Task.Delay(60000, stoppingToken);
                 }
@@ -123,24 +123,33 @@ namespace CtrlInvest.Import.Dividends
 
         Task SendToMessageBroker(string historicalEarningList, string ticketCode, Guid ticketID)
         {
-            var task = Task.Run(() =>
+            Task task = null;
+            try
             {
-                var messages = MessageBrokerParse.ConvertStringToList(historicalEarningList, ticketCode, ticketID);
-                _logger.LogInformation($"Sending Messages to broker, total messages: {messages.Count}");
-
-                foreach (var item in messages)
+                 task = Task.Run(() =>
                 {
-                    _logger.LogInformation($"Sending: {item.ToJson()}");
-                    _messageBrokerService.DoSendMessageOperation(item.ToJson());
-                }
-            }).ContinueWith(t =>
-            {
-                _logger.LogError("Error in messageBrokerService.DoSendMessageOperation");
-                _logger.LogError("{0}: {1}",
-                                    t.Exception.InnerException.GetType().Name,
-                                    t.Exception.InnerException.Message);
-            }, TaskContinuationOptions.OnlyOnFaulted);
+                    var messages = MessageBrokerParse.ConvertStringToList(historicalEarningList, ticketCode, ticketID);
+                    _logger.LogInformation($"Sending Messages to broker, total messages: {messages.Count}");
 
+                    foreach (var item in messages)
+                    {
+                        _logger.LogInformation($"Sending: {item.ToJson()}");
+                        _messageBrokerService.DoSendMessageOperation(item.ToJson());
+                    }
+                }).ContinueWith(t =>
+                {
+                    _logger.LogError("Error in messageBrokerService.DoSendMessageOperation");
+                    _logger.LogError("{0}: {1}",
+                                        t.Exception.InnerException.GetType().Name,
+                                        t.Exception.InnerException.Message);
+                }, TaskContinuationOptions.OnlyOnFaulted);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(default, e, e.Message);
+                _importHistoricalEarningService.StopOperation();
+            }
+      
             return task;
         }
 

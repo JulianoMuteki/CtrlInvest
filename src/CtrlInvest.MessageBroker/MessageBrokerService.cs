@@ -100,6 +100,7 @@ namespace CtrlInvest.MessageBroker
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
+                throw;
             }
         }
 

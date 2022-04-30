@@ -7,7 +7,6 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using HtmlAgilityPack;
 using System.Linq;
 using OpenQA.Selenium.Remote;
@@ -22,11 +21,11 @@ namespace CtrlInvest.Import.Dividends.Services
         public EarningService(ITicketAppService ticketAppService)
         {
             _ticketAppService = ticketAppService;
-           
+
         }
 
         public void LoadPage(string UrlPaginaCotacoes)
-        {        
+        {
             _driver.Manage().Timeouts().PageLoad =
                 TimeSpan.FromSeconds(60);
             _driver.Navigate().GoToUrl(UrlPaginaCotacoes);
@@ -41,23 +40,34 @@ namespace CtrlInvest.Import.Dividends.Services
 
         private void DestroyInstanceWebDriver()
         {
-            _driver.Quit();
-            _driver = null;
+            if (_driver != null)
+            {
+                _driver.Close();
+                _driver.Quit();
+                _driver = null;
+            }
         }
 
         public void DoImportOperation()
         {
             // _logger.LogInformation($"Start Import Operation");
             CreateInstanceWebDriver();
-            IList<DownloadHistoricalValueModel<Ticket>> downloadHistoricalValueModels = GetListHistoricalEarningsToImport();
-            foreach (var downloadHistoricalValueModel in downloadHistoricalValueModels)
+            try
             {
-                var historicalEarningList = DownloadHistoricalEarningFromFundamentus(downloadHistoricalValueModel.ticket.Ticker, downloadHistoricalValueModel.DateStart,
-                                                             downloadHistoricalValueModel.DateEnd);
+                IList<DownloadHistoricalValueModel<Ticket>> downloadHistoricalValueModels = GetListHistoricalEarningsToImport();
+                foreach (var downloadHistoricalValueModel in downloadHistoricalValueModels)
+                {
+                    var historicalEarningList = DownloadHistoricalEarningFromFundamentus(downloadHistoricalValueModel.ticket.Ticker, downloadHistoricalValueModel.DateStart,
+                                                                 downloadHistoricalValueModel.DateEnd);
 
-                OnThresholdReached(historicalEarningList, downloadHistoricalValueModel.ticket);
+                    OnThresholdReached(historicalEarningList, downloadHistoricalValueModel.ticket);
+                }
             }
+            catch (Exception ex)
+            {
 
+            }
+            DestroyInstanceWebDriver();
         }
 
         protected virtual void OnThresholdReached(string historicalEarningList, Ticket ticket)
@@ -127,7 +137,7 @@ namespace CtrlInvest.Import.Dividends.Services
 
         private string DownloadHistoricalEarningFromYahoo(string ticker, DateTime dtStart, DateTime dtEnd)
         {
-          //  _logger.LogInformation($"Starting donwload from server ...");
+            //  _logger.LogInformation($"Starting donwload from server ...");
             string allResults = string.Empty;
             try
             {
@@ -150,7 +160,7 @@ namespace CtrlInvest.Import.Dividends.Services
             }
             catch (Exception ex)
             {
-               // _logger.LogError(ex.Message);
+                // _logger.LogError(ex.Message);
             }
             return allResults;
         }
@@ -159,6 +169,11 @@ namespace CtrlInvest.Import.Dividends.Services
             DateTime originDate = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             TimeSpan diff = value.AddHours(21).ToUniversalTime() - originDate;
             return (long)Math.Floor(diff.TotalSeconds);
+        }
+
+        public void StopOperation()
+        {
+            DestroyInstanceWebDriver();
         }
     }
 }

@@ -8,5 +8,6 @@ namespace CtrlInvest.Import.Dividends.Services
     {
         event EventHandler<ImportDataFromServerEventArgs> ThresholdReached;
         void DoImportOperation();
+        void StopOperation();
     }
 }

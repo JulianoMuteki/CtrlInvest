@@ -4,6 +4,7 @@ using CtrlInvest.Services.Common;
 using CtrlInvest.Services.Dtos;
 using CtrlInvest.Services.ViewModel;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +24,7 @@ namespace CtrlInvest.API.StockExchange.Controllers
         }
 
         // GET: TicketController
-        [HttpGet]
+        [HttpGet("GetAllTickets", Name = "GetAllTickets")]       
         public IEnumerable<TicketDto> Index()
         {
             var tickets = _ticketAppService.GetAll();
@@ -40,6 +41,19 @@ namespace CtrlInvest.API.StockExchange.Controllers
             return ticketsDtos;
         }
 
+        [HttpGet("/historicalPrice/{ticketCode}", Name = "GetHistoricalPricesByTicket")]
+        public IEnumerable<HistoricalPriceDto> GetHistoricalPricesByTicket(string ticketCode)
+        {
+            var historicalPrices = _ticketAppService.GetHistoricalPricesByTicket(ticketCode).Select(historicalPrice => historicalPrice.AsHistoricalPriceDto()).ToList();
+            return historicalPrices;
+        }
+
+        [HttpGet("/historicalPrice/{ticketCode}/{startDate}/{endDate}", Name = "GetHistoricalPricesByTicketAndDates")]
+        public IEnumerable<EarningDto> GetHistoricalPricesByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate)
+        {
+            throw new NotImplementedException();
+        }
+
         [HttpGet("/earning/{ticketCode}", Name = "GetEarningsByTicket")]
         public IEnumerable<EarningDto> GetEarningsByTicket(string ticketCode)
         {
@@ -47,11 +61,10 @@ namespace CtrlInvest.API.StockExchange.Controllers
             return tickets;
         }
 
-        [HttpGet("/historicalPrice/{ticketCode}", Name = "GetHistoricalPricesByTicket")]
-        public IEnumerable<HistoricalPriceDto> GetHistoricalPricesByTicket(string ticketCode)
+        [HttpGet("/earning/{ticketCode}/{startDate}/{endDate}", Name = "GetEarningsByTicketAndDates")]
+        public IEnumerable<EarningDto> GetEarningsByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate)
         {
-            var historicalPrices = _ticketAppService.GetHistoricalPricesByTicket(ticketCode).Select(historicalPrice => historicalPrice.AsHistoricalPriceDto()).ToList();
-            return historicalPrices;
+            throw new NotImplementedException();
         }
 
     }
