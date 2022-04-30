@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CtrlInvest.Services.Common;
+using CtrlInvest.API.StockExchange.Mappers;
 
 namespace CtrlInvest.API.StockExchange
 {
@@ -72,6 +73,7 @@ namespace CtrlInvest.API.StockExchange
             });
 
             BootStrapperModule.RegisterServices(services);
+            services.AddAutoMapperSetup();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

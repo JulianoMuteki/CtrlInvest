@@ -1,10 +1,9 @@
-﻿using CtrlInvest.Domain.Entities;
+﻿using AutoMapper;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Services.Common;
 using CtrlInvest.Services.Dtos;
-using Microsoft.AspNetCore.Http;
+using CtrlInvest.Services.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,24 +14,30 @@ namespace CtrlInvest.API.StockExchange.Controllers
     public class TicketController : ControllerBase
     {
         private readonly ITicketAppService _ticketAppService;
-        public TicketController(ITicketAppService ticketAppService)
+        public readonly IMapper _mapper;
+
+        public TicketController(ITicketAppService ticketAppService, IMapper mapper)
         {
+            _mapper = mapper;
             _ticketAppService = ticketAppService;
         }
+
         // GET: TicketController
         [HttpGet]
         public IEnumerable<TicketDto> Index()
         {
-            var tickets = _ticketAppService.GetAll().Select(ticket => ticket.AsTicketDto());
-            return tickets;
+            var tickets = _ticketAppService.GetAll();
+            var ticketsDtos = _mapper.Map<IList<TicketDto>>(tickets);
+            return ticketsDtos;
         }
 
         // GET: TicketController
         [HttpGet("{textFind}", Name = "FindTicketByTicketCode")]
         public IEnumerable<TicketDto> FindTicketByTicketCode(string textFind)
         {
-            var tickets = _ticketAppService.FindTicketByTicketCode(textFind).Select(ticket => ticket.AsTicketDto());
-            return tickets;
+            var tickets = _ticketAppService.FindTicketByTicketCode(textFind);
+            var ticketsDtos = _mapper.Map<IList<TicketDto>>(tickets);
+            return ticketsDtos;
         }
 
         [HttpGet("/earning/{ticketCode}", Name = "GetEarningsByTicket")]

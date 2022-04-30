@@ -1,14 +1,13 @@
-﻿using CtrlInvest.CrossCutting;
+﻿using AutoMapper;
+using CtrlInvest.CrossCutting;
 using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Entities.StocksExchanges;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Domain.Interfaces.Base;
-using CtrlInvest.Services.Common;
-using CtrlInvest.Services.Dtos;
+using CtrlInvest.Services.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CtrlInvest.Services
@@ -51,7 +50,6 @@ namespace CtrlInvest.Services
         {
             try
             {
-                //TODO: Refactoring in repository
                 return _unitOfWork.Repository<Ticket>().FindAll(x => x.Ticker.Contains(textFind.ToUpper())).ToList();
             }
             catch (CustomException exc)
@@ -69,7 +67,10 @@ namespace CtrlInvest.Services
             try
             {
                 //TODO: Refactoring in repository
-                return _unitOfWork.Repository<Ticket>().FindAll(x => x.IsDisable == false).ToList();
+                _unitOfWork.SetTrackAll();
+                var tickets = _unitOfWork.Repository<Ticket>().FindBy(x => x.IsDisable == false).ToList();
+
+                return tickets;
             }
             catch (CustomException exc)
             {
@@ -127,7 +128,7 @@ namespace CtrlInvest.Services
         {
             try
             {
-                var ticket = _unitOfWork.Repository<Ticket>().FindBy(x => x.Ticker == ticketCode).FirstOrDefault();                
+                var ticket = _unitOfWork.Repository<Ticket>().FindBy(x => x.Ticker == ticketCode).FirstOrDefault();
                 return _unitOfWork.Repository<Earning>().FindAll(x => x.TickerID == ticket.Id).ToList();
             }
             catch (CustomException exc)
@@ -252,7 +253,7 @@ namespace CtrlInvest.Services
             try
             {
                 _unitOfWork.Repository<HistoricalPrice>().AddRange(historicalPricesList);
-                  _unitOfWork.CommitSync();
+                _unitOfWork.CommitSync();
             }
             catch (CustomException exc)
             {

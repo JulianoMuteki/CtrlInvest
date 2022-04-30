@@ -6,17 +6,17 @@ namespace CtrlInvest.Services.Common
 {
     public static class Extensions
     {
-        public static TicketDto AsTicketDto(this Ticket ticket)
-        {
-            return new TicketDto
-            {
-                Ticker = ticket.Ticker,
-                Name = ticket.Name,
-                Exchange = ticket.Exchange,
-                Country = ticket.Country,
-                Currency = ticket.Currency
-            };
-        }
+        //public static TicketDto AsTicketDto(this Ticket ticket)
+        //{
+        //    return new TicketDto
+        //    {
+        //        Ticker = ticket.Ticker,
+        //        Name = ticket.Name,
+        //        Exchange = ticket.Exchange,
+        //        Country = ticket.Country,
+        //        Currency = ticket.Currency
+        //    };
+        //}
 
         public static HistoricalPriceDto AsHistoricalPriceDto(this HistoricalPrice historicalPrice)
         {

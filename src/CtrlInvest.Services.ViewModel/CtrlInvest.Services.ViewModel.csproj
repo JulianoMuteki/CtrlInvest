@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -11,8 +11,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CtrlInvest.Domain\CtrlInvest.Domain.csproj" />
-    <ProjectReference Include="..\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj" />
-    <ProjectReference Include="..\CtrlInvest.Services.ViewModel\CtrlInvest.Services.ViewModel.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CtrlInvest.Services.Dtos
+﻿
+namespace CtrlInvest.Services.ViewModel
 {
-    class TicketDto
+    public class TicketDto
     {
         public string Ticker { get; set; }
         public string Name { get; set; }
