@@ -1,22 +1,22 @@
-using CtrlInvest.Domain.Identity;
-using CtrlInvest.Domain.Security;
-using CtrlInvest.Infra.Context;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CtrlInvest.Services.Common;
 using CtrlInvest.API.StockExchange.Mappers;
+using System.Security.Claims;
+using CtrlInvest.Services.Settings;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System.Text;
+using Microsoft.EntityFrameworkCore;
+using CtrlInvest.Infra.Context;
+using CtrlInvest.Domain.Identity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Hosting;
+using CtrlInvest.Domain.Security;
 
 namespace CtrlInvest.API.StockExchange
 {
@@ -32,7 +32,66 @@ namespace CtrlInvest.API.StockExchange
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                    .AddNewtonsoftJson(options =>
+                    {
+                        options.SerializerSettings.ReferenceLoopHandling
+                        = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    });
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ctrl Invest - Stock market", Version = "v1" });
+
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme."
+
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                          {
+                              Reference = new OpenApiReference
+                              {
+                                  Type = ReferenceType.SecurityScheme,
+                                  Id = "Bearer"
+                              }
+                          },
+                         new string[] {}
+                    }
+                });
+            });
+
+            services.AddEndpointsApiExplorer();
+
+
+            services.AddAuthentication(option =>
+            {
+                option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            }).AddJwtBearer(options =>
+                             options.TokenValidationParameters = new TokenValidationParameters
+                             {
+                                 ValidateIssuer = true,
+                                 ValidateAudience = true,
+                                 ValidateLifetime = true,
+                                 ValidAudience = Configuration["TokenConfiguration:Audience"],
+                                 ValidIssuer = Configuration["TokenConfiguration:Issuer"],
+                                 ValidateIssuerSigningKey = true,
+                                 IssuerSigningKey = new SymmetricSecurityKey(
+                                     Encoding.UTF8.GetBytes(Configuration["Jwt:key"]))
+                             });
+
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
             services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
 
@@ -45,35 +104,37 @@ namespace CtrlInvest.API.StockExchange
                 // Password settings
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
-                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequiredUniqueChars = 7; //Pa$$w0rd
+                options.Password.RequireLowercase = false;
+                options.Password.RequiredUniqueChars = 6;
 
                 // Lockout settings
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(30);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
-
+                // options.Tokens.EmailConfirmationTokenProvider = "emailconfirmation";
+                options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
                 // User settings
                 options.User.RequireUniqueEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
             });
+
+            services.AddHealthChecks()
+                    .AddDbContextCheck<CtrlInvestContext>();
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy("ShouldContainRole", options => options.RequireClaim(ClaimTypes.Role));
+
                 foreach (var item in PolicyTypes.ListAllClaims)
                 {
-                    options.AddPolicy(item.Value.Value, policy => { policy.RequireClaim(CustomClaimTypes.DefaultPermission, item.Value.Value); });
+                    options.AddPolicy(item.Value.Value, policy => { policy.RequireClaim(item.Value.Type, item.Value.Value); });
                 }
             });
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CtrlInvest.API.StockExchange", Version = "v1" });
-            });
-
-            BootStrapperModule.RegisterServices(services);
             services.AddAutoMapperSetup();
+            BootStrapperModule.RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -85,8 +146,18 @@ namespace CtrlInvest.API.StockExchange
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CtrlInvest.API.StockExchange v1"));
             }
-
+            else
+            {
+                //The default HSTS value is 30 days. 
+                //You may want to change this for production
+                //scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+            app.UseHttpsRedirection();
+            app.UseHealthChecks("/Health");
             app.UseRouting();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
