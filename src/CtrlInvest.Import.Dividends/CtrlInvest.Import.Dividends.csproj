@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-CtrlInvest.Import.Dividends-C7765D76-A7DA-40AB-8765-EB4AD801E65B</UserSecretsId>
   </PropertyGroup>
 
