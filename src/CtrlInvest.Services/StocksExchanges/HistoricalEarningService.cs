@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CtrlInvest.Services.StocksExchanges
@@ -55,7 +56,29 @@ namespace CtrlInvest.Services.StocksExchanges
 
         public int AddRange(ICollection<Earning> entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var ticketsIds = entity.GroupBy( x => x.TickerID).Select(g => g.Key).ToList();                
+                var earnings_existents = _unitOfWork.Repository<Earning>().FindBy(x => ticketsIds.Any(id => id == x.TickerID)).ToList();
+
+                //Search earnings that have been not saved
+                var earnings_to_save = entity.Where(e => !earnings_existents.Any(id => id.TickerID == e.TickerID && id.DateWith == e.DateWith)).ToList();
+
+                if (earnings_to_save.Any())
+                {
+                    var entityReturn = _unitOfWork.Repository<Earning>().AddRange(earnings_to_save);
+                    _unitOfWork.CommitSync();
+                }
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<Earning>("Unexpected error add", nameof(this.Add), ex);
+            }
+            return 1;
         }
 
         public void Delete(Guid id)
