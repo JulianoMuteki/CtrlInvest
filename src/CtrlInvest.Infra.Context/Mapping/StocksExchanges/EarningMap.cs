@@ -13,6 +13,9 @@ namespace CtrlInvest.Infra.Context.Mapping
             builder.Property(e => e.DateWith)
                      .IsRequired();
 
+            builder.HasIndex(p => new { p.Id, p.DateWith })
+                   .IsUnique(true);
+
             builder.Property(e => e.ValueIncome)
                   .HasColumnType("double precision")
                   .IsRequired();
