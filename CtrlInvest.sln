@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31321.278
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Presentation", "0 - Presentation", "{8A445DFD-CF71-4691-A97C-A2209E55F2BB}"
 EndProject
@@ -58,7 +58,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.MessageBroker", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Import.Dividends", "src\CtrlInvest.Import.Dividends\CtrlInvest.Import.Dividends.csproj", "{2AE1DC5C-17E3-4EFF-8783-AB1D175B40F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Services.ViewModel", "src\CtrlInvest.Services.ViewModel\CtrlInvest.Services.ViewModel.csproj", "{4F312734-2EA7-4E6D-AF4B-BC5114F974D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Services.ViewModel", "src\CtrlInvest.Services.ViewModel\CtrlInvest.Services.ViewModel.csproj", "{4F312734-2EA7-4E6D-AF4B-BC5114F974D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Security", "src\CtrlInvest.Security\CtrlInvest.Security.csproj", "{49091C3A-31F7-44F8-9CAC-7831B8A3C28A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -126,6 +128,10 @@ Global
 		{4F312734-2EA7-4E6D-AF4B-BC5114F974D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F312734-2EA7-4E6D-AF4B-BC5114F974D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F312734-2EA7-4E6D-AF4B-BC5114F974D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49091C3A-31F7-44F8-9CAC-7831B8A3C28A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49091C3A-31F7-44F8-9CAC-7831B8A3C28A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49091C3A-31F7-44F8-9CAC-7831B8A3C28A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49091C3A-31F7-44F8-9CAC-7831B8A3C28A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -150,6 +156,7 @@ Global
 		{5A480575-4965-4311-855B-C0BA40158C7B} = {74D9C20B-7D2E-4D20-AD1D-35BE0A444A34}
 		{2AE1DC5C-17E3-4EFF-8783-AB1D175B40F7} = {74D9C20B-7D2E-4D20-AD1D-35BE0A444A34}
 		{4F312734-2EA7-4E6D-AF4B-BC5114F974D8} = {9A7D34A3-9DC8-4878-8210-3DEF81968D82}
+		{49091C3A-31F7-44F8-9CAC-7831B8A3C28A} = {7F9B9B3D-8E18-48AA-8806-463E37AAE7F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B56B2DCC-9E15-4227-B7A3-9A2EBFC1B40F}
