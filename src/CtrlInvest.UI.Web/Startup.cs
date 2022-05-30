@@ -1,7 +1,7 @@
 using CtrlInvest.CrossCutting.Ioc;
 using CtrlInvest.Domain.Identity;
-using CtrlInvest.Domain.Security;
 using CtrlInvest.Infra.Context;
+using CtrlInvest.Security.Permission;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -44,8 +44,7 @@ namespace CtrlInvest.UI.Web
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            // services.AddDbContext<CtrlInvestContext>(item => item.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                                 .AddEntityFrameworkStores<CtrlInvestContext>()

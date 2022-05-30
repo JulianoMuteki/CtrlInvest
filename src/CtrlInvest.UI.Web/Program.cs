@@ -32,8 +32,7 @@ namespace CtrlInvest.UI.Web
 
                 try
                 {
-
-                    DbInitializer.Initialize(services);
+                    new DbInitializer().Initialize(services);
                 }
                 catch (Exception ex)
                 {

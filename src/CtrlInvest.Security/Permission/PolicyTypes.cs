@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace CtrlInvest.Domain.Security
+namespace CtrlInvest.Security.Permission
 {
     public static class PolicyTypes
     {
         public const string NAME = "default.policy";
-
-        public static class DeliveryPolicy
-        {
-            public const string ExecuteDelivery = "delivery.policy.execute";
-        }
 
         public static IList<string> ListAllRoles
         {
@@ -29,18 +25,17 @@ namespace CtrlInvest.Domain.Security
             }
         }
 
-        public static IDictionary<CRUD, Claim> ListAllClaims
+        public static IDictionary<PERMISSIONS, Claim> ListAllClaims
         {
             get
             {
-                var claims = new Dictionary<CRUD, Claim>();
-                foreach (var permission in Enum.GetNames(typeof(CRUD)))
+                var claims = new Dictionary<PERMISSIONS, Claim>();
+                foreach (var permission in Enum.GetNames(typeof(PERMISSIONS)))
                 {
-                    var result = (CRUD)Enum.Parse(typeof(CRUD), permission);
+                    var result = (PERMISSIONS)Enum.Parse(typeof(PERMISSIONS), permission);
                     claims.Add(result, new Claim(CustomClaimTypes.DefaultPermission, $"{NAME}.{permission.ToLower()}"));
                 }
 
-                //claims.Add(CRUD.Create, new Claim(CustomClaimTypes.DefaultPermission, $"{DeliveryPolicy.ExecuteDelivery.ToString().ToLower()}"));
                 return claims;
             }
         }
@@ -48,7 +43,7 @@ namespace CtrlInvest.Domain.Security
         public static IList<string> ListClaimsAuthorizations { get { return ListAllClaims.Select(x => x.Value.Value).ToList(); } }
     }
 
-    public enum CRUD
+    public enum PERMISSIONS
     {
         Create,
         Read,

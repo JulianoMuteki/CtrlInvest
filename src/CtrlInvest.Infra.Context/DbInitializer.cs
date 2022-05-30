@@ -1,16 +1,14 @@
 ﻿using CtrlInvest.Domain.Identity;
-using CtrlInvest.Domain.Security;
+using CtrlInvest.Security.Permission;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace CtrlInvest.Infra.Context
 {
-    public static class DbInitializer
+    public class DbInitializer
     {
-        public static void Initialize(IServiceProvider serviceProvider)
+        public void Initialize(IServiceProvider serviceProvider)
         {
             try
             {
@@ -18,22 +16,20 @@ namespace CtrlInvest.Infra.Context
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<ApplicationRole>>();
 
                 SeedData(userManager, roleManager);
-                //(serviceProvider);
-                // SeedDataBox(serviceProvider);
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
-        public static void SeedData(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
+        public void SeedData(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
         {
-          //  SeedRoles(roleManager);
+            SeedRoles(roleManager);
             SeedUsers(userManager);
         }
 
-        public static void SeedUsers(UserManager<ApplicationUser> userManager)
+        public void SeedUsers(UserManager<ApplicationUser> userManager)
         {
             if (userManager.FindByNameAsync("juliano.pestili@outlook.com").Result == null)
             {
@@ -41,8 +37,8 @@ namespace CtrlInvest.Infra.Context
                 user.UserName = "juliano.pestili@outlook.com";
                 user.Email = "juliano.pestili@outlook.com";
                 user.PhoneNumber = "(19) 99999-8888";
-                user.FirstName = "Admin";
-                user.LastName = "User";
+                user.FirstName = "Juliano";
+                user.LastName = "Pestili";
 
                 IdentityResult result = userManager.CreateAsync(user, "Pa$$w0rd").Result;
 
@@ -53,7 +49,7 @@ namespace CtrlInvest.Infra.Context
             }
         }
 
-        public static void SeedRoles(RoleManager<ApplicationRole> roleManager)
+        public void SeedRoles(RoleManager<ApplicationRole> roleManager)
         {
             foreach (var roleName in Enum.GetNames(typeof(RoleAuthorize)))
             {
@@ -62,9 +58,6 @@ namespace CtrlInvest.Infra.Context
                     ApplicationRole role = new ApplicationRole();
                     role.Name = roleName;
                     IdentityResult roleResult = roleManager.CreateAsync(role).Result;
-
-                    //if (RoleAuthorize.Admin.ToString() == roleName)
-                    //    roleManager.AddClaimAsync(role, new Claim(CustomClaimTypes.DefaultPermission, PolicyTypes.DeliveryPolicy.ExecuteDelivery)).Wait();
                 }
             }
         }

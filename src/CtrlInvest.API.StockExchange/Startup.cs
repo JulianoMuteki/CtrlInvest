@@ -16,7 +16,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
-using CtrlInvest.Domain.Security;
+using CtrlInvest.Security.Permission;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace CtrlInvest.API.StockExchange
 {
@@ -93,7 +94,7 @@ namespace CtrlInvest.API.StockExchange
 
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
 
-            services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton, ServiceLifetime.Singleton);
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
                                 .AddEntityFrameworkStores<CtrlInvestContext>()
@@ -134,12 +135,13 @@ namespace CtrlInvest.API.StockExchange
             });
 
             services.AddAutoMapperSetup();
+            services.AddTransient<IStartupFilter, MigrationStartupFilter<CtrlInvestContext>>();
             BootStrapperModule.RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
+         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -163,7 +165,7 @@ namespace CtrlInvest.API.StockExchange
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-            });
+            });        
         }
     }
 }
