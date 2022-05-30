@@ -144,7 +144,7 @@ namespace CtrlInvest.API.StockExchange.Controllers
         }
 
         [HttpPost("ValidateRegister")]
-        public async Task<IActionResult> ValidateRegister([FromBody] LoginViewModel model, string emailCode)
+        public async Task<IActionResult> ValidateRegister([FromBody] LoginViewModel model, string validationCode)
         {
             var user = await _userManager.FindByEmailAsync(model.Email);
             if (user == null)
@@ -153,7 +153,7 @@ namespace CtrlInvest.API.StockExchange.Controllers
                 return BadRequest("Not found");
             }
 
-            var result = await _userManager.ConfirmEmailAsync(user, emailCode);
+            var result = await _userManager.ConfirmEmailAsync(user, validationCode);
             if (result.Succeeded)
             {
                 return Ok(); // passtoken                        
