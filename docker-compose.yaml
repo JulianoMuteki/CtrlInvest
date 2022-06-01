@@ -1,46 +1,16 @@
 version: '3'
 
 services:
-  dockerapi:
-    image: dockerapi:latest
-    depends_on:
-      - "ctrlinvest-postgres"
+  ctrlinvest-api:
+    image: ctrlinvest:latest
     build:
       context: .
-      dockerfile: Dockerfile-API-StockExchange
+      dockerfile: Dockerfile      
     ports:
-      - "5000:80"
+      - "8000:8000"
     environment:
-       - ASPNETCORE_ENVIRONMENT=Development
-       - ASPNETCORE_URLS=http://+:80
-       - DefaultConnection="User ID=postgres;Password=Postgres2019!;Server=localhost;Port=15433;Database=ctrlinvestDB;Integrated Security=true;Pooling=true;"
-    networks:
-      - ctrlinvest-postgres-network
-
-  ctrlinvest-postgres:
-    image: postgres
-    container_name: "ctrlinvest-postgres"
-    environment:
-      POSTGRES_DB: "ctrlinvestDB"
-      POSTGRES_PASSWORD: "Postgres2019!"
-    ports:
-      - "15433:5432"
-    networks:
-      - ctrlinvest-postgres-network
-      
-  ctrlinvest-pgadmin:
-    image: dpage/pgadmin4
-    container_name: "ctrlinvest-pgadmin"
-    environment:
-      PGADMIN_DEFAULT_EMAIL: "juliano.pestili@outlook.com"
-      PGADMIN_DEFAULT_PASSWORD: "PgAdmin2019!"
-    ports:
-      - "16544:80"
-    depends_on:
-      - ctrlinvest-postgres
-    networks:
-      - ctrlinvest-postgres-network
-
-networks: 
-  ctrlinvest-postgres-network:
-    driver: bridge
+       - ASPNETCORE_ENVIRONMENT=Production
+       - PORT=8000
+    #    - USER_SECRETS_ID="d221a86e-bf92-4016-9b26-86e057ce4de7"
+    # volumes:
+    #   - /mnt/c/Users/julia/AppData/Roaming/Microsoft/UserSecrets/d221a86e-bf92-4016-9b26-86e057ce4de7:/root/.microsoft/usersecrets/d221a86e-bf92-4016-9b26-86e057ce4de7

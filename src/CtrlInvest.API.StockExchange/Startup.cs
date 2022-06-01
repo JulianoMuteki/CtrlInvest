@@ -18,6 +18,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using CtrlInvest.Security.Permission;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using HealthChecks.UI.Client;
 
 namespace CtrlInvest.API.StockExchange
 {
@@ -124,6 +126,15 @@ namespace CtrlInvest.API.StockExchange
             services.AddHealthChecks()
                     .AddDbContextCheck<CtrlInvestContext>();
 
+            //Configurando a interface gráfica e o armazenamento do histórico
+            services.AddHealthChecksUI(options =>
+            {
+                options.SetEvaluationTimeInSeconds(30);
+                options.MaximumHistoryEntriesPerEndpoint(15);
+                options.AddHealthCheckEndpoint("CtrlInvest.API.StockExchange", "/health");
+            })
+            .AddInMemoryStorage(); //Aqui adicionamos o banco em memória
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ShouldContainRole", options => options.RequireClaim(ClaimTypes.Role));
@@ -133,6 +144,13 @@ namespace CtrlInvest.API.StockExchange
                     options.AddPolicy(item.Value.Value, policy => { policy.RequireClaim(item.Value.Type, item.Value.Value); });
                 }
             });
+            services.AddCors(options => options.AddPolicy("CorsPolicy", builder =>
+            {
+                builder
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin();
+            }));
 
             services.AddAutoMapperSetup();
             services.AddTransient<IStartupFilter, MigrationStartupFilter<CtrlInvestContext>>();
@@ -142,23 +160,32 @@ namespace CtrlInvest.API.StockExchange
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
          {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CtrlInvest.API.StockExchange v1"));
-            }
-            else
-            {
-                //The default HSTS value is 30 days. 
-                //You may want to change this for production
-                //scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-            app.UseHttpsRedirection();
-            app.UseHealthChecks("/Health");
-            app.UseRouting();
+            //if (env.IsDevelopment())
+            string dev = env.EnvironmentName;
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", $"CtrlInvest.API.StockExchange {dev} v1"));
+            
+            //else
+            //{
+            //    //The default HSTS value is 30 days. 
+            //    //You may want to change this for production
+            //    //scenarios, see https://aka.ms/aspnetcore-hsts.
+            //    app.UseHsts();
+            //}
+            //app.UseHttpsRedirection();
 
+            app.UseHealthChecks("/health", new HealthCheckOptions
+            {
+                Predicate = p => true,
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            });
+            app.UseHealthChecksUI(options => { 
+                options.UIPath = $"/dashboard-{dev.ToLower()}"; 
+            });
+
+            app.UseRouting();
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
 

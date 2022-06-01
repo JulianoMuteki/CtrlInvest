@@ -28,7 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.3 DevOps", "3.3 DevOps", "{084A34AD-406A-4F52-B9EE-563969DC0FA8}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yaml = docker-compose.yaml
-		Dockerfile-API-StockExchange = Dockerfile-API-StockExchange
+		Dockerfile = Dockerfile
 		InitializeDatabase.sql = InitializeDatabase.sql
 		Test_data.sql = Test_data.sql
 	EndProjectSection
@@ -60,7 +60,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Import.Dividends
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Services.ViewModel", "src\CtrlInvest.Services.ViewModel\CtrlInvest.Services.ViewModel.csproj", "{4F312734-2EA7-4E6D-AF4B-BC5114F974D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CtrlInvest.Security", "src\CtrlInvest.Security\CtrlInvest.Security.csproj", "{49091C3A-31F7-44F8-9CAC-7831B8A3C28A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.Security", "src\CtrlInvest.Security\CtrlInvest.Security.csproj", "{49091C3A-31F7-44F8-9CAC-7831B8A3C28A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
