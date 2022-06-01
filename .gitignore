@@ -339,3 +339,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/src/CtrlInvest.API.StockExchange/appsettings.Production.json
