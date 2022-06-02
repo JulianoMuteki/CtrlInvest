@@ -15,9 +15,7 @@ using CtrlInvest.Domain.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
 using CtrlInvest.Security.Permission;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using HealthChecks.UI.Client;
 
@@ -44,7 +42,14 @@ namespace CtrlInvest.API.StockExchange
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ctrl Invest - Stock market", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Ctrl Invest - Stock market", Version = "v1",
+                    Description = "Stock market with history prices and earnings",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Juliano Cesar Pestili",
+                        Url = new Uri("https://github.com/JulianoMuteki")
+                    }
+                });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
@@ -164,7 +169,7 @@ namespace CtrlInvest.API.StockExchange
             string dev = env.EnvironmentName;
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", $"CtrlInvest.API.StockExchange {dev} v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", $"CtrlInvest.API.StockExchange v1"));
             
             //else
             //{
