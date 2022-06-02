@@ -2,6 +2,7 @@
 using CtrlInvest.Services.Settings;
 using Microsoft.Extensions.Options;
 using System;
+using System.IO;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,19 @@ namespace CtrlInvest.Services.Email
 
         public Task SendEmailAsync(string email, string subject, string message)
         {
+            string rootFolder = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            string path = System.IO.Path.Combine(rootFolder, @"Assets\email-template.html");
+            string body = string.Empty;
+
+            //using streamreader for reading my htmltemplate   
+            using (StreamReader reader = new StreamReader(path))
+            {
+                body = reader.ReadToEnd();
+            }
+
+            body = body.Replace("{token-code}", message); //replacing the required things  
+
+
             MailMessage mailMessage = new MailMessage();
             mailMessage.From = new MailAddress(_mailSettings.Mail);
             mailMessage.To.Add(new MailAddress(email));
@@ -26,7 +40,7 @@ namespace CtrlInvest.Services.Email
             mailMessage.Subject = subject;
             mailMessage.BodyEncoding = Encoding.UTF8;
             mailMessage.IsBodyHtml = true;
-            mailMessage.Body = message;
+            mailMessage.Body = body;
 
             using SmtpClient client = new SmtpClient();
             client.Credentials = new System.Net.NetworkCredential(_mailSettings.Mail, _mailSettings.Password);

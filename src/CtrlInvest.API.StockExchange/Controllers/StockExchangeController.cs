@@ -23,18 +23,18 @@ namespace CtrlInvest.API.StockExchange.Controllers
             _ticketAppService = ticketAppService;
         }
       
-        [HttpGet("TicketsAvailable")]       
-        public IEnumerable<TicketDto> Index()
-        {
-            var tickets = _ticketAppService.GetAll();
-            var ticketsDtos = _mapper.Map<IList<TicketDto>>(tickets);
-            return ticketsDtos;
-        }
+        //[HttpGet("TicketsAvailable")]       
+        //public IEnumerable<TicketDto> Index()
+        //{
+        //    var tickets = _ticketAppService.GetAll();
+        //    var ticketsDtos = _mapper.Map<IList<TicketDto>>(tickets);
+        //    return ticketsDtos;
+        //}
 
         [HttpGet("{textFind}", Name = "FindTicketByTicketCode")]
-        public IEnumerable<TicketDto> FindTicketByTicketCode(string textFind)
+        public IEnumerable<TicketDto> FindTicketByTicketCode(string searchTicket)
         {
-            var tickets = _ticketAppService.FindTicketByTicketCode(textFind);
+            var tickets = _ticketAppService.FindTicketByTicketCode(searchTicket);
             var ticketsDtos = _mapper.Map<IList<TicketDto>>(tickets);
             return ticketsDtos;
         }
