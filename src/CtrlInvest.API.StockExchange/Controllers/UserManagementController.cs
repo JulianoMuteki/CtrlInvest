@@ -1,4 +1,6 @@
 ﻿using CtrlInvest.Domain.Identity;
+using CtrlInvest.Security.Permission;
+using CtrlInvest.Services.Dtos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +15,6 @@ namespace CtrlInvest.API.StockExchange.Controllers
     [ApiController]
     [Route("[controller]")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [Authorize(Roles = "Admin")]
     public class UserManagementController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,6 +33,7 @@ namespace CtrlInvest.API.StockExchange.Controllers
         }
 
         [HttpGet("Users")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Get()
         {
             var users = _userManager.Users.ToList()
@@ -43,12 +45,12 @@ namespace CtrlInvest.API.StockExchange.Controllers
         }
 
         [HttpDelete("{email}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user != null)
             {
-
                 var rolesForUser = await _userManager.GetRolesAsync(user);
 
                 if (rolesForUser.Count() > 0)
@@ -67,6 +69,36 @@ namespace CtrlInvest.API.StockExchange.Controllers
             return BadRequest("Error in Delete");
         }
 
+        [HttpPut("ChangePassword")]
+        [AuthorizeRoles(RoleAuthorize.Client)]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // We can utilise the model
+                var existingUser = await _userManager.FindByEmailAsync(model.Email);
 
+                if (existingUser == null)
+                {
+                    return BadRequest(new
+                    {
+                        Errors = "Email already in use",
+                        Success = false
+                    });
+                }
+
+                var changePasswordResult = await _userManager.ChangePasswordAsync(existingUser, model.OldPassword, model.NewPassword);
+                if (changePasswordResult.Succeeded)
+                {
+                    return Ok("Changeded Succeeded");
+                }
+                else
+                    return BadRequest(changePasswordResult.Errors);
+            }
+            else
+                return BadRequest(ModelState);
+
+            return Ok("Your validation code was sended to youe e-mail."); // passtoken
+        }
     }
 }

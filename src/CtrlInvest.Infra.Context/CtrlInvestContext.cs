@@ -26,8 +26,8 @@ namespace CtrlInvest.Infra.Context
         public CtrlInvestContext(DbContextOptions<CtrlInvestContext> options)
              : base(options)
         {
-            ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
-            ChangeTracker.LazyLoadingEnabled = false;
+           // ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
+           // ChangeTracker.LazyLoadingEnabled = false;
 
         }
 
