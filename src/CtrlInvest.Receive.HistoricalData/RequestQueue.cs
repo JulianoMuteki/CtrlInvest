@@ -37,7 +37,7 @@ namespace CtrlInvest.Receive.HistoricalData
 
         private void StartConsumingTask()
         {
-            Parallel.ForEach(_queue.GetConsumingEnumerable(), new ParallelOptions { MaxDegreeOfParallelism = 5 }, EnqueueSaveRequest);
+            Parallel.ForEach(_queue.GetConsumingEnumerable(), new ParallelOptions { MaxDegreeOfParallelism = 1 }, EnqueueSaveRequest);
         }
 
         private void EnqueueSaveRequest(String request)
@@ -63,7 +63,10 @@ namespace CtrlInvest.Receive.HistoricalData
                     try
                     {
                         if (_historicalPriceService != null)
-                            _historicalPriceService.SaveRangeInDatabaseOperation(requestChunck);
+                        {
+                            await _historicalPriceService.SaveRangeInDatabaseOperation(requestChunck); 
+                        }
+
                         else
                             _historicalEarningService.SaveRangeInDatabaseOperation(requestChunck);
                     }

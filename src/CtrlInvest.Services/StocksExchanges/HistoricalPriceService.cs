@@ -6,6 +6,7 @@ using CtrlInvest.Services.Common;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 
 namespace CtrlInvest.Services.StocksExchanges
@@ -148,7 +149,7 @@ namespace CtrlInvest.Services.StocksExchanges
             }
         }
 
-        public void SaveRangeInDatabaseOperation(IList<string> brokerMessages)
+        public async Task SaveRangeInDatabaseOperation(IList<string> brokerMessages)
         {
             try
             {
@@ -162,6 +163,7 @@ namespace CtrlInvest.Services.StocksExchanges
                 }
 
                 AddRange(historicalPrices);
+                await Task.CompletedTask;
             }
             catch (Exception e)
             {
@@ -198,11 +200,11 @@ namespace CtrlInvest.Services.StocksExchanges
                         {
                             TickerCode = packageMessage.TicketCode,
                             Date = Convert.ToDateTime(subs[0]),
-                            Open = double.Parse(subs[1]),
-                            High = double.Parse(subs[2]),
-                            Low = double.Parse(subs[3]),
-                            Close = double.Parse(subs[4]),
-                            AdjClose = double.Parse(subs[5]),
+                            Open = double.Parse(subs[1], CultureInfo.InvariantCulture),
+                            High = double.Parse(subs[2], CultureInfo.InvariantCulture),
+                            Low = double.Parse(subs[3], CultureInfo.InvariantCulture),
+                            Close = double.Parse(subs[4], CultureInfo.InvariantCulture),
+                            AdjClose = double.Parse(subs[5], CultureInfo.InvariantCulture),
                             Volume = Convert.ToInt32(subs[6]),
                             TickerID = packageMessage.TicketID
                         };

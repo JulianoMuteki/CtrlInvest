@@ -19,7 +19,7 @@ namespace CtrlInvest.Import.HistoricalPrice
         {
             IHost host = CreateHostBuilder(args).Build();
             CreateDatabaseIfNotExist(host);
-
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             host.Run();
         }
         private static void CreateDatabaseIfNotExist(IHost host)

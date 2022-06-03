@@ -16,6 +16,7 @@ namespace CtrlInvest.Receive.HistoricalData
         public static void Main(string[] args)
         {
             IHost host = CreateHostBuilder(args).Build();
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             CreateDatabaseIfNotExist(host);
 
             host.Run();

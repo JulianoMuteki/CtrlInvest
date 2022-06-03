@@ -14,8 +14,8 @@ namespace CtrlInvest.API.StockExchange
         public static void Main(string[] args)
         {
             IHost host = CreateHostBuilder(args).Build();
-           // CreateDbIfNotExist(host);         
-
+            // CreateDbIfNotExist(host);         
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             host.Run();
         }
 
