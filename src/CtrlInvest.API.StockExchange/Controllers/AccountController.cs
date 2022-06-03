@@ -210,6 +210,5 @@ namespace CtrlInvest.API.StockExchange.Controllers
             return Ok("Your validation code was sended to youe e-mail."); // passtoken
         }
 
-
     }
 }

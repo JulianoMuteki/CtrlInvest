@@ -58,14 +58,12 @@ namespace CtrlInvest.Import.HistoricalPrice
 
         private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
-            // Adding dependencies from another layers (isolated from Presentation)
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITicketAppService, TicketAppService>();
 
             services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
-            var rabbitConfig = configuration.GetSection("rabbitConfig");
-            services.Configure<RabbitOptions>(rabbitConfig);
-            // services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
+            var rabbitConfig = configuration.GetSection("RabbitConfig");
+            services.Configure<RabbitOptions>(rabbitConfig);           
 
             services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
 

@@ -31,7 +31,7 @@ namespace CtrlInvest.API.StockExchange.Controllers
         //    return ticketsDtos;
         //}
 
-        [HttpGet("{textFind}", Name = "FindTicketByTicketCode")]
+        [HttpGet("{searchTicket}", Name = "FindTicketByTicketCode")]
         public IEnumerable<TicketDto> FindTicketByTicketCode(string searchTicket)
         {
             var tickets = _ticketAppService.FindTicketByTicketCode(searchTicket);
@@ -42,27 +42,33 @@ namespace CtrlInvest.API.StockExchange.Controllers
         [HttpGet("/api/HistoricalPrice/{ticketCode}", Name = "HistoricalPricesByTicket")]
         public IEnumerable<HistoricalPriceDto> GetHistoricalPricesByTicket(string ticketCode)
         {
-            var historicalPrices = _ticketAppService.GetHistoricalPricesByTicket(ticketCode).Select(historicalPrice => historicalPrice.AsHistoricalPriceDto()).ToList();
-            return historicalPrices;
+            var historicalPrices = _ticketAppService.GetHistoricalPricesByTicket(ticketCode);
+            var historicalPricesDtos = _mapper.Map<IList<HistoricalPriceDto>>(historicalPrices);
+            return historicalPricesDtos;
         }
 
         [HttpGet("/api/HistoricalPrice/{ticketCode}/{startDate}/{endDate}", Name = "HistoricalPricesByTicketAndDates")]
-        public IEnumerable<EarningDto> GetHistoricalPricesByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate)
+        public IEnumerable<HistoricalPriceDto> GetHistoricalPricesByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            var historicalPrices = _ticketAppService.GetHistoricalPricesByTicketAndDates(ticketCode, startDate, endDate);
+            var historicalPricesDtos = _mapper.Map<IList<HistoricalPriceDto>>(historicalPrices);
+            return historicalPricesDtos;
         }
 
         [HttpGet("/api/Earning/{ticketCode}", Name = "EarningsByTicket")]
         public IEnumerable<EarningDto> GetEarningsByTicket(string ticketCode)
         {
-            var tickets = _ticketAppService.GetEarningsByTicket(ticketCode).Select(earning => earning.AsEarningDto());
-            return tickets;
+            var earnings = _ticketAppService.GetEarningsByTicket(ticketCode);
+            var earningsDtos = _mapper.Map<IList<EarningDto>>(earnings);
+            return earningsDtos;
         }
 
         [HttpGet("/api/Earning/{ticketCode}/{startDate}/{endDate}", Name = "EarningsByTicketAndDates")]
         public IEnumerable<EarningDto> GetEarningsByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            var earnings = _ticketAppService.GetEarningsByTicketAndDates(ticketCode, startDate, endDate);
+            var earningsDtos = _mapper.Map<IList<EarningDto>>(earnings);
+            return earningsDtos;
         }
 
     }

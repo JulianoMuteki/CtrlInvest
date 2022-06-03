@@ -45,28 +45,25 @@ namespace CtrlInvest.Import.Dividends
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    IConfiguration Configuration = new ConfigurationBuilder()
-                            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                            .AddEnvironmentVariables()
-                            .AddCommandLine(args)
-                            .Build();
-                    
+                    IConfiguration configuration = new ConfigurationBuilder()
+                                     .SetBasePath(hostContext.HostingEnvironment.ContentRootPath)
+                                     .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                                     .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true)
+                                     .AddEnvironmentVariables()
+                                     .AddCommandLine(args)
+                                     .Build();
 
-                    services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
-                    RegisterServices(services);
+
+                    services.AddDbContext<CtrlInvestContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Singleton);
+                    RegisterServices(services, configuration);
                     services.AddHostedService<Worker>();
                 });
 
-        private static void RegisterServices(IServiceCollection services)
+        private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
-            //Message Broker
-            var configuration = new ConfigurationBuilder()
-                            .AddJsonFile("appsettings.json")
-                            .Build();
+            services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
             var rabbitConfig = configuration.GetSection("RabbitConfig");
             services.Configure<RabbitOptions>(rabbitConfig);
-            services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
-
 
             services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();
             services.AddSingleton<IMessageBrokerService, MessageBrokerService>();
@@ -74,8 +71,6 @@ namespace CtrlInvest.Import.Dividends
             services.AddSingleton<IUnitOfWork, UnitOfWork>();
             services.AddTransient<ITicketAppService, TicketAppService>();             
             services.AddTransient<IEarningService, EarningService>();
-
-
         }
     }
 }

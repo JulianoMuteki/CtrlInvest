@@ -61,7 +61,7 @@ namespace CtrlInvest.Receive.HistoricalData
 
         private static void RegisterServices(IServiceCollection services, IConfiguration configuration)
         {
-            var rabbitConfig = configuration.GetSection("rabbitConfig");
+            var rabbitConfig = configuration.GetSection("RabbitConfig");
             services.Configure<RabbitOptions>(rabbitConfig);
             // services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
 

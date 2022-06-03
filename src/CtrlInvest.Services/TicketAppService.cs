@@ -141,6 +141,24 @@ namespace CtrlInvest.Services
             }
         }
 
+        public ICollection<Earning> GetEarningsByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var ticket = _unitOfWork.Repository<Ticket>().Find(x => x.Ticker == ticketCode);
+                //TODO: Refactoring in repository
+                return _unitOfWork.Repository<Earning>().FindAll(x => x.TickerID == ticket.Id).ToList();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<Earning>("Unexpected error fetching get", nameof(this.GetEarningsByTicketAndDates), ex);
+            }
+        }
+
         public ICollection<HistoricalPrice> GetHistoricalPricesByTicket(string ticketCode)
         {
             try
@@ -155,6 +173,23 @@ namespace CtrlInvest.Services
             catch (Exception ex)
             {
                 throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.GetHistoricalPricesByTicket), ex);
+            }
+        }
+
+        public ICollection<HistoricalPrice> GetHistoricalPricesByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                //TODO: Refactoring in repository
+                return _unitOfWork.Repository<HistoricalPrice>().FindAll(x => x.TickerCode == ticketCode && x.Date >= startDate && x.Date <= endDate).ToList();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.GetHistoricalPricesByTicketAndDates), ex);
             }
         }
 

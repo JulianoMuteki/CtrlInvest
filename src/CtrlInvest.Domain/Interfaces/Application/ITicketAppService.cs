@@ -17,5 +17,7 @@ namespace CtrlInvest.Domain.Interfaces.Application
         public ICollection<Earning> GetEarningsByTicket(string ticketCode);
         void SaveHistoricalPrice(HistoricalPrice historicalPrice);
         void SaveEarning(Earning SaveEarning);
+        public ICollection<HistoricalPrice> GetHistoricalPricesByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate);
+        public ICollection<Earning> GetEarningsByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate);
     }
 }
