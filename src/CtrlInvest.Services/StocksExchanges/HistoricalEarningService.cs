@@ -13,7 +13,6 @@ namespace CtrlInvest.Services.StocksExchanges
 {
     public class HistoricalEarningService : IHistoricalEarningService
     {
-        //private readonly ILogger<HistoricalEarningService> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
         // Constructor

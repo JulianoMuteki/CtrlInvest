@@ -27,9 +27,9 @@ namespace CtrlInvest.Services.StocksExchanges
         {
             try
             {
-                HistoricalPrice earningExist = _unitOfWork.Repository<HistoricalPrice>().Find(x => x.TickerID == entity.TickerID && x.Date == entity.Date);
+                HistoricalPrice historicalPriceExist = _unitOfWork.Repository<HistoricalPrice>().Find(x => x.TickerID == entity.TickerID && x.Date == entity.Date);
 
-                if (earningExist == null)
+                if (historicalPriceExist == null)
                 {
                     var entityReturn = _unitOfWork.Repository<HistoricalPrice>().Add(entity);
                     _unitOfWork.CommitSync();
@@ -182,12 +182,12 @@ namespace CtrlInvest.Services.StocksExchanges
             throw new NotImplementedException();
         }
 
-        private HistoricalPrice ReadBrokerMessage(string brokerMessage)
+        private HistoricalPrice ReadBrokerMessage(string messageMQ)
         {
             HistoricalPrice history = new HistoricalPrice();
             try
             {
-                PackageMessage packageMessage = JsonSerialize.JsonDeserializeObject<PackageMessage>(brokerMessage);
+                PackageMessage packageMessage = JsonSerialize.JsonDeserializeObject<PackageMessage>(messageMQ);
 
                 if (packageMessage.isValidMessage())
                 {
@@ -216,7 +216,8 @@ namespace CtrlInvest.Services.StocksExchanges
                 }
                 else
                 {
-                    Console.WriteLine(packageMessage);
+                    //TODO: Edit
+                    Console.WriteLine(messageMQ);
                 }
             }
             catch (Exception e)
