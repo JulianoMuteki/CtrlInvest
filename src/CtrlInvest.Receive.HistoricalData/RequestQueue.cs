@@ -64,15 +64,14 @@ namespace CtrlInvest.Receive.HistoricalData
                     {
                         if (_historicalPriceService != null)
                         {
-                            await _historicalPriceService.SaveRangeInDatabaseOperation(requestChunck); 
+                            await _historicalPriceService.SaveRangeInDatabaseOperation(requestChunck);
                         }
-
                         else
                             _historicalEarningService.SaveRangeInDatabaseOperation(requestChunck);
                     }
                     catch (Exception ex)
                     {
-                        AddRange(requestChunck);
+                        //AddRange(requestChunck);
                     }
                 }
                 else

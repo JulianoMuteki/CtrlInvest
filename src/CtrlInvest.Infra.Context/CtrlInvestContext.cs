@@ -29,6 +29,7 @@ namespace CtrlInvest.Infra.Context
            // ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
            // ChangeTracker.LazyLoadingEnabled = false;
 
+
         }
 
         public bool teste()

@@ -209,6 +209,10 @@ namespace CtrlInvest.Services.StocksExchanges
                             TickerID = packageMessage.TicketID
                         };
                     }
+                    else
+                    {
+                        //Console.WriteLine(brokerMessage);
+                    }
                 }
                 else
                 {

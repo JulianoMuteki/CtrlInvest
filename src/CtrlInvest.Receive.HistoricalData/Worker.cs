@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,18 +17,21 @@ namespace CtrlInvest.Receive.HistoricalData
         private readonly IServiceProvider _serviceProvider;
         private readonly IHistoricalPriceService _historicalPriceService;
         private readonly IHistoricalEarningService _historicalEarningService;
-        private readonly RequestQueue _requestQueue;
+        private readonly RequestQueue _requestQueueHistoricalPrice;
+        private readonly RequestQueue _requestQueueHistoricalEarning;
 
-        IMessageBrokerService messageBrokerService = null;
+        IMessageBrokerService _messageBrokerService = null;
         private CancellationTokenSource cancelTokenSourceWorker = new CancellationTokenSource();
         private CancellationToken ctOperation;
         public Worker(IServiceProvider services, ILogger<Worker> logger, IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
         {
+            //_messageBrokerService = messageBrokerService;
             _historicalPriceService = historicalPriceService;
             _historicalEarningService = historicalEarningService;
             _serviceProvider = services;
             _logger = logger;
-            _requestQueue = RequestQueue.Instance;
+            _requestQueueHistoricalPrice = RequestQueue.Instance;
+            _requestQueueHistoricalEarning = RequestQueue.Instance;
             ctOperation = cancelTokenSourceWorker.Token;
         }
 
@@ -51,12 +53,13 @@ namespace CtrlInvest.Receive.HistoricalData
             {
                 stoppingToken.ThrowIfCancellationRequested();
 
-                tasks.Add(StartProcessImportHistoricalPrice(ctOperation));
+             //   tasks.Add(StartProcessImportHistoricalPrice(ctOperation));
                 tasks.Add(StartProcessImportDividend(ctOperation));
                 Task.WaitAll(tasks.ToArray(), stoppingToken);
                 //Tempo para rodar Broker novamente
                 //5 horas
-                await Task.Delay(60000 * 5, stoppingToken);
+                //await Task.Delay(60000 * 5, stoppingToken);
+                await Task.Delay(600, stoppingToken);
             }
 
             await Task.CompletedTask;
@@ -83,28 +86,28 @@ namespace CtrlInvest.Receive.HistoricalData
             try
             {
                 using var scope = _serviceProvider.CreateScope();
-
-                messageBrokerService = scope.ServiceProvider
+                _messageBrokerService = scope.ServiceProvider
                                                 .GetService<IMessageBrokerService>();
-
-                messageBrokerService.ProcessCompleted += EventHandler_MessageReceived;
-                messageBrokerService.SetQueueChannel(queueName);
-                messageBrokerService.DoReceiveMessageOperation();
 
                 if (QueueName.HISTORICAL_PRICE == queueName)
                 {
-                    _requestQueue.Launch(_historicalPriceService);
+                    _messageBrokerService.ProcessCompleted += EventHandler_1_MessageReceived;
+                    //  _requestQueueHistoricalPrice.Launch(_historicalPriceService);
                 }
                 else if (QueueName.HISTORICAL_DIVIDENDS == queueName)
                 {
-                    _requestQueue.Launch(_historicalEarningService);
+                    _messageBrokerService.ProcessCompleted += EventHandler_2_MessageReceived;
+                    // _requestQueueHistoricalEarning.Launch(_historicalEarningService);
                 }
 
-                while (!messageBrokerService.isExpireTimeToReceiveMessage())
+                _messageBrokerService.SetQueueChannel(queueName);
+                _messageBrokerService.DoReceiveMessageOperation();
+
+                while (!_messageBrokerService.isExpireTimeToReceiveMessage())
                 {
                     ctOperation.ThrowIfCancellationRequested();
 
-                    _logger.LogInformation("Waiting DoReceiveMessageOperation at: {time}", DateTimeOffset.Now);
+                    _logger.LogInformation("{historical}  - Waiting DoReceiveMessageOperation at: {time} ", queueName, DateTimeOffset.Now);
                     Task.Delay(6000, ctOperation).Wait();
                 }
 
@@ -126,31 +129,49 @@ namespace CtrlInvest.Receive.HistoricalData
             }
             finally
             {
-                messageBrokerService.Dispose();
-                _requestQueue.StopLaunch();
+                _messageBrokerService.Dispose();
+                if (_requestQueueHistoricalPrice != null)
+                    _requestQueueHistoricalPrice.StopLaunch();
+                if (_requestQueueHistoricalEarning != null)
+                    _requestQueueHistoricalEarning.StopLaunch();
             }
 
             return Task.CompletedTask;
         }
-
+        
         // event handler
-        private void EventHandler_MessageReceived(object sender, string queueName)
-        {
-            _requestQueue.Add(sender.ToString());
-            _logger.LogInformation($"QueueName {queueName}, Message: {sender.ToString()}");
+        private void EventHandler_1_MessageReceived(object sender, string queueName)
+        {            
+          //  _logger.LogInformation($"QueueName {queueName}, Message: {sender.ToString()}");
 
-            //if (QueueName.HISTORICAL_PRICE == queueName)
-            //{
-            //    _historicalPriceService.SaveInDatabaseOperation(sender.ToString());
-            //}
-            //else if (QueueName.HISTORICAL_DIVIDENDS == queueName)
-            //{
-            //    _historicalEarningService.SaveInDatabaseOperation(sender.ToString());
-            //}
-            //else
-            //{
-            //    _logger.LogError($"Event Handler Message Received, queue: {queueName}, message {sender}");
-            //}
+            if (QueueName.HISTORICAL_PRICE == queueName)
+            {
+                _historicalPriceService.SaveInDatabaseOperation(sender.ToString());
+                // _requestQueueHistoricalPrice.Add(sender.ToString());
+            }
+        }
+
+        private void EventHandler_2_MessageReceived(object sender, string queueName)
+        {
+            //  _logger.LogInformation($"QueueName {queueName}, Message: {sender.ToString()}");
+            if (QueueName.HISTORICAL_DIVIDENDS == queueName)
+            {
+                _historicalEarningService.SaveInDatabaseOperation(sender.ToString());
+                // _requestQueueHistoricalEarning.Add(sender.ToString());
+            }
+        }
+
+        private void EventHandler_MessagesReceived(object sender, string queueName)
+        {
+            IList<string> listMessages = (IList<string>)sender;
+            if (QueueName.HISTORICAL_PRICE == queueName)
+            {
+                _historicalPriceService.SaveRangeInDatabaseOperation(listMessages);
+            }
+            else if (QueueName.HISTORICAL_DIVIDENDS == queueName)
+            {
+              
+            }
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)
@@ -158,7 +179,7 @@ namespace CtrlInvest.Receive.HistoricalData
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service is stopping.");
 
-            if (messageBrokerService != null)
+            if (_messageBrokerService != null)
             {
                 cancelTokenSourceWorker.Cancel();
             }

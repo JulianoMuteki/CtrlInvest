@@ -5,7 +5,9 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CtrlInvest.MessageBroker
 {
@@ -19,6 +21,7 @@ namespace CtrlInvest.MessageBroker
         private DateTime _expireTime = DateTime.Now;
 
         public event EventHandler<string> ProcessCompleted;
+
         public MessageBrokerService(IRabbitFactoryConnection objectPolicy, ILogger<MessageBrokerService> logger)
         {
             _logger = logger;
@@ -30,7 +33,7 @@ namespace CtrlInvest.MessageBroker
         private void SetQueueName(string queueName)
         {
             _queueName = queueName;
-            _channel.QueueDeclare(
+            _channel.QueueDeclare(                
                 queue: _queueName,
                 durable: false,
                 exclusive: false,
@@ -42,9 +45,9 @@ namespace CtrlInvest.MessageBroker
             SetQueueName(queueName);
 
         }
-
+        
         public void DoReceiveMessageOperation()
-        {
+        {        
             _consumer = new EventingBasicConsumer(_channel);
             _consumer.Received += (bc, ea) =>
             {
@@ -54,8 +57,8 @@ namespace CtrlInvest.MessageBroker
                 {
                     _logger.LogTrace($"Processing msg: '{message}' at {DateTime.Now}");
                     _expireTime = DateTime.Now;
-                    _channel.BasicAck(ea.DeliveryTag, false);
                     ProcessCompleted?.Invoke(message, _queueName);
+                    _channel.BasicAck(ea.DeliveryTag, false);
                 }
                 catch (JsonException je)
                 {

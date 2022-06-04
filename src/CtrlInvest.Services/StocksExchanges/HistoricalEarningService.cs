@@ -27,7 +27,7 @@ namespace CtrlInvest.Services.StocksExchanges
         {
             try
             {
-                Earning earningExist = _unitOfWork.Repository<Earning>().Find(x => x.TickerID == entity.TickerID && x.DateWith == entity.DateWith);
+                Earning earningExist = _unitOfWork.Repository<Earning>().Find(x => x.TickerID == entity.TickerID && x.DateWith == entity.DateWith && x.Type == entity.Type && x.ValueIncome == entity.ValueIncome);
 
                 if (earningExist == null)
                 {

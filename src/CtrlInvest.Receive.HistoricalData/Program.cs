@@ -66,9 +66,9 @@ namespace CtrlInvest.Receive.HistoricalData
             services.Configure<RabbitOptions>(rabbitConfig);
             // services.Configure<HostOptions>(configuration.GetSection("HostOptions"));
 
-            services.AddSingleton<IRabbitFactoryConnection, RabbitFactory>();                      
+            services.AddTransient<IRabbitFactoryConnection, RabbitFactory>();                      
+            services.AddTransient<IMessageBrokerService, MessageBrokerService>();
 
-            services.AddScoped<IMessageBrokerService, MessageBrokerService>();
             services.AddTransient<IHistoricalPriceService, HistoricalPriceService>();
             services.AddTransient<IHistoricalEarningService, HistoricalEarningService>();
         }
