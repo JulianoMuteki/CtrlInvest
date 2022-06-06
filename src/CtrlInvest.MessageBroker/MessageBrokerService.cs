@@ -5,9 +5,7 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using RabbitMQ.Client.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CtrlInvest.MessageBroker
 {
@@ -32,6 +30,7 @@ namespace CtrlInvest.MessageBroker
 
         private void SetQueueName(string queueName)
         {
+            _logger.LogInformation($"************ Create Channel {queueName} ************");
             _queueName = queueName;
             _channel.QueueDeclare(                
                 queue: _queueName,
@@ -55,7 +54,8 @@ namespace CtrlInvest.MessageBroker
 
                 try
                 {
-                    _logger.LogTrace($"Processing msg: '{message}' at {DateTime.Now}");
+                    _logger.LogTrace($"Received Message Operation: '{message}' at {DateTime.Now}");
+
                     _expireTime = DateTime.Now;
                     ProcessCompleted?.Invoke(message, _queueName);
                     _channel.BasicAck(ea.DeliveryTag, false);
