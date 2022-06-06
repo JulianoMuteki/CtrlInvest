@@ -131,14 +131,14 @@ namespace CtrlInvest.API.StockExchange
             services.AddHealthChecks()
                     .AddDbContextCheck<CtrlInvestContext>();
 
-            //Configurando a interface gráfica e o armazenamento do histórico
             services.AddHealthChecksUI(options =>
             {
                 options.SetEvaluationTimeInSeconds(30);
                 options.MaximumHistoryEntriesPerEndpoint(15);
-                options.AddHealthCheckEndpoint("CtrlInvest.API.StockExchange", "/health");
+                // Endpoint is in appsettings
+               // options.AddHealthCheckEndpoint("CtrlInvest.API.StockExchange", "/health");              
             })
-            .AddInMemoryStorage(); //Aqui adicionamos o banco em memória
+            .AddInMemoryStorage();
 
             services.AddAuthorization(options =>
             {
