@@ -1,10 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>dotnet-CtrlInvest.Receive.HistoricalData-5BA286C3-13E5-46DB-A0A9-41FF553549FE</UserSecretsId>
-    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,9 +14,13 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     <PackageReference Include="RabbitMQ.Client" Version="6.3.0" />
   </ItemGroup>
-
+	<ItemGroup>
+		<!-- Group AppSettings in Console project. Use None to prevent "Duplicate 'Content' items were included" when using (default) EnableDefaultContentItems=true -->
+		<None Include="appsettings.*.json">
+			<DependentUpon>appsettings.json</DependentUpon>
+		</None>
+	</ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CtrlInvest.Import.HistoricalPrice\CtrlInvest.Import.HistoricalPrice.csproj" />
     <ProjectReference Include="..\CtrlInvest.Infra.Context\CtrlInvest.Infra.Context.csproj" />
     <ProjectReference Include="..\CtrlInvest.Infra.Repository\CtrlInvest.Infra.Repository.csproj" />
     <ProjectReference Include="..\CtrlInvest.MessageBroker\CtrlInvest.MessageBroker.csproj" />
