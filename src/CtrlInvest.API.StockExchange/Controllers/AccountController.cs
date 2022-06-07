@@ -1,4 +1,5 @@
-﻿using CtrlInvest.Domain.Identity;
+﻿using CtrlInvest.Domain.Entities.Aggregates;
+using CtrlInvest.Domain.Identity;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Security;
 using CtrlInvest.Security.Permission;
@@ -25,13 +26,16 @@ namespace CtrlInvest.API.StockExchange.Controllers
         private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
         private readonly ICustomEmailSender _customEmailSender;
+        private readonly IIdentityCustomService _identityCustomService;
         public AccountController(
            UserManager<ApplicationUser> userManager,
            SignInManager<ApplicationUser> signInManager,
            RoleManager<ApplicationRole> roleManager,
+           IIdentityCustomService identityCustomService,
            ILogger<AccountController> logger, IConfiguration configuration,
            ICustomEmailSender customEmailSender)
         {
+            _identityCustomService = identityCustomService;
             _customEmailSender = customEmailSender;
             _userManager = userManager;
             _signInManager = signInManager;
@@ -148,16 +152,21 @@ namespace CtrlInvest.API.StockExchange.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-
+                    var jwtId = Guid.NewGuid();
                     var claims = await IdentityUserHelper.GetClaimsByUser(existingUser, _roleManager, _userManager);
-                    return Ok(new
-                    {
-                        State = "You are logged",
-                        Token = JwtSecurityTokenCustom.GenerateToken(model.Email, _configuration["Jwt:key"],
+                    UserToken userToken = JwtSecurityTokenCustom.GenerateToken(model.Email, jwtId , _configuration["Jwt:key"],
                                                              _configuration["TokenConfiguration:ExpireHours"],
                                                              _configuration["TokenConfiguration:Issuer"],
                                                              _configuration["TokenConfiguration:Audience"],
-                                                             claims)
+                                                             claims);
+                    UserTokenHistory userTokenHistory = new UserTokenHistory();
+                    userTokenHistory.SetUserToken(existingUser.Id, jwtId, userToken.Expiration, userToken.Token);
+
+                    _identityCustomService.Add(userTokenHistory);
+                    return Ok(new
+                    {
+                        State = "You are logged",
+                        Token = userToken
                     });
                 }
                 if (result.IsLockedOut)

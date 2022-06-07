@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\0 - Aggregates\" />
     <Folder Include="Entities\1 - ValuesObjects\" />
     <Folder Include="Factories\" />
   </ItemGroup>

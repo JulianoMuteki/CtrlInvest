@@ -1,6 +1,4 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -9,11 +7,11 @@ namespace CtrlInvest.Security
 {
     public static class JwtSecurityTokenCustom
     {
-        public static UserToken GenerateToken(string userUniqueName, string jwtKey, string tokenExpireHours, string tokenIssuer, string tokenAudience, IList<Claim> userClaims)
+        public static UserToken GenerateToken(string userUniqueName, Guid jtwId, string jwtKey, string tokenExpireHours, string tokenIssuer, string tokenAudience, IList<Claim> userClaims)
         {
             var claims = new List<Claim>();
             claims.Add(new Claim(JwtRegisteredClaimNames.UniqueName, userUniqueName));
-            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, jtwId.ToString()));
             claims.AddRange(userClaims);
 
             var key = new SymmetricSecurityKey(

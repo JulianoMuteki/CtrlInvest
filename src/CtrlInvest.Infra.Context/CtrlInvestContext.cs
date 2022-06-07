@@ -1,7 +1,9 @@
 ﻿using CtrlInvest.Domain.Entities;
+using CtrlInvest.Domain.Entities.Aggregates;
 using CtrlInvest.Domain.Entities.StocksExchanges;
 using CtrlInvest.Domain.Identity;
 using CtrlInvest.Infra.Context.Mapping;
+using CtrlInvest.Infra.Context.Mapping.Aggregation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +20,7 @@ namespace CtrlInvest.Infra.Context
         public DbSet<TicketSync> TicketSyncs { get; set; }
         public DbSet<Earning> Earnings { get; set; }
 
+        public DbSet<UserTokenHistory> UsersTokensHistories { get; set; }
         public CtrlInvestContext()
         {
             // ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
@@ -56,6 +59,7 @@ namespace CtrlInvest.Infra.Context
             modelBuilder.ApplyConfiguration(new HistoricalPriceMap());
             modelBuilder.ApplyConfiguration(new TicketSyncMap());
             modelBuilder.ApplyConfiguration(new EarningMap());
+            modelBuilder.ApplyConfiguration(new UserTokenHistoryMap());
 
             base.OnModelCreating(modelBuilder);
 
