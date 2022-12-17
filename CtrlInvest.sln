@@ -44,6 +44,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL-Scripts", "SQL-Scripts", "{49E8EAA6-75DF-4DD3-9881-A5B1A3A8BB66}"
 	ProjectSection(SolutionItems) = preProject
 		1-Function-uuid-ossp.sql = 1-Function-uuid-ossp.sql
+		Insert_Tickets_BRL.sql = Insert_Tickets_BRL.sql
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CtrlInvest.API.StockExchange", "src\CtrlInvest.API.StockExchange\CtrlInvest.API.StockExchange.csproj", "{1D913163-E25D-4EC5-88AB-AA9B1C206F50}"

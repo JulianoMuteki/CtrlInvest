@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  ctrlinvest-import-historical:
+    image: import-historical:latest
+    build:
+      context: ../
+      dockerfile: Dockerfile-Import-Historical
+    environment:
+       - DOTNET_ENVIRONMENT=Development
+       - 'RabbitConfig:HostName=172.17.0.1'
+    networks:
+      - ctrl-invest-dev-net
+networks:
+  ctrl-invest-dev-net:
+    external: true

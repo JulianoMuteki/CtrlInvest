@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  ctrlinvest-import-earnings:
+    image: import-earning:latest
+    build:
+      context: ../
+      dockerfile: Dockerfile-Import-Dividends
+    environment:
+       - DOTNET_ENVIRONMENT=Development
+       - 'RabbitConfig:HostName=172.17.0.1'
+    networks:
+      - ctrl-invest-dev-net
+networks:
+  ctrl-invest-dev-net:
+    external: true

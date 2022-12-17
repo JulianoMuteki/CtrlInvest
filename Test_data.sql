@@ -1,37 +1,37 @@
 ﻿INSERT INTO public."TicketSyncs"(
 "TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
-WHERE "Ticker" = 'TAEE11.SA'), true, '2015-10-30 20:28:46.940105', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+WHERE "Ticker" = 'TAEE11.SA'), true, '2018-01-01 00:01:46.940105', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
 INSERT INTO public."TicketSyncs"(
 "TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
-WHERE "Ticker" = 'VALE3.SA'), true, '2000-01-02 01:28:46.940105', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+WHERE "Ticker" = 'VALE3.SA'), true, '2018-01-01 00:01:46.940105', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
 INSERT INTO public."TicketSyncs"(
 "TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
-WHERE "Ticker" = 'WEGE3.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+WHERE "Ticker" = 'WEGE3.SA'), true, '2018-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
 INSERT INTO public."TicketSyncs"(
 "TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
-WHERE "Ticker" = 'ABEV3.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+WHERE "Ticker" = 'ABEV3.SA'), true, '2018-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
 INSERT INTO public."TicketSyncs"(
 "TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
-WHERE "Ticker" = 'ITSA4.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+WHERE "Ticker" = 'ITSA4.SA'), true, '2018-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
 INSERT INTO public."TicketSyncs"(
 "TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
-WHERE "Ticker" = 'ITUB3.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+WHERE "Ticker" = 'ITUB3.SA'), true, '2018-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
 INSERT INTO public."TicketSyncs"(
 "TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
-WHERE "Ticker" = 'GGBR4.SA'), true, '2000-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+WHERE "Ticker" = 'GGBR4.SA'), true, '2018-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
 
 INSERT INTO public."Banks"(
