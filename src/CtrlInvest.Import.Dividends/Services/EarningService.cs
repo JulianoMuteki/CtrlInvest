@@ -10,18 +10,21 @@ using System.Collections.Generic;
 using HtmlAgilityPack;
 using System.Linq;
 using OpenQA.Selenium.Remote;
+using Microsoft.Extensions.Configuration;
 
 namespace CtrlInvest.Import.Dividends.Services
 {
     public class EarningService : IEarningService
     {
         private readonly ITicketAppService _ticketAppService;
+        private readonly IConfiguration _configuration;
+
         public event EventHandler<ImportDataFromServerEventArgs> ThresholdReached;
         private IWebDriver _driver;
-        public EarningService(ITicketAppService ticketAppService)
+        public EarningService(ITicketAppService ticketAppService, IConfiguration configuration)
         {
             _ticketAppService = ticketAppService;
-
+            _configuration = configuration;
         }
 
         public void LoadPage(string UrlPaginaCotacoes)
@@ -33,8 +36,9 @@ namespace CtrlInvest.Import.Dividends.Services
 
         private void CreateInstanceWebDriver()
         {
+            string host = _configuration.GetValue<string>("WebDriver:HostName");
             _driver = new RemoteWebDriver(
-                new Uri("http://localhost:4444/wd/hub"),
+                new Uri($"http://{host}:4444/wd/hub"),
                 new FirefoxOptions());
         }
 

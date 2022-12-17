@@ -122,7 +122,9 @@ namespace CtrlInvest.API.StockExchange.Controllers
 
         [HttpPost("Login")]
         public async Task<IActionResult> Login([FromBody] LoginViewModel model)
-        {
+        { 
+            _logger.LogInformation("Login in execution ...");
+
             if (ModelState.IsValid)
             {
                 var existingUser = await _userManager.FindByEmailAsync(model.Email);

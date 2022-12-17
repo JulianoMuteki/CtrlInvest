@@ -29,6 +29,12 @@ namespace CtrlInvest.API.StockExchange
                             new DbInitializer().Initialize(services);
                         }
                     }
+                    catch(Npgsql.NpgsqlException ex)
+                    {
+                        var logger = services.GetRequiredService<ILogger<Program>>();
+                        logger.LogError(ex, "An error occurred connect to postgres database.");
+                        throw ex;
+                    }
                     catch (Exception ex)
                     {
                         var logger = services.GetRequiredService<ILogger<Program>>();

@@ -71,5 +71,13 @@ namespace CtrlInvest.API.StockExchange.Controllers
             return earningsDtos;
         }
 
+        [HttpGet("/api/LastPrice/{ticketCode}", Name = "LastPriceByTicket")]
+        public HistoricalPriceDto GetLastPriceByTicket(string ticketCode)
+        {
+            var historicalPrices = _ticketAppService.GetLastPriceByTicket(ticketCode);
+            var historicalPriceDto = _mapper.Map<HistoricalPriceDto>(historicalPrices);
+            return historicalPriceDto;
+        }
+
     }
 }

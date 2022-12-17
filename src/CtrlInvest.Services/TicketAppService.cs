@@ -210,6 +210,23 @@ namespace CtrlInvest.Services
             }
         }
 
+        public HistoricalPrice GetLastPriceByTicket(string ticketCode)
+        {
+            try
+            {
+                //TODO: Refactoring in repository
+                return _unitOfWork.Repository<HistoricalPrice>().Filter(x => x.TickerCode == ticketCode, x => x.OrderByDescending(o => o.Date)).FirstOrDefault();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.GetHistoricalPricesByTicket), ex);
+            }
+        }
+
         public HistoricalPrice GetLatestHistoricalByTicker(string ticker)
         {
             try

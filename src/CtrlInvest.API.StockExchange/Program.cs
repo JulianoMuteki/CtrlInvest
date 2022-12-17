@@ -1,3 +1,4 @@
+using CtrlInvest.CrossCutting.Ioc;
 using CtrlInvest.Infra.Context;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -5,18 +6,33 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 using System;
 
 namespace CtrlInvest.API.StockExchange
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
-            IHost host = CreateHostBuilder(args).Build();
-            // CreateDbIfNotExist(host);         
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            host.Run();
+            try
+            {
+                IHost host = CreateHostBuilder(args).Build();
+                // CreateDbIfNotExist(host);         
+               
+                AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+                host.Run();
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Host encerrado inesperadamente");
+                return 1;
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
 
         private static void CreateDbIfNotExist(IHost host)
@@ -45,6 +61,12 @@ namespace CtrlInvest.API.StockExchange
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    var settings = config.Build();
+                    SerilogConfiguration.ConfigureLogging(settings);
+                })
+                .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
@@ -63,7 +85,7 @@ namespace CtrlInvest.API.StockExchange
                 try
                 {
                     var context = serviceScope.ServiceProvider.GetService<CtrlInvestContext>();
-                   // context.GetInfrastructure().GetService<IMigrator>().Migrate();
+                    // context.GetInfrastructure().GetService<IMigrator>().Migrate();
                     if (context.Database.EnsureCreated())
                         new DbInitializer().Initialize(serviceScope.ServiceProvider);
                 }
