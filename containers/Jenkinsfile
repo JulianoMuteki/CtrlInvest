@@ -6,8 +6,10 @@ pipeline {
   stages {    
     stage('Docker-compose build') {
         steps {
-            dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
-                sh 'docker-compose -f docker-compose-api-stock-exchange.yaml build'
+            withCredentials([file(credentialsId: 'DB_CTRL_INVEST_DEFAULT_PASS', variable: 'CTRL_INVEST_DEFAULT_PASS')]) {
+                dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
+                    sh 'docker-compose -f docker-compose-api-stock-exchange.yaml --env-file $CTRL_INVEST_DEFAULT_PASS -p ctrl-invest build'
+                }
             }
         }
     }
