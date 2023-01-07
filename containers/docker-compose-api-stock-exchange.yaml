@@ -12,6 +12,7 @@ services:
     environment:
        - ASPNETCORE_ENVIRONMENT=Development
        - PORT=8002
+       - ElasticConfiguration__Uri=http://172.17.0.1:9200
        - HealthChecksUI__HealthChecks__0__Uri=http://172.17.0.1:8002/health
        - ConnectionStrings__DefaultConnection=User ID =postgres;Password=${DATABASE_DEFAULT_PASSWORD};Server=ctrl-invest-db;Port=5432;Database=ctrl-invest-db-${ENVIRONMENT};Integrated Security=true;Pooling=true;
     networks:
