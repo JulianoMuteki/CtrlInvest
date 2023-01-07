@@ -1,16 +1,39 @@
 version: '3'
 
 services:
-  ctrlinvest-api:
-    image: ctrlinvest:latest
+  ctrl-invest-api:
+    image: ctrl-invest:latest
+    container_name: "ctrl-invest-app-${ENVIRONMENT}"    
     build:
       context: ../
-      dockerfile: Dockerfile      
+      dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8002:80"
     environment:
-       - ASPNETCORE_ENVIRONMENT=Production
-       - PORT=8000
-    #    - USER_SECRETS_ID="d221a86e-bf92-4016-9b26-86e057ce4de7"
-    # volumes:
-    #   - /mnt/c/Users/julia/AppData/Roaming/Microsoft/UserSecrets/d221a86e-bf92-4016-9b26-86e057ce4de7:/root/.microsoft/usersecrets/d221a86e-bf92-4016-9b26-86e057ce4de7
+       - ASPNETCORE_ENVIRONMENT=Development
+       - PORT=8002
+       - HealthChecksUI__HealthChecks__0__Uri=http://172.17.0.1:8002/health
+       - ConnectionStrings__DefaultConnection=User ID =postgres;Password=${DATABASE_DEFAULT_PASSWORD};Server=ctrl-invest-db;Port=5432;Database=ctrl-invest-db-${ENVIRONMENT};Integrated Security=true;Pooling=true;
+    networks:
+      - ctrl-invest-network
+    links:
+      - ctrl-invest-db
+    depends_on:
+      ctrl-invest-db:
+        condition: service_healthy
+  ctrl-invest-db:
+    image: postgres:latest
+    container_name: "ctrl-invest-db-${ENVIRONMENT}"
+    restart: always
+    ports:
+      - "15432:5432"
+    environment:
+      POSTGRES_DB: "ctrl-invest-db-${ENVIRONMENT}"
+      POSTGRES_PASSWORD: "${DATABASE_DEFAULT_PASSWORD}"
+    networks:
+      - ctrl-invest-network      
+    healthcheck:
+      test: "pg_isready -q -U postgres"
+networks:
+  ctrl-invest-network:
+    name: ctrl-invest-network
