@@ -10,11 +10,11 @@ pipeline {
       }
     }      
     stage('Docker-compose build') {
-      steps {
-        dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
-            sh 'docker-compose -f docker-compose-api-stock-exchange.yaml build'
+        steps {
+            dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
+                sh 'docker-compose -f docker-compose-api-stock-exchange.yaml build'
+            }
         }
-      }
     }
     stage('Docker run Dev') {
         when {
