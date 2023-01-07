@@ -3,12 +3,7 @@ pipeline {
     parameters {
         choice(name: 'ENVIRONMENT_OPTION', choices: ['Development', 'Staging', 'Production'], description: 'Environments')
     }  
-  stages {
-    stage('Checkout DevOps repo') {
-      steps {
-        git([url: 'git@github.com:JulianoMuteki/CtrlInvest.git', branch: 'master', credentialsId: 'github-id-credentials'])
-      }
-    }      
+  stages {    
     stage('Docker-compose build') {
         steps {
             dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
