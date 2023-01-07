@@ -22,17 +22,18 @@ namespace CtrlInvest.API.StockExchange
                
                 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
                 host.Run();
-                return 0;
+                
             }
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Host encerrado inesperadamente");
-                return 1;
+                throw;
             }
             finally
             {
                 Log.CloseAndFlush();
             }
+            return 0;
         }
 
         private static void CreateDbIfNotExist(IHost host)
