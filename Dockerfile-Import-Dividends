@@ -6,9 +6,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
-
 COPY ["src/CtrlInvest.Import.Dividends/CtrlInvest.Import.Dividends.csproj", "src/CtrlInvest.Import.Dividends/"]
-
 COPY ["src/CtrlInvest.MessageBroker/CtrlInvest.MessageBroker.csproj", "src/CtrlInvest.MessageBroker/"]
 COPY ["src/CtrlInvest.Domain/CtrlInvest.Domain.csproj", "src/CtrlInvest.Domain/"]
 COPY ["src/CtrlInvest.CrossCutting/CtrlInvest.CrossCutting.csproj", "src/CtrlInvest.CrossCutting/"]

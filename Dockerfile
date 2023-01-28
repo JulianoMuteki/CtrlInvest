@@ -24,4 +24,3 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "CtrlInvest.API.StockExchange.dll"]
-#CMD ASPNETCORE_URLS=http://*:$PORT dotnet CtrlInvest.API.StockExchange.dll

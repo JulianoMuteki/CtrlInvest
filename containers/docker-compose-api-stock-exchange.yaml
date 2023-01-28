@@ -8,15 +8,16 @@ services:
       context: ../
       dockerfile: Dockerfile
     ports:
-      - "8002:80"
+      - "8003:80"
     environment:
        - ASPNETCORE_ENVIRONMENT=Development
-       - PORT=8002
+       - PORT=8003
        - ElasticConfiguration__Uri=http://172.17.0.1:9200
-       - HealthChecksUI__HealthChecks__0__Uri=http://172.17.0.1:8002/health
+       - HealthChecksUI__HealthChecks__0__Uri=http://172.17.0.1:8003/health
        - ConnectionStrings__DefaultConnection=User ID =postgres;Password=${DATABASE_DEFAULT_PASSWORD};Server=ctrl-invest-db;Port=5432;Database=ctrl-invest-db-${ENVIRONMENT};Integrated Security=true;Pooling=true;
     networks:
       - ctrl-invest-network
+      - ctrl-apps-network   
     links:
       - ctrl-invest-db
     depends_on:
@@ -27,7 +28,7 @@ services:
     container_name: "ctrl-invest-db-${ENVIRONMENT}"
     restart: always
     ports:
-      - "15432:5432"
+      - "15433:5432"
     volumes: 
       - /home/juliano/volume-db-data/ctrlinvest:/var/lib/postgresql/data      
     environment:
@@ -40,3 +41,5 @@ services:
 networks:
   ctrl-invest-network:
     name: ctrl-invest-network
+  ctrl-apps-network:
+    external: true

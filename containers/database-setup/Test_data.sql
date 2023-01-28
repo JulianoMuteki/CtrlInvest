@@ -33,12 +33,16 @@ INSERT INTO public."TicketSyncs"(
 	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
 WHERE "Ticker" = 'GGBR4.SA'), true, '2018-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
+INSERT INTO public."TicketSyncs"(
+"TicketSyncID", "TickerID", "IsEnabled", "DateStart", "CreationDate", "DateModified", "IsDelete", "IsDisable")	
+	VALUES (uuid_generate_v1(), (SELECT "Id" FROM public."Tickets"
+WHERE "Ticker" = 'TIMS3.SA'), true, '2018-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
-INSERT INTO public."Banks"(
-	"BankID", "Name", "BankBalance", "BankCode", "InitialBalance", "CreationDate", "DateModified", "IsDelete", "IsDisable")
-	VALUES ('e069604c-70af-11ec-914b-0242ac130002', 'INTER DTVM LTDA', '77', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+-- INSERT INTO public."Banks"(
+-- 	"BankID", "Name", "BankBalance", "BankCode", "InitialBalance", "CreationDate", "DateModified", "IsDelete", "IsDisable")
+-- 	VALUES ('e069604c-70af-11ec-914b-0242ac130002', 'INTER DTVM LTDA', '77', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
 
 
-INSERT INTO public."Banks"(
-	"BankID", "Name", "BankBalance", "BankCode", "InitialBalance", "CreationDate", "DateModified", "IsDelete", "IsDisable")
-	VALUES ('fe616efa-70af-11ec-914b-0242ac130002', 'XP INVESTIMENTOS CCTVM S/A', '102', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);
+-- INSERT INTO public."Banks"(
+-- 	"BankID", "Name", "BankBalance", "BankCode", "InitialBalance", "CreationDate", "DateModified", "IsDelete", "IsDisable")
+-- 	VALUES ('fe616efa-70af-11ec-914b-0242ac130002', 'XP INVESTIMENTOS CCTVM S/A', '102', 0, 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, false, false);

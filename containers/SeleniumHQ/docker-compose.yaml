@@ -1,0 +1,11 @@
+# To execute this docker-compose yml file use `docker-compose -f docker-compose-v3.yml up`
+# Add the `-d` flag at the end for detached execution
+# To stop the execution, hit Ctrl+C, and then `docker-compose -f docker-compose-v3.yml down`
+version: "3"
+services:
+  selenium-standalone-firefox:
+    image: selenium/standalone-firefox:4.0.0-beta-1-prerelease-20210106
+    container_name: selenium-firefox
+    shm_size: 2gb
+    ports:
+      - "4444:4444"
