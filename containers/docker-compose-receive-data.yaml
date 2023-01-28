@@ -9,7 +9,7 @@ services:
     environment:
        - DOTNET_ENVIRONMENT=Development
        - RabbitConfig:HostName=172.17.0.1
-       - RabbitConfig:Password=PASSWORD
+       - RabbitConfig:Password=${RABBITMQ_PASSWORD}
        - ConnectionStrings__DefaultConnection=User ID =postgres;Password=${DATABASE_DEFAULT_PASSWORD};Server=ctrl-invest-db;Port=5432;Database=ctrl-invest-db-${ENVIRONMENT};Integrated Security=true;Pooling=true;
     networks:
       - ctrl-invest-network
