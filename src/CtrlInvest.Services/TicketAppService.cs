@@ -46,7 +46,7 @@ namespace CtrlInvest.Services
             throw new NotImplementedException();
         }
 
-        public ICollection<Ticket> FindTicketByTicketCode(string textFind)
+        public ICollection<Ticket> FindTicketsByText(string textFind)
         {
             try
             {
@@ -58,7 +58,22 @@ namespace CtrlInvest.Services
             }
             catch (Exception ex)
             {
-                throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.FindTicketByTicketCode), ex);
+                throw CustomException.Create<Ticket>("Unexpected error fetching get", nameof(this.FindTicketsByText), ex);
+            }
+        }
+        public Ticket FindTicketByTicketCode(string ticketCode)
+        {
+            try
+            {
+                return _unitOfWork.Repository<Ticket>().FindAll(x => x.Ticker.StartsWith(ticketCode.ToUpper())).FirstOrDefault();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<Ticket>("Unexpected error fetching get", nameof(this.FindTicketByTicketCode), ex);
             }
         }
 
@@ -314,6 +329,23 @@ namespace CtrlInvest.Services
             catch (Exception ex)
             {
                 throw CustomException.Create<HistoricalPrice>("Unexpected error fetching get", nameof(this.SaveHistoricalPricesList), ex);
+            }
+        }
+
+        public void SaveTickerSync(TicketSync ticketSync)
+        {
+            try
+            {
+                _unitOfWork.Repository<TicketSync>().Add(ticketSync);
+                _unitOfWork.CommitSync();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<Earning>("Unexpected error add", nameof(this.SaveEarning), ex);
             }
         }
 

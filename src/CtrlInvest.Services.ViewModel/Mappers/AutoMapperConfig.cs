@@ -9,6 +9,7 @@ namespace CtrlInvest.Services.ViewModel.Mappers
             return new MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new TicketProfile());
+                cfg.AddProfile(new TicketSyncProfile());
             });
         }
     }

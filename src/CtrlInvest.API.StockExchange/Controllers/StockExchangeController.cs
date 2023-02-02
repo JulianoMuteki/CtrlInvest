@@ -34,7 +34,7 @@ namespace CtrlInvest.API.StockExchange.Controllers
         [HttpGet("{searchTicket}", Name = "FindTicketByTicketCode")]
         public IEnumerable<TicketDto> FindTicketByTicketCode(string searchTicket)
         {
-            var tickets = _ticketAppService.FindTicketByTicketCode(searchTicket);
+            var tickets = _ticketAppService.FindTicketsByText(searchTicket);
             var ticketsDtos = _mapper.Map<IList<TicketDto>>(tickets);
             return ticketsDtos;
         }

@@ -12,7 +12,8 @@ namespace CtrlInvest.Domain.Interfaces.Application
         void SaveHistoricalPricesList(IList<HistoricalPrice> oricalPricesList);
         public Earning GetLastEarningByTicker(Guid ticketID);
         void SaveEarningsList(IList<Earning> earningList);
-        public ICollection<Ticket> FindTicketByTicketCode(string textFind);
+        public ICollection<Ticket> FindTicketsByText(string textFind);
+        public Ticket FindTicketByTicketCode(string textFind);
         public ICollection<HistoricalPrice> GetHistoricalPricesByTicket(string ticketCode);
 
         public HistoricalPrice GetLastPriceByTicket(string ticketCode);
@@ -20,6 +21,8 @@ namespace CtrlInvest.Domain.Interfaces.Application
         public ICollection<Earning> GetEarningsByTicket(string ticketCode);
         void SaveHistoricalPrice(HistoricalPrice historicalPrice);
         void SaveEarning(Earning SaveEarning);
+
+        void SaveTickerSync(TicketSync ticketSync);
         public ICollection<HistoricalPrice> GetHistoricalPricesByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate);
         public ICollection<Earning> GetEarningsByTicketAndDates(string ticketCode, DateTime startDate, DateTime endDate);
     }

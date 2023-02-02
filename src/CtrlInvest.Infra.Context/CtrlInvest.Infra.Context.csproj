@@ -37,4 +37,10 @@
     <ProjectReference Include="..\CtrlInvest.Security\CtrlInvest.Security.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Migrations\20230201001732_Insert-Default-Tickets-BRL.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

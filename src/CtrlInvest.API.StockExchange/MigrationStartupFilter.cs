@@ -28,6 +28,10 @@ namespace CtrlInvest.API.StockExchange
                             dbContext.GetInfrastructure().GetService<IMigrator>().Migrate();
                             new DbInitializer().Initialize(services);
                         }
+                        else if (dbContext.Database.GetService<Microsoft.EntityFrameworkCore.Storage.IRelationalDatabaseCreator>().CanConnect())
+                        {
+                            dbContext.GetInfrastructure().GetService<IMigrator>().Migrate();
+                        }
                     }
                     catch(Npgsql.NpgsqlException ex)
                     {

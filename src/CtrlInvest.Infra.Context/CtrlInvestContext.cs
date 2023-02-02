@@ -35,11 +35,6 @@ namespace CtrlInvest.Infra.Context
 
         }
 
-        public bool teste()
-        {
-           return Database.EnsureCreated();
-        }
-
         public void SetTrackAll()
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.TrackAll;

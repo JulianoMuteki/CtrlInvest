@@ -36,9 +36,11 @@ namespace CtrlInvest.Import.Dividends.Services
 
         private void CreateInstanceWebDriver()
         {
-            string host = _configuration.GetValue<string>("WebDriver:HostName");
+            string host = _configuration.GetValue<string>("WebDriverConfig:HostName");
+            string port = _configuration.GetValue<string>("WebDriverConfig:Port");
+
             _driver = new RemoteWebDriver(
-                new Uri($"http://{host}:4444/wd/hub"),
+                new Uri($"http://{host}:{port}/wd/hub"),
                 new FirefoxOptions());
         }
 

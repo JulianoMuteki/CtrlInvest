@@ -8,9 +8,12 @@ services:
       dockerfile: Dockerfile-Import-Dividends
     environment:
        - DOTNET_ENVIRONMENT=Development
-       - 'RabbitConfig:HostName=172.17.0.1'
+       - RabbitConfig:HostName=172.17.0.1
+       - RabbitConfig:Password=${RABBITMQ_PASSWORD}
+       - WebDriverConfig:HostName=172.17.0.1
+       - ConnectionStrings__DefaultConnection=User ID =postgres;Password=${DATABASE_DEFAULT_PASSWORD};Server=ctrl-invest-db;Port=5432;Database=ctrl-invest-db-${ENVIRONMENT};Integrated Security=true;Pooling=true;
     networks:
-      - ctrl-invest-dev-net
+      - ctrl-invest-network
 networks:
-  ctrl-invest-dev-net:
+  ctrl-invest-network:
     external: true
