@@ -40,6 +40,6 @@ services:
       test: "pg_isready -q -U postgres"
 networks:
   ctrl-invest-network:
-    name: ctrl-invest-network
+    external: true
   ctrl-apps-network:
     external: true
