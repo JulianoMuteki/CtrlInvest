@@ -17,8 +17,7 @@ namespace CtrlInvest.Receive.HistoricalData
         private readonly IServiceProvider _serviceProvider;
         private readonly IHistoricalPriceService _historicalPriceService;
         private readonly IHistoricalEarningService _historicalEarningService;
-
-        IMessageBrokerService _messageBrokerService = null;
+        
         private CancellationTokenSource cancelTokenSourceWorker = new CancellationTokenSource();
         private CancellationToken ctOperation;
         public Worker(IServiceProvider services, ILogger<Worker> logger, IHistoricalPriceService historicalPriceService, IHistoricalEarningService historicalEarningService)
@@ -47,16 +46,17 @@ namespace CtrlInvest.Receive.HistoricalData
             {
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    _logger.LogInformation("Running ExecuteAsync");
+                    _logger.LogInformation("Running start process to import data");
 
                     tasks.Add(StartProcessImportHistoricalPrice(ctOperation));
                     tasks.Add(StartProcessImportDividend(ctOperation));
                     Task.WaitAll(tasks.ToArray(), stoppingToken);
 
                     stoppingToken.ThrowIfCancellationRequested();
-                    //Tempo para rodar Broker novamente
-                    //5 horas
-                    await Task.Delay(60000 * 5, stoppingToken);
+                    //Wait time to connect Message Broker again
+                    // Minutes
+                    int minutes = 60;                    
+                    await Task.Delay(60000 * minutes, stoppingToken);
                 }
             }
             catch (OperationCanceledException ex)
@@ -78,7 +78,7 @@ namespace CtrlInvest.Receive.HistoricalData
             _logger.LogInformation(
                 "Consume Scoped Service Hosted Service is stopping.");
 
-            if (_messageBrokerService != null)
+            if (cancelTokenSourceWorker != null)
             {
                 cancelTokenSourceWorker.Cancel();
             }
@@ -110,28 +110,29 @@ namespace CtrlInvest.Receive.HistoricalData
 
         private void ExecuteProcessReceiveMessage(CancellationToken ctOperation, string queueName)
         {
+            IMessageBrokerService messageBrokerService = null;
             try
             {
                 using var scope = _serviceProvider.CreateScope();
-                _messageBrokerService = scope.ServiceProvider
-                                                .GetService<IMessageBrokerService>();
+                messageBrokerService = scope.ServiceProvider.GetService<IMessageBrokerService>();
 
                 if (QueueName.HISTORICAL_PRICE == queueName)
-                    _messageBrokerService.ProcessCompleted += EventHandler_HistoricalPrice_MessageReceived;
+                    messageBrokerService.ProcessCompleted += EventHandler_HistoricalPrice_MessageReceived;
                 else if (QueueName.HISTORICAL_DIVIDENDS == queueName)
-                    _messageBrokerService.ProcessCompleted += EventHandler_Earning_MessageReceived;
+                    messageBrokerService.ProcessCompleted += EventHandler_Earning_MessageReceived;
 
-                _messageBrokerService.SetQueueChannel(queueName);
-                _messageBrokerService.DoReceiveMessageOperation();
+                messageBrokerService.SetQueueChannel(queueName);
+                messageBrokerService.DoReceiveMessageOperation();
 
-                while (!_messageBrokerService.isExpireTimeToReceiveMessage())
+                while (!messageBrokerService.isExpireTimeToReceiveMessage())
                 {
                     if (ctOperation.IsCancellationRequested)
                         ctOperation.ThrowIfCancellationRequested();
 
-                    _logger.LogInformation("{queueName}  - Running ProcessReceiveMessage in MessageBrokerService.DoReceiveMessageOperation at: {time} ", queueName, DateTimeOffset.Now);
+                    _logger.LogInformation("Running... Process ReceiveMessage from queueName: {queueName} at: {time} ", queueName, DateTimeOffset.Now);
                     // Minutes
-                    Thread.Sleep(60000 * 1);
+                    int minutes = 1;
+                    Thread.Sleep(60000 * minutes);
                 }
 
                 _logger.LogInformation("************* MessageBrokerService ExpireTimeToReceiveMessage ************");
@@ -155,7 +156,7 @@ namespace CtrlInvest.Receive.HistoricalData
             }
             finally
             {
-                _messageBrokerService.Dispose();
+                messageBrokerService.Dispose();
             }
         }
 

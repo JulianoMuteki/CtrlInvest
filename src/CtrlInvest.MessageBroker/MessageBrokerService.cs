@@ -46,7 +46,9 @@ namespace CtrlInvest.MessageBroker
         }
         
         public void DoReceiveMessageOperation()
-        {        
+        {
+            _logger.LogInformation($"Do Received Message Operation at {DateTime.Now}");
+
             _consumer = new EventingBasicConsumer(_channel);
             _consumer.Received += (bc, ea) =>
             {

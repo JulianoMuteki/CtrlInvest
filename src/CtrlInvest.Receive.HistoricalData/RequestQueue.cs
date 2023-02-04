@@ -71,6 +71,7 @@ namespace CtrlInvest.Receive.HistoricalData
                     }
                     catch (Exception ex)
                     {
+                        throw;
                         //AddRange(requestChunck);
                     }
                 }
