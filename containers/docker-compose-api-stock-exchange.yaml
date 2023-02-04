@@ -10,11 +10,20 @@ services:
     ports:
       - "8003:80"
     environment:
-       - ASPNETCORE_ENVIRONMENT=Development
-       - PORT=8003
-       - ElasticConfiguration__Uri=http://172.17.0.1:9200
-       - HealthChecksUI__HealthChecks__0__Uri=http://172.17.0.1:8003/health
-       - ConnectionStrings__DefaultConnection=User ID =postgres;Password=${DATABASE_DEFAULT_PASSWORD};Server=ctrl-invest-db;Port=5432;Database=ctrl-invest-db-${ENVIRONMENT};Integrated Security=true;Pooling=true;
+      - ASPNETCORE_ENVIRONMENT=Development
+      - PORT=8003
+      - ElasticConfiguration__Uri=http://172.17.0.1:9200
+      - HealthChecksUI__HealthChecks__0__Uri=http://172.17.0.1:8003/health
+      - Jwt__Key=NEWKEY123456
+      - TokenConfiguration__Audience=Pestili_Audience
+      - TokenConfiguration__Issuer=Pestili_Issuer
+      - TokenConfiguration__ExpireHours=2
+      - EmailSettings__Mail=julian@julian.com.br
+      - EmailSettings__DisplayName=Juliano
+      - EmailSettings__Password=password
+      - EmailSettings__Host=smtp.mail.yahoo.com
+      - EmailSettings__Port=587
+      - ConnectionStrings__DefaultConnection=User ID =postgres;Password=${DATABASE_DEFAULT_PASSWORD};Server=ctrl-invest-db;Port=5432;Database=ctrl-invest-db-${ENVIRONMENT};Integrated Security=true;Pooling=true;
     networks:
       - ctrl-invest-network
       - ctrl-apps-network   
