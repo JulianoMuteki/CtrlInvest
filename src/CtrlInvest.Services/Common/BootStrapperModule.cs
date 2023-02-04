@@ -1,4 +1,5 @@
-﻿using CtrlInvest.Domain.Interfaces.Application;
+﻿using AutoMapper;
+using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Domain.Interfaces.Base;
 using CtrlInvest.Infra.Repository;
 using CtrlInvest.Services.Email;
@@ -20,7 +21,7 @@ namespace CtrlInvest.Services.Common
             services.AddScoped<ITicketAppService, TicketAppService>();
             services.AddScoped<ICustomEmailSender, CustomEmailSender>();
             services.AddScoped<IIdentityCustomService, IdentityCustomService>();
-            //services.AddScoped<IParentTreeAppService, ParentTreeAppService>();
+            services.AddScoped<IMapper, Mapper>();
             //services.AddScoped<IChildTreeAppService, ChildTreeAppService>();
             //services.AddScoped<IGrandChildTreeAppService, GrandChildTreeAppService>();
         }

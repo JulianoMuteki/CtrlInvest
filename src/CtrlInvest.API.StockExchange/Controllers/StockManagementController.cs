@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CtrlInvest.API.StockExchange.Controllers
@@ -35,10 +36,11 @@ namespace CtrlInvest.API.StockExchange.Controllers
             _ticketAppService = ticketAppService;
             _logger = logger;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
-        [HttpPost("AddTickerSyncData")]
-        public async Task<IActionResult> AddTickerSyncData([FromBody] TicketSyncDto ticketSyncDto)
+        [HttpPost("TickerSync")]
+        public async Task<IActionResult> AddTickerSync([FromBody] TicketSyncDto ticketSyncDto)
         {
             if (ModelState.IsValid)
             {
@@ -54,6 +56,15 @@ namespace CtrlInvest.API.StockExchange.Controllers
                 return BadRequest(ModelState);
 
             return Ok("TickerSync saved"); // passtoken
+        }
+
+        [HttpGet("TickerSync")]
+        public async Task<IActionResult> GetTickersSyncs()
+        {
+            var ticketsSyncs = _ticketAppService.GetTicketsSyncs();
+            var ticketsSyncsDto = _mapper.Map<IList<TicketSyncDto>>(ticketsSyncs);
+
+            return Ok(ticketsSyncsDto); // passtoken
         }
     }
 }

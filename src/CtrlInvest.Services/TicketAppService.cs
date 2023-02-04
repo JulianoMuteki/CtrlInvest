@@ -4,6 +4,7 @@ using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Entities.StocksExchanges;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Domain.Interfaces.Base;
+using CtrlInvest.Domain.Interfaces.Repository;
 using CtrlInvest.Services.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -61,6 +62,7 @@ namespace CtrlInvest.Services
                 throw CustomException.Create<Ticket>("Unexpected error fetching get", nameof(this.FindTicketsByText), ex);
             }
         }
+
         public Ticket FindTicketByTicketCode(string ticketCode)
         {
             try
@@ -114,7 +116,23 @@ namespace CtrlInvest.Services
             }
             catch (Exception ex)
             {
-                throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.GetAll), ex);
+                throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.GetAllTicketsSyncs), ex);
+            }
+        }
+
+        public ICollection<TicketSync> GetTicketsSyncs()
+        {
+            try
+            {
+                return _unitOfWork.RepositoryCustom<IStockExchangeRepository>().GetTicketsSyncs();
+            }
+            catch (CustomException exc)
+            {
+                throw exc;
+            }
+            catch (Exception ex)
+            {
+                throw CustomException.Create<TicketSync>("Unexpected error fetching get", nameof(this.GetTicketsSyncs), ex);
             }
         }
 

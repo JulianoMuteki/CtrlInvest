@@ -72,6 +72,11 @@ namespace CtrlInvest.Infra.Repository
                 IParentTreeRepository repository = new ParentTreeRepository(_dbContext);
                 RepositoriesCustom.Add(typeof(T), repository);
             }
+            else if (typeof(IStockExchangeRepository).Equals((typeof(T))) && !RepositoriesCustom.Keys.Contains(typeof(T)))
+            {
+                IStockExchangeRepository repository = new StockExchangeRepository(_dbContext);
+                RepositoriesCustom.Add(typeof(T), repository);
+            }
         }
 
         //public async Task<int> Commit()

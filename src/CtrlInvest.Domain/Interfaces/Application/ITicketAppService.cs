@@ -8,6 +8,7 @@ namespace CtrlInvest.Domain.Interfaces.Application
     public interface ITicketAppService : IApplicationServiceBase<Ticket>
     {
         public ICollection<TicketSync> GetAllTicketsSyncs();
+        ICollection<TicketSync> GetTicketsSyncs();
         public HistoricalPrice GetLatestHistoricalByTicker(string ticker);
         void SaveHistoricalPricesList(IList<HistoricalPrice> oricalPricesList);
         public Earning GetLastEarningByTicker(Guid ticketID);

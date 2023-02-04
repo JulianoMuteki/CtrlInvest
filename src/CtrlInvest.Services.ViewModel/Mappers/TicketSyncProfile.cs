@@ -17,6 +17,10 @@ namespace CtrlInvest.Services.ViewModel
                 .ForMember(
                     dest => dest.DateStart,
                     opt => opt.MapFrom(src => $"{src.DateStart}")
+                )
+                .ForMember(
+                    dest => dest.Ticker,
+                    opt => opt.MapFrom(src => $"{src.Ticket.Ticker}")
                 );
         }
     }
