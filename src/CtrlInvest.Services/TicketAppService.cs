@@ -1,11 +1,9 @@
-﻿using AutoMapper;
-using CtrlInvest.CrossCutting;
+﻿using CtrlInvest.CrossCutting;
 using CtrlInvest.Domain.Entities;
 using CtrlInvest.Domain.Entities.StocksExchanges;
 using CtrlInvest.Domain.Interfaces.Application;
 using CtrlInvest.Domain.Interfaces.Base;
 using CtrlInvest.Domain.Interfaces.Repository;
-using CtrlInvest.Services.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -354,6 +352,7 @@ namespace CtrlInvest.Services
         {
             try
             {
+                ticketSync.IsEnabled = true;
                 _unitOfWork.Repository<TicketSync>().Add(ticketSync);
                 _unitOfWork.CommitSync();
             }
@@ -363,7 +362,7 @@ namespace CtrlInvest.Services
             }
             catch (Exception ex)
             {
-                throw CustomException.Create<Earning>("Unexpected error add", nameof(this.SaveEarning), ex);
+                throw CustomException.Create<Earning>("Unexpected error add", nameof(this.SaveTickerSync), ex);
             }
         }
 
