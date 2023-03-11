@@ -8,6 +8,7 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'DB_CTRL_INVEST_DEFAULT_PASS', variable: 'CTRL_INVEST_DEFAULT_PASS')]) {
                     dir('containers') {
+                        sh 'chmod +x run-ctrl-invest.sh'
                         sh './run-ctrl-invest.sh -i -env-file $CTRL_INVEST_DEFAULT_PASS'
                     }
                 }
