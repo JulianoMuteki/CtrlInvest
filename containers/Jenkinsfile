@@ -1,31 +1,40 @@
 pipeline {
-  agent { label 'slave' }
+    agent { label 'slave' }
     parameters {
         choice(name: 'ENVIRONMENT_OPTION', choices: ['Development', 'Staging', 'Production'], description: 'Environments')
     }  
-  stages {    
-    stage('Docker-compose build') {
-        steps {
-            withCredentials([file(credentialsId: 'DB_CTRL_INVEST_DEFAULT_PASS', variable: 'CTRL_INVEST_DEFAULT_PASS')]) {
-                dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
-                    sh 'docker-compose -f docker-compose-api-stock-exchange.yaml --env-file $CTRL_INVEST_DEFAULT_PASS -p ctrl-invest build'
+    stages {
+        stage('Install all development') {
+            steps {
+                withCredentials([file(credentialsId: 'DB_CTRL_INVEST_DEFAULT_PASS', variable: 'CTRL_INVEST_DEFAULT_PASS')]) {
+                    dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
+                        sh './run-ctrl-invest.sh -i -env-file $CTRL_INVEST_DEFAULT_PASS'
+                    }
                 }
             }
-        }
+        }         
+        // stage('Docker-compose build') {
+        //     steps {
+        //         withCredentials([file(credentialsId: 'DB_CTRL_INVEST_DEFAULT_PASS', variable: 'CTRL_INVEST_DEFAULT_PASS')]) {
+        //             dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
+        //                 sh 'docker-compose -f docker-compose-api-stock-exchange.yaml --env-file $CTRL_INVEST_DEFAULT_PASS -p ctrl-invest build'
+        //             }
+        //         }
+        //     }
+        // }   
+        // stage('Docker run Dev') {
+        //     when {
+        //         expression{
+        //             params.ENVIRONMENT_OPTION == 'Development'
+        //         }
+        //     }        
+        //     steps {
+        //         withCredentials([file(credentialsId: 'DB_CTRL_INVEST_DEFAULT_PASS', variable: 'CTRL_INVEST_DEFAULT_PASS')]) {
+        //             dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
+        //                 sh 'docker-compose -f docker-compose-api-stock-exchange.yaml --env-file $CTRL_INVEST_DEFAULT_PASS -p ctrl-invest up -d'
+        //             }
+        //         }
+        //     }
+        // }
     }
-    stage('Docker run Dev') {
-        when {
-            expression{
-                params.ENVIRONMENT_OPTION == 'Development'
-            }
-        }        
-        steps {
-            withCredentials([file(credentialsId: 'DB_CTRL_INVEST_DEFAULT_PASS', variable: 'CTRL_INVEST_DEFAULT_PASS')]) {
-                dir('/home/juliano/jenkins-node/workspace/Ctrl-Invest-CI/containers/') {
-                    sh 'docker-compose -f docker-compose-api-stock-exchange.yaml --env-file $CTRL_INVEST_DEFAULT_PASS -p ctrl-invest up -d'
-                }
-            }
-        }
-    }
-  }
 }
